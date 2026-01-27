@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zachary Shee | Creative Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --accent-color: #888888;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- 1. 导航栏 --- */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 60px;
+            z-index: 1000;
+            mix-blend-mode: difference;
+        }
+        .logo { font-weight: 600; letter-spacing: 2px; }
+        .logo a { color: white; text-decoration: none; }
+        .nav-links a { 
+            color: white; text-decoration: none; margin-left: 35px; 
+            font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; 
+            transition: opacity 0.3s;
+        }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- 2. 首页 Hero 区域 --- */
+        .hero { position: relative; height: 100vh; width: 100%; display: flex; align-items: center; overflow: hidden; }
+        
+        .video-container {
+            position: absolute; top: 100px; bottom: 40px; left: 0; right: 0; z-index: -1;
+            -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+            mask-image: linear-gradient(to left, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 80%);
+        }
+        
+        .hero-video { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) brightness(0.7); }
+        
+        .hero-glows {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1; 
+        }
+        .hero-glow-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 50%, rgba(0,0,0,0) 70%);
+            filter: blur(50px);
+        }
+        .hg-1 { width: 400px; height: 400px; top: 20%; left: 10%; }
+        .hg-2 { width: 300px; height: 300px; top: 45%; left: 20%; opacity: 0.8; }
+
+        .hero-content { padding-left: 15%; z-index: 10; position: relative; }
+
+        .hero-sub {
+            font-size: 1.1rem;
+            letter-spacing: 5px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+            opacity: 0;
+            animation: fadeInUp 1s forwards 0.2s;
+        }
+
+        .hero-title { font-size: clamp(4rem, 10vw, 7rem); font-weight: 800; text-transform: uppercase; line-height: 0.85; }
+        .hero-title span { display: block; opacity: 0; transform: translateY(30px); animation: fadeInUp 1s forwards; }
+        .title-1 { animation-delay: 0.4s; } 
+        .title-2 { animation-delay: 0.6s; } 
+        .title-3 { animation-delay: 0.8s; }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 60px; left: 50%;
+            transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center;
+            text-decoration: none; color: white;
+            z-index: 20; opacity: 0.5;
+            transition: opacity 0.3s;
+        }
+        .scroll-indicator:hover { opacity: 1; }
+        .scroll-indicator span { font-size: 0.6rem; letter-spacing: 3px; margin-top: 10px; font-weight: 300; }
+        .scroll-indicator svg { animation: bounce 2s infinite; }
+
+        /* --- 3. Studio 介绍页面 --- */
+        .studio-section {
+            position: relative; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            padding: 100px 15%; text-align: center; overflow: hidden;
+        }
+
+        .studio-text-container {
+            max-width: 900px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 修改：文字样式，增加了单独的段落样式用于动画 */
+        .studio-text-p {
+            font-size: 1.3rem; 
+            font-weight: 200; 
+            line-height: 1.8; 
+            color: #ddd;
+            margin-bottom: 30px;
+            
+            /* 初始隐藏状态 */
+            opacity: 0; 
+            transform: translateY(30px);
+            transition: all 1s ease;
+        }
+        /* 激活状态 */
+        .studio-text-p.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 修改：呼吸感圆形渐变背景 - 聚焦在中心 */
+        .studio-bg-glow { 
+            position: absolute; 
+            /* 让容器居中 */
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+            width: 100%; max-width: 1000px; height: 800px;
+            z-index: 1; 
+            pointer-events: none; 
+        }
+        
+        .glow-circle {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            filter: blur(80px); 
+            animation: breath 8s infinite ease-in-out;
+        }
+
+        /* 修改：光晕位置现在相对于中心容器，聚集在文字背后 */
+        .glow-1 { 
+            width: 500px; height: 500px; 
+            top: 50%; left: 30%; /* 偏左一点 */
+            transform: translate(-50%, -50%); 
+            animation-delay: 0s; 
+        }
+        .glow-2 { 
+            width: 450px; height: 450px; 
+            top: 40%; left: 70%; /* 偏右一点 */
+            transform: translate(-50%, -50%); 
+            animation-delay: -2s; 
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+        }
+        .glow-3 { 
+            width: 400px; height: 400px; 
+            top: 60%; left: 50%; /* 正下方一点 */
+            transform: translate(-50%, -50%); 
+            animation-delay: -4s; 
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%);
+        }
+
+        /* --- 4. 作品展示网格 --- */
+        .gallery-container { padding: 100px 60px; max-width: 1800px; margin: 0 auto; text-align: center; }
+        .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 50px; margin-bottom: 60px; }
+        .project-card { position: relative; aspect-ratio: 16/9; background: #111; overflow: hidden; cursor: pointer; }
+        .project-card img, .project-card video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; transition: opacity 0.6s; }
+        .project-card video { opacity: 0; }
+        .project-card:hover video { opacity: 1; }
+
+        .more-btn {
+            display: inline-block; padding: 15px 45px; border: 1px solid rgba(255,255,255,0.3);
+            color: white; text-decoration: none; font-size: 0.7rem; letter-spacing: 4px; transition: all 0.3s;
+        }
+        .more-btn:hover { background: white; color: black; }
+
+        /* --- 5. 品牌 Logo 跑马灯 --- */
+        .brands-section { padding: 100px 0; background: #000; overflow: hidden; }
+        .brands-title { text-align: center; font-size: 0.7rem; letter-spacing: 3px; color: var(--accent-color); margin-bottom: 60px; }
+        .logo-slider { display: flex; width: max-content; animation: scroll 30s linear infinite; }
+        .logo-slider img { height: 40px; width: auto; margin: 0 60px; filter: grayscale(1) invert(1); opacity: 0.4; }
+
+        /* --- 动画集 --- */
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-10px); } 60% { transform: translateY(-5px); } }
+        @keyframes breath { 
+            0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.3; } 
+            50% { transform: scale(1.1) translate(10px, -10px); opacity: 0.6; } 
+        }
+        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+        .reveal { opacity: 0; transform: translateY(40px); transition: 1.2s all ease; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="video-container">
+            <video class="hero-video" autoplay muted loop playsinline><source src="videos/XP-G9_2024_Launch.mp4" type="video/mp4"></video>
+        </div>
+        
+        <div class="hero-glows">
+            <div class="hero-glow-circle hg-1"></div>
+            <div class="hero-glow-circle hg-2"></div>
+        </div>
+
+        <div class="hero-content">
+            <div class="hero-sub">3D MOTION GRAPHIC & 3D ART</div>
+            <div class="hero-title">
+                <span class="title-1">PORT</span>
+                <span class="title-2">FO</span>
+                <span class="title-3">LIO</span>
+            </div>
+        </div>
+        <a href="#studio" class="scroll-indicator">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+            <span>SCROLL</span>
+        </a>
+    </header>
+
+    <section id="studio" class="studio-section">
+        <div class="studio-bg-glow">
+			<div class="glow-circle glow-1"></div>
+			<div class="glow-circle glow-2"></div>
+			<div class="glow-circle glow-3"></div>
+        </div>
+        
+        <!-- 修改：将文字分为三段，分别添加 .studio-text-p 类名 -->
+        <div class="studio-text-container">
+            <p class="studio-text-p reveal-text">
+                We are a design studio driven by creative services, and we believe our visual expertise can create greater value for our clients. We are committed to providing high-quality solutions for clients with varying budget ranges. Our team consists of designers, animators, 3D artists, and VFX artists.
+            </p>
+            <p class="studio-text-p reveal-text">
+                Our services encompass various creative fields, including TV commercials, 3C digital products, mobile phones, and automotive visualization. We have also won numerous awards, including the MUSE Design Award, Vega Award, and NYX Award.
+            </p>
+            <p class="studio-text-p reveal-text">
+                We have served many well-known brands, such as Audi, XPeng Motors, BMW, BYD Auto, Yangwang Auto, Denza, Pigeon, Cemoy, Hisense, Pop Mart, and many others.
+            </p>
+        </div>
+    </section>
+
+    <section id="work" class="gallery-container reveal">
+        <div class="gallery">
+            <div class="project-card"><img src="images/CEMOY_logo.jpg"><video src="videos/CEMOY.mp4" muted loop></video></div>
+            <div class="project-card"><img src="images/U8L-棕色-01.png"><video src="videos/2.mp4" muted loop></video></div>
+            <div class="project-card"><img src="images/奥迪.jpg"><video src="videos/3.mp4" muted loop></video></div>
+            <div class="project-card"><img src="images/xpeng.png"><video src="videos/XP-G9_2024_Launch.mp4" muted loop></video></div>
+        </div>
+        <a href="work.html" class="more-btn">VIEW ALL WORKS</a>
+    </section>
+
+    <section class="brands-section reveal">
+        <div class="brands-title">CLIENTS & PARTNERS</div>
+        <div class="logo-slider">
+            <img src="logos/audi.png" alt="Audi">
+            <img src="logos/xpeng.png" alt="XPeng">
+            <img src="logos/bmw.png" alt="BMW">
+            <img src="logos/byd.png" alt="BYD">
+            <img src="logos/yangwang.png" alt="Yangwang">
+            <img src="logos/denza.png" alt="Denza">
+            <img src="logos/hisense.png" alt="Hisense">
+            <img src="logos/audi.png" alt="Audi">
+            <img src="logos/xpeng.png" alt="XPeng">
+            <img src="logos/bmw.png" alt="BMW">
+            <img src="logos/byd.png" alt="BYD">
+            <img src="logos/yangwang.png" alt="Yangwang">
+            <img src="logos/denza.png" alt="Denza">
+            <img src="logos/hisense.png" alt="Hisense">
+        </div>
+    </section>
+
+    <script>
+        // 视频悬停播放
+        document.querySelectorAll('.project-card').forEach(card => {
+            const v = card.querySelector('video');
+            if(v) {
+                card.addEventListener('mouseenter', () => v.play());
+                card.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
+            }
+        });
+
+        // 滚动揭示 (通用)
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 修改：针对 Studio 文本的交错揭示效果
+        const textObserver = new IntersectionObserver(entries => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    // 获取该元素是第几个 reveal-text
+                    const targets = Array.from(document.querySelectorAll('.reveal-text'));
+                    const index = targets.indexOf(entry.target);
+                    // 为每一段增加延迟 (第一段0s, 第二段0.2s, 第三段0.4s)
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                    }, index * 200); 
+                    textObserver.unobserve(entry.target); // 动画只播放一次
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-text').forEach(el => textObserver.observe(el));
+    </script>
+</body>
+</html>

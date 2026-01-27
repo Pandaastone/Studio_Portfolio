@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work | Zachary Shee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* 导航栏 */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        /* 页面头部 */
+        .page-header { padding: 180px 60px 60px; text-align: center; position: relative; }
+        .page-title { 
+            font-size: 4rem; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; 
+            opacity: 0; transform: translateY(30px); animation: fadeInUp 1s forwards 0.2s;
+        }
+        .page-subtitle { 
+            color: var(--accent-color); letter-spacing: 3px; font-size: 0.9rem; 
+            opacity: 0; transform: translateY(30px); animation: fadeInUp 1s forwards 0.4s;
+        }
+
+        /* 作品网格容器 */
+        .gallery-container { padding: 0 60px 100px; max-width: 1800px; margin: 0 auto; flex: 1; width: 100%; }
+        .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 80px 40px; }
+        @media (max-width: 768px) { .gallery { grid-template-columns: 1fr; } }
+
+        /* 项目卡片 - 链接样式复位 */
+        .project-link { text-decoration: none; color: inherit; display: block; }
+        
+        .project-card { 
+            display: flex; flex-direction: column; gap: 20px; 
+            opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease;
+            cursor: pointer;
+        }
+        .project-card.active { opacity: 1; transform: translateY(0); }
+
+        /* 1. 媒体包裹层 */
+        .card-media {
+            position: relative; aspect-ratio: 16/9; background: #111; overflow: hidden;
+        }
+        .card-media img, .card-media video { 
+            width: 100%; height: 100%; object-fit: cover; transition: opacity 0.6s; 
+        }
+        .card-media video { opacity: 0; position: absolute; top: 0; left: 0; }
+        .project-card:hover .card-media video { opacity: 1; }
+
+        /* 2. 信息层 */
+        .project-info { position: relative; text-align: left; }
+        .p-title { 
+            font-size: 1.2rem; font-weight: 600; color: white; margin-bottom: 6px; 
+            transition: color 0.3s;
+        }
+        .project-card:hover .p-title { color: #ccc; }
+        .p-cat { color: var(--accent-color); font-size: 0.8rem; letter-spacing: 1px; text-transform: uppercase; }
+
+        .bg-glow { position: fixed; top: 20%; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%); filter: blur(100px); z-index: -1; pointer-events: none; }
+
+        /* 页脚样式 */
+        footer { border-top: 1px solid #222; padding: 80px 60px; margin-top: auto; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        .footer-links { display: flex; gap: 60px; }
+        .f-col { display: flex; flex-direction: column; gap: 15px; }
+        .f-title { color: white; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
+        .f-col a { color: #888; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .f-col a:hover { color: white; }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html" class="active">WORK</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <div class="bg-glow"></div>
+
+    <div class="page-header">
+        <div class="page-title">Selected Works</div>
+        <div class="page-subtitle">MOTION GRAPHICS / 3D ART / VISUALIZATION</div>
+    </div>
+
+    <section class="gallery-container">
+        <!-- 注意：这里现在是空的，内容将由下方的 JavaScript 自动生成 -->
+        <div class="gallery" id="gallery-grid"></div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                <br>
+                <p style="opacity: 0.4;">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="f-col"><div class="f-title">SITEMAP</div><a href="index.html">Home</a><a href="work.html">Work</a><a href="about.html">About</a><a href="course.html">Course</a></div>
+                <div class="f-col"><div class="f-title">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
+                <div class="f-col"><div class="f-title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==========================================
+        //  配置区域：在这里修改、添加、排序您的项目
+        // ==========================================
+        
+        const projectsData = [
+            {
+                title: "AUDI Concept", 
+                category: "Automotive / Visualization",
+                image: "images/奥迪.jpg",
+                video: "videos/3.mp4",
+                link: "project-audi.html" // 这里填单独详情页的文件名
+            },
+            {
+                title: "BYD Yangwang U8L", 
+                category: "3C / Digital",
+                image: "images/U8L-棕色-01.png",
+                video: "videos/2.mp4",
+                link: "project-u8l.html"
+            },
+            {
+                title: "CEMOY Beauty", 
+                category: "Commercial / Product",
+                image: "images/cemoy/cemoy3.png",
+                video: "videos/CEMOY.mp4",
+                link: "project-cemoy.html"
+            },
+            {
+                title: "Volkswagen ID. Series Visualization", 
+                category: "3C / Digital",
+                image: "images/id7/id7_led.png",
+                video: "images/id7/id7_final.mp4",
+                link: "project-vw-id.html"
+            },
+            {
+                title: "BYD SEALION 7 360° Visualization", 
+                category: "3C / Digital",
+                image: "images/byd-sealev.png",
+                video: "videos/2.mp4",
+                link: "project-byd.html"
+            },
+            {
+                title: "XPENG G9 Launch", 
+                category: "Automotive / CGI",
+                image: "images/xpeng.png",
+                video: "videos/XP-G9_2024_Launch.mp4",
+                link: "project-xpeng.html"
+            }
+        ];
+
+        // ==========================================
+        //  逻辑区域：自动生成 HTML (无需修改)
+        // ==========================================
+
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        projectsData.forEach(item => {
+            // 创建链接包裹层
+            const link = document.createElement('a');
+            link.href = item.link;
+            link.target = "_blank"; // 在新标签页打开
+            link.className = 'project-link reveal-item'; // 添加动画类名
+
+            // 生成卡片HTML结构
+            link.innerHTML = `
+                <div class="project-card">
+                    <div class="card-media">
+                        <img src="${item.image}" alt="${item.title}">
+                        <video src="${item.video}" muted loop playsinline></video>
+                    </div>
+                    <div class="project-info">
+                        <div class="p-title">${item.title}</div>
+                        <div class="p-cat">${item.category}</div>
+                    </div>
+                </div>
+            `;
+            galleryGrid.appendChild(link);
+        });
+
+        // ==========================================
+        //  交互区域：视频播放与滚动动画
+        // ==========================================
+
+        // 1. 视频悬停播放逻辑
+        // 因为是动态生成的，我们需要在生成后绑定事件，或者使用事件委托。
+        // 这里使用简单的事件绑定：
+        document.querySelectorAll('.project-card').forEach(card => {
+            const v = card.querySelector('video');
+            const media = card.querySelector('.card-media');
+            if(v && media) {
+                // 当鼠标进入 media 区域播放，离开停止
+                media.addEventListener('mouseenter', () => v.play());
+                media.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
+            }
+        });
+
+        // 2. 滚动动画逻辑
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    // 找到内部的 card 进行动画
+                    const card = entry.target.querySelector('.project-card');
+                    if(card) {
+                        setTimeout(() => {
+                            card.classList.add('active');
+                        }, index * 100); 
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.05 });
+
+        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Zachary Shee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        .about-container {
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 100px 15%; text-align: center; position: relative;
+        }
+
+        /* 动画类 */
+        .anim-up { opacity: 0; transform: translateY(30px); animation: fadeInUp 1s forwards; }
+
+        .about-title { font-size: 3rem; font-weight: 800; margin-bottom: 40px; z-index: 10; animation-delay: 0.2s; }
+        
+        .about-text {
+            max-width: 900px; font-size: 1.4rem; font-weight: 200; line-height: 1.8; color: #ddd; z-index: 10;
+            animation-delay: 0.4s;
+        }
+
+        .services-list {
+            margin-top: 80px; display: flex; gap: 40px; justify-content: center; flex-wrap: wrap; z-index: 10;
+        }
+        .service-item { 
+            border: 1px solid #333; padding: 20px 40px; border-radius: 50px; font-size: 0.8rem; letter-spacing: 2px; color: #aaa; 
+            opacity: 0; transform: translateY(20px); transition: all 0.6s ease;
+        }
+        .service-item.active { opacity: 1; transform: translateY(0); }
+
+        /* 背景光晕 */
+        .glow-bg { position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+        .glow-bubble {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
+            filter: blur(80px);
+            animation: deepBreath 10s infinite ease-in-out;
+        }
+        .b1 { width: 600px; height: 600px; top: 20%; left: 20%; }
+        .b2 { width: 500px; height: 500px; bottom: 20%; right: 20%; animation-delay: -3s; }
+        .b3 { width: 300px; height: 300px; top: 50%; left: 50%; transform: translate(-50%, -50%); animation-delay: -5s; opacity: 0.5; }
+
+        @keyframes deepBreath {
+            0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.4; }
+            50% { transform: scale(1.2) translate(20px, -20px); opacity: 0.7; }
+        }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="about.html" class="active">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <div class="about-container">
+        <div class="glow-bg">
+            <div class="glow-bubble b1"></div>
+            <div class="glow-bubble b2"></div>
+            <div class="glow-bubble b3"></div>
+        </div>
+
+        <div class="about-title anim-up">WHO WE ARE</div>
+        
+        <div class="about-text anim-up">
+            We are a design studio driven by creative services, believing visual expertise creates greater value. 
+            <br><br>
+            Our team consists of designers, animators, 3D artists, and VFX artists committed to providing high-quality solutions. We specialize in TV commercials, 3C digital products, and automotive visualization, delivering award-winning work for global brands.
+        </div>
+
+        <div class="services-list">
+            <div class="service-item reveal-item">ART DIRECTION</div>
+            <div class="service-item reveal-item">3D MOTION</div>
+            <div class="service-item reveal-item">VFX</div>
+            <div class="service-item reveal-item">CGI</div>
+        </div>
+    </div>
+
+    <script>
+        // 简单的交错显示
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('active');
+                    }, index * 150); // 每个标签间隔150ms出现
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

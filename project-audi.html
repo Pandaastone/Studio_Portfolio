@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Zachary Shee</title> <!-- 修改这里为项目名称 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* 复用导航栏 */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- 详情页特有样式 --- */
+        
+        /* 1. 顶部全屏大图/视频 Hero */
+        .project-hero {
+            width: 100%; height: 80vh; position: relative; overflow: hidden; margin-bottom: 80px;
+        }
+        .project-hero img, .project-hero video {
+            width: 100%; height: 100%; object-fit: cover;
+            /* 稍微暗一点以便显示文字 */
+            filter: brightness(0.8);
+        }
+        .hero-text {
+            position: absolute; bottom: 60px; left: 60px; z-index: 10;
+        }
+        .ph-title { font-size: 3.5rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px);}
+        .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px);}
+
+        /* 2. 项目描述 */
+        .project-desc {
+            max-width: 1000px; margin: 0 auto 120px; padding: 0 60px;
+        }
+        .info-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 60px; }
+        .info-label { color: var(--accent-color); font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 20px; border-top: 1px solid #333; padding-top: 20px;}
+        .info-text { font-size: 1.1rem; line-height: 1.8; color: #ddd; font-weight: 200; }
+        
+        /* 3. 图片展示流 */
+        .project-images { padding: 0 60px 100px; max-width: 1800px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+        .detail-img { width: 100%; height: auto; display: block; opacity: 0; transform: translateY(40px); transition: 1s ease; }
+        .detail-img.active { opacity: 1; transform: translateY(0); }
+
+        /* 复用页脚 */
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        
+        @media (max-width: 768px) {
+            .project-hero { height: 60vh; }
+            .ph-title { font-size: 2rem; }
+            .info-grid { grid-template-columns: 1fr; gap: 30px; }
+            .project-desc, .project-images, nav { padding: 0 30px; }
+        }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a> <!-- 不需要active，因为是详情页 -->
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <!-- 顶部大图区域 (可替换为 <video autoplay muted loop ...>) -->
+    <header class="project-hero">
+        <img src="images/奥迪.jpg" alt="Hero Image">
+        <div class="hero-text">
+            <div class="ph-title">AUDI CONCEPT</div>
+            <div class="ph-cat">AUTOMOTIVE / VISUALIZATION</div>
+        </div>
+    </header>
+
+    <!-- 项目文字介绍 -->
+    <section class="project-desc">
+        <div class="info-grid">
+            <div class="info-left">
+                <div class="info-label">CLIENT</div>
+                <div>Audi China</div>
+                <div class="info-label" style="margin-top: 30px;">YEAR</div>
+                <div>2023</div>
+                <div class="info-label" style="margin-top: 30px;">ROLE</div>
+                <div>Art Direction, 3D Design</div>
+            </div>
+            <div class="info-right">
+                <p class="info-text">
+                    This project explores the future of automotive visualization through a minimalist lens. 
+                    The goal was to highlight the sleek lines and aerodynamic profile of the Audi concept vehicle using high-contrast lighting and atmospheric environments.<br><br>
+                    We utilized Redshift for rendering to achieve photorealistic results while maintaining artistic control over the lighting mood. The animation focuses on the interaction between light and the car's metallic surfaces.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 详情图片/视频展示 -->
+    <section class="project-images">
+        <!-- 可以在这里放多张图 -->
+        <img src="images/奥迪.jpg" class="detail-img">
+        <img src="images/xpeng.png" class="detail-img">
+        <!-- 也可以放视频 -->
+        <video src="videos/3.mp4" class="detail-img" controls style="width: 100%;"></video>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 简单的滚动揭示
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.detail-img').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
