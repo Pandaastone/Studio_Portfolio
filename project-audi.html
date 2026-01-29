@@ -149,26 +149,34 @@
         <div class="meta-list">
             <div><span class="meta-label">CLIENT</span>Cemoy</div>
             <div><span class="meta-label">ROLE</span>CGI Artist, 3D</div>
-            <div><span class="meta-label">SOFTWARE</span>Cinema 4D / Redshift / After Effects / Houdini</div>
+            <div><span class="meta-label">SOFTWARE</span>Cinema 4D / Redshift / After Effects / Houdini / Nuke</div>
         </div>
         <div class="meta-desc">
-            <p>This is a high-end TV commercial we produced for the Cemoy whitening skincare product endorsed by Annie Yi.  This video aims to promote the star product of the 21-day series—CEMÔY 21-Day Essence. Inspired by three Nobel Prize-winning scientific targets, it features the unique Tri-polargise™ ingredient for root-cause anti-aging, providing the energy source needed by cells in three stages: energizing, revitalizing, and regenerating, rebuilding the skin's self-circulation, and providing segmented energy over 21 days to fundamentally solve skin aging problems.</p>
+            <p>We produced a teaser video for Audi's event in Beijing. Utilizing cutting-edge CGI effects technology, we highlighted Audi's design philosophy. The visual effects in this video were inspired by the taillight design of the Audi Q6L e-tron.</p>
         </div>
     </section>
 
     <!-- 3. 内容展示区域 (这里就是您自由排版的地方) -->
     <section class="content-container">
                 
-        <!-- 示例：全屏视频 -->
-        <div class="layout-module">
-            <video src="videos/CEMOY.mp4" controls muted loop style="width: 100%"></video>
+        <!-- 新增居中容器：让内部iframe水平居中 -->
+        <div style="text-align: center; width: 100%;">
+            <iframe 
+                src="https://player.vimeo.com/video/1159659581?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" 
+                width="1280" 
+                height="720" 
+                frameborder="0" 
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" 
+                referrerpolicy="strict-origin-when-cross-origin" 
+                title="Audi Beijing Desgin">
+            </iframe>
         </div>
                 
         <!-- 示例：三张图片并排 (Grid 3) -->
         <div class="layout-module grid-3">
-            <img src="images/audi_beijing/audi-ending2.png">
+            <video src="images/audi_beijing/audi_start.mp4" autoplay muted loop playsinline></video>
+            <video src="images/audi_beijing/beijing-box.mp4" autoplay muted loop playsinline></video>
             <video src="images/audi_beijing/audi-ending.mp4" autoplay muted loop playsinline></video>
-            <img src="images/audi_beijing/audi-ending.png">
         </div>
         
         <!-- 示例：两张图片并排 (Grid 2) -->
@@ -178,31 +186,17 @@
         </div>
 
         <!-- 示例：三张图片并排 (Grid 3) -->
-        <div class="layout-module grid-3">
-            <img src="images/cemoy/CEMOY4.png">
-            <video src="images/cemoy/CEMOY_6.mp4" autoplay muted loop playsinline></video>
-            <img src="images/cemoy/CEMOY12.png">
+        <div class="layout-module grid-3">  
+            <video src="images/audi_beijing/audi-walk.mp4" autoplay muted loop playsinline></video>
+            <video src="images/audi_beijing/audi-798.mp4" autoplay muted loop playsinline></video>
+            <video src="images/audi_beijing/audi-boxtransfer.mp4" autoplay muted loop playsinline></video>
         </div>
 
         <!-- 示例：单张大图 -->
         <div class="layout-module">
-            <img src="images/CEMOY_logo.jpg">
+            <img src="images/奥迪.jpg">
         </div>
-
-        <!-- 示例：中间插入一段文字 -->
-        <div class="layout-module text-module">
-            <h3>BREAKDOWN</h3>
-            <p>We tried many methods to achieve a high-end visual effect.</p>
-        </div>
-
-        <!-- 示例：图文混排 (左图右文) -->
-        <div class="layout-module text-media-grid">
-            <img src="images/byd-sealev.png">
-            <div class="tm-text">
-                <h4>Detail Analysis</h4>
-                <p>The textures were procedurally generated to ensure infinite resolution for close-up shots. We paid special attention to the metallic flakes in the car paint.</p>
-            </div>
-        </div>
+     
 
     </section>
 
