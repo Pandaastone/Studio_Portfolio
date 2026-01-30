@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Zachary Shee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* 导航栏 */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- 1. Hero 区域 (已修改：增加淡入动效) --- */
+        .project-hero { width: 100%; height: 85vh; position: relative; overflow: hidden; margin-bottom: 100px; }
+        
+        /* 修改了下面这一块：增加了 opacity:0 和 animation */
+        .project-hero img, .project-hero video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.7); 
+            
+            opacity: 1; /* 初始状态：完全透明 */
+            animation: heroFadeIn 3s ease-out forwards; /* 执行淡入动画，持续3秒 */
+        }
+
+        .hero-text { position: absolute; bottom: 60px; left: 60px; z-index: 10; }
+        
+        /* 保持原有的文字动画不变 */
+        .ph-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px);}
+        .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px);}
+
+        /* --- 2. 项目描述信息 --- */
+        .project-meta { max-width: 1200px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        .meta-list div { margin-bottom: 25px; }
+        .meta-label { color: var(--accent-color); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; border-top: 1px solid #333; padding-top: 15px; display: inline-block; width: 100%; }
+        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; }
+
+        /* --- 3. 核心：Behance 风格布局系统 --- */
+        .content-container { 
+            max-width: 1800px; margin: 0 auto 100px; padding: 0 60px; 
+            display: flex; flex-direction: column; gap: 20px; /* 模块之间的垂直间距 */
+        }
+
+        /* 基础模块：默认宽度100%，图片/视频自适应 */
+        .layout-module { width: 100%; position: relative; opacity: 0; transform: translateY(40px); transition: 0.8s ease; }
+        .layout-module.active { opacity: 1; transform: translateY(0); }
+        
+        .layout-module img, .layout-module video { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        /* A. 网格系统 (用于多图并排) */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; } /* 左窄右宽 */
+        
+        /* B. 文本模块 (用于中间插入说明) */
+        .text-module { 
+            padding: 80px 0; text-align: center; max-width: 800px; margin: 0 auto; 
+        }
+        .text-module h3 { font-size: 1.5rem; margin-bottom: 20px; }
+        .text-module p { font-size: 1rem; color: #aaa; line-height: 1.8; }
+
+        /* C. 图文混排 (左图右文 / 左文右图) */
+        .text-media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .tm-text { padding: 20px; }
+        .tm-text h4 { font-size: 1.2rem; margin-bottom: 15px; color: white; }
+        .tm-text p { color: #888; line-height: 1.6; }
+
+        /* 响应式处理 */
+        @media (max-width: 768px) {
+            .project-meta { grid-template-columns: 1fr; gap: 40px; }
+            .content-container { padding: 0 20px; }
+            .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
+            .text-module { padding: 40px 0; }
+            .manual-columns { flex-direction: column; } /* 手机上强制变成单列 */
+        }
+
+        /* =========================================
+           新增：双列手动布局 (Manual Columns)
+           作用：把画面分成左右两列“篮子”，互不干扰。
+           ========================================= */
+        .manual-columns {
+            display: flex;           /* 开启左右排版模式 */
+            gap: 20px;               /* 左右两列之间的缝隙 */
+            align-items: flex-start; /* 【关键】顶部对齐：不管图片长短，都顶着最上面对齐 */
+        }
+
+        .col-left, .col-right {
+            flex: 1;                 /* 左右两列宽度平分 (各占50%) */
+            display: flex;           /* 开启列内排版 */
+            flex-direction: column;  /* 列里面的图片要“竖着”一张张排 */
+            gap: 20px;               /* 列里面图片之间的上下缝隙 */
+        }
+
+        /* --- 最终版：回归纯粹 (No Crop, No Gap) --- */
+        /* 策略：只管宽度撑满，高度随缘。内容绝不丢失，间距绝不出现。 */
+        .manual-columns img, 
+        .manual-columns video {
+            width: 100%;             /* 强制撑满篮子宽度，消灭左右缝隙 */
+            height: auto;            /* 高度按比例自动计算，绝不裁切 */
+            display: block;
+            object-fit: cover;       /* 兜底：万一设置了高度，保持填充 */
+        }
+
+        /* 页脚 */
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        
+        /* 新增：头图专用的淡入动画 */
+        @keyframes heroFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <!-- 1. 顶部 Hero 区域 -->
+    <header class="project-hero">
+        <img src="images/id7/id7_top.png" alt="Hero Image">
+        <div class="hero-text">
+            <div class="ph-title">Audi Beijing Design</div>
+            <div class="ph-cat">TVC CGI</div>
+        </div>
+    </header>
+
+    <!-- 2. 项目信息区域 -->
+    <section class="project-meta">
+        <div class="meta-list">
+            <div><span class="meta-label">CLIENT</span>Cemoy</div>
+            <div><span class="meta-label">ROLE</span>CGI Artist, 3D</div>
+            <div><span class="meta-label">SOFTWARE</span>Cinema 4D / Redshift / After Effects / Houdini / Nuke</div>
+        </div>
+        <div class="meta-desc">
+            <p>We produced a teaser video for Audi's event in Beijing. Utilizing cutting-edge CGI effects technology, we highlighted Audi's design philosophy. The visual effects in this video were inspired by the taillight design of the Audi Q6L e-tron.</p>
+        </div>
+    </section>
+
+    <!-- 3. 内容展示区域 (这里就是您自由排版的地方) -->
+    <section class="content-container">
+               
+                       
+        <!-- 示例：两张图片并排 (Grid 2) -->
+        <div class="layout-module grid-2">
+            <video src="images/id7/id7_final.mp4" autoplay muted loop playsinline></video>
+            <img src="images/id7/id7_led.png">
+        </div>
+
+        <!-- 示例：三张图片并排 (Grid 3) -->
+        <div class="layout-module grid-3">  
+            <img src="images/id7/id7_start.jpg">
+            <img src="images/id7/id7_top.png">
+            <img src="images/id7/id7_last.png">
+        </div>
+
+        
+        <div class="layout-module text-module">
+            <h3>BREAKDOWN</h3>
+            <p>Layout and screenshot.</p>
+        </div>
+
+        <div class="layout-module">
+            <video src="images/id7/id7_layout.mp4" autoplay muted loop playsinline></video>
+        </div>
+
+        <div class="layout-module grid-2">
+            <img src="images/id7/id7_screenshot1.png">
+            <img src="images/id7/id7_screenshot2.png">
+        </div>
+
+        
+
+    
+    </div>
+     
+
+    </section>
+
+    <!-- 
+    ================================================
+    【排版工具箱】 复制下面的代码块到上面的 content-container 中即可使用
+    ================================================
+    
+    1. 单张全宽图:
+    <div class="layout-module">
+        <img src="图片路径.jpg">
+    </div>
+
+    2. 两张图并排:
+    <div class="layout-module grid-2">
+        <img src="图1.jpg">
+        <img src="图2.jpg">
+    </div>
+
+    3. 三张图并排:
+    <div class="layout-module grid-3">
+        <img src="图1.jpg">
+        <img src="图2.jpg">
+        <img src="图3.jpg">
+    </div>
+
+    4. 纯文字说明段落:
+    <div class="layout-module text-module">
+        <h3>标题</h3>
+        <p>这里是正文内容...</p>
+    </div>
+
+    5. 视频 (带控制条):
+    <div class="layout-module">
+        <video src="视频.mp4" controls loop></video>
+    </div>
+
+    6. 左图右文:
+    <div class="layout-module text-media-grid">
+        <img src="图.jpg">
+        <div class="tm-text">
+            <h4>标题</h4>
+            <p>描述文字...</p>
+        </div>
+    </div>
+
+    7.自动长图排版
+    <div class="layout-module manual-columns">
+        
+        <div class="col-left">
+            <img src="images/cemoy/你的长竖图.jpg">
+        </div>
+
+        <div class="col-right">
+            <img src="images/cemoy/你的短竖图.jpg">
+            <div class="text-module" style="padding: 20px 0; text-align: left;">
+                <p>这里可以写图片注释...</p>
+        </div>
+
+    </div>
+
+    ================================================
+    -->
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 滚动揭示动画：监听所有的 layout-module
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
