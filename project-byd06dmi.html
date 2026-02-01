@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Zachary Shee</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- 引入全景图插件样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* 导航栏 */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- 1. Hero 区域 --- */
+        .project-hero { width: 100%; height: 85vh; position: relative; overflow: hidden; margin-bottom: 100px; }
+        
+        /* [新增] Hero 底部渐变消失遮罩 */
+        .project-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; 
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-color) 100%);
+            z-index: 2; 
+            pointer-events: none; 
+        }
+
+        /* 图片/视频样式 */
+        .project-hero img, .project-hero video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.7); 
+            
+            opacity: 0; /* 初始状态：完全透明 */
+            animation: heroFadeIn 2s ease-out forwards; /* 执行淡入动画 */
+        }
+
+        .hero-text { position: absolute; bottom: 60px; left: 60px; z-index: 10; }
+        
+        .ph-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px);}
+        .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px);}
+
+        /* --- 2. 项目描述信息 (已修复：恢复为标准逻辑) --- */
+        /* [修复] max-width 改回 1200px，使其更加紧凑易读 */
+        .project-meta { max-width: 1200px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        
+        .meta-list div { margin-bottom: 25px; }
+        .meta-label { color: var(--accent-color); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; border-top: 1px solid #333; padding-top: 15px; display: inline-block; width: 100%; }
+        
+        /* [修复] 去掉了 margin-left: auto 和 max-width 限制，恢复标准排版 */
+        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; }
+
+        /* --- 3. 核心布局系统 --- */
+        .content-container { 
+            max-width: 1800px; margin: 0 auto 100px; padding: 0 60px; 
+            display: flex; flex-direction: column; gap: 20px; 
+        }
+
+        .layout-module { width: 100%; position: relative; opacity: 0; transform: translateY(40px); transition: 0.8s ease; }
+        .layout-module.active { opacity: 1; transform: translateY(0); }
+        
+        .layout-module img, .layout-module video { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        
+        .text-module { padding: 80px 0; text-align: center; max-width: 800px; margin: 0 auto; }
+        .text-module h3 { font-size: 1.5rem; margin-bottom: 20px; }
+        .text-module p { font-size: 1rem; color: #aaa; line-height: 1.8; }
+
+        .text-media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .tm-text { padding: 20px; }
+        .tm-text h4 { font-size: 1.2rem; margin-bottom: 15px; color: white; }
+        .tm-text p { color: #888; line-height: 1.6; }
+
+        /* --- 4. 全景图模块样式 --- */
+        .pano-wrapper {
+            width: 100%;
+            height: 600px; 
+            position: relative;
+            background: #111;
+            overflow: hidden;
+        }
+        /* 预览层 */
+        .pano-preview {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            cursor: pointer; z-index: 2; transition: opacity 0.5s;
+        }
+        .pano-preview img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(4px) brightness(0.6); 
+            transition: 0.5s;
+        }
+        .pano-preview:hover img { filter: blur(2px) brightness(0.8); }
+        .pano-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: 1px solid white; padding: 15px 30px; color: white;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
+            background: rgba(0,0,0,0.3); pointer-events: none;
+        }
+        /* 实际查看器容器 */
+        .pano-viewer { width: 100%; height: 100%; z-index: 1; }
+
+        /* 响应式处理 */
+        @media (max-width: 768px) {
+            .project-meta { grid-template-columns: 1fr; gap: 40px; }
+            .content-container { padding: 0 20px; }
+            .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
+            .text-module { padding: 40px 0; }
+            .pano-wrapper { height: 400px; }
+        }
+
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        
+        /* 动画定义 */
+        @keyframes heroFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <img src="images/byd06/BYD06DM-i-main.jpg" alt="Hero Background">
+        <div class="hero-text">
+            <div class="ph-title">BYD Seal 07DM-i 360° Visualization</div>
+            <div class="ph-cat">Interior 360° Visualization</div>
+        </div>
+    </header>
+
+    <section class="project-meta">
+        <div class="meta-list">
+            <div><span class="meta-label">CLIENT</span>BYD</div>
+            <div><span class="meta-label">ROLE</span>CGI Artist, Retouch</div>
+            <div><span class="meta-label">SOFTWARE</span>3DsMax / VRay / Photoshop</div>
+        </div>
+        <div class="meta-desc">
+            <p>We created a 360-degree panoramic interior view of the BYD Sealion 07 Australian version.  This initiative aims to provide users with an intuitive visual shopping experience.</p>
+        </div>
+    </section>
+
+    <section class="content-container">
+        
+        <div class="layout-module grid-3">
+            <img src="images/byd06/BYD-06DM-i---白内前排.jpg">
+            <img src="images/byd06/BYD06DM-i-main3.jpg">
+            <img src="images/byd06/BYD-06-DM-i_白内后排.jpg">
+        </div>
+        
+        <div class="layout-module grid-2">
+            <img src="images/byd06/BYD06DM-i-main.jpg">
+            <img src="images/byd06/BYD06DM-i-main2.jpg">
+        </div>
+
+        <div class="layout-module text-module">
+            <h3>PANORAMIC VIEW MONITOR</h3>
+            <p>Tips:  Hold down the mouse button and drag to move the view.</p>
+            <p>Press the Shift key to zoom in, and the Ctrl key to zoom out.</p>
+        </div>
+
+        <div class="layout-module pano-module">
+            <div class="pano-wrapper" id="pano1">
+                <div class="pano-preview" onclick="loadPano('pano1', 'images/byd06/BYD-06-DM-i_黑内前排360_v1.jpg')">
+                    <img src="images/byd06/BYD06DM-i-main.jpg" alt="360 Preview">
+                    <div class="pano-btn">Click to Explore 360°</div>
+                </div>
+                <div class="pano-viewer"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入全景图插件JS -->
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+    <script>
+        // 1. 滚动揭示动画
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
+
+        // 2. 全景图加载逻辑 (性能优化版)
+        function loadPano(containerId, imagePath) {
+            const container = document.getElementById(containerId);
+            const preview = container.querySelector('.pano-preview');
+            const viewer = container.querySelector('.pano-viewer');
+
+            // 隐藏预览层
+            preview.style.opacity = '0';
+            setTimeout(() => {
+                preview.style.display = 'none';
+                
+                // 初始化 Pannellum
+                pannellum.viewer(viewer, {
+                    "type": "equirectangular",
+                    "panorama": imagePath,
+                    "autoLoad": true, // 点击后自动加载
+                    "showControls": true,
+                    "mouseZoom": false, 
+                    "hfov": 110
+                });
+            }, 500);
+        }
+    </script>
+</body>
+</html>
