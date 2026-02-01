@@ -17,7 +17,7 @@
         .nav-links a:hover, .nav-links a.active { opacity: 1; }
 
         /* 页面头部 */
-        .page-header { padding: 180px 60px 60px; text-align: center; position: relative; }
+        .page-header { padding: 180px 60px 40px; text-align: center; position: relative; }
         .page-title { 
             font-size: 4rem; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; 
             opacity: 0; transform: translateY(30px); animation: fadeInUp 1s forwards 0.2s;
@@ -26,6 +26,20 @@
             color: var(--accent-color); letter-spacing: 3px; font-size: 0.9rem; 
             opacity: 0; transform: translateY(30px); animation: fadeInUp 1s forwards 0.4s;
         }
+
+        /* --- 新增：筛选菜单样式 --- */
+        .filter-menu {
+            display: flex; justify-content: center; gap: 40px; margin-bottom: 60px;
+            opacity: 0; animation: fadeInUp 1s forwards 0.6s; /* 头部动画序列的最后一步 */
+        }
+        .filter-btn {
+            background: none; border: none; color: var(--accent-color);
+            font-family: 'Inter', sans-serif; font-size: 0.8rem; letter-spacing: 2px;
+            cursor: pointer; padding-bottom: 5px; transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .filter-btn:hover { color: white; }
+        .filter-btn.active { color: white; border-bottom: 1px solid white; }
 
         /* 作品网格容器 */
         .gallery-container { padding: 0 60px 100px; max-width: 1800px; margin: 0 auto; flex: 1; width: 100%; }
@@ -37,6 +51,7 @@
         
         .project-card { 
             display: flex; flex-direction: column; gap: 20px; 
+            /* 初始状态用于动画 */
             opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease;
             cursor: pointer;
         }
@@ -96,8 +111,12 @@
         <div class="page-subtitle">MOTION GRAPHICS / 3D ART / VISUALIZATION</div>
     </div>
 
+    <!-- 新增：筛选分类菜单 -->
+    <div class="filter-menu" id="filter-menu">
+        <!-- 按钮将通过 JS 自动生成，方便维护 -->
+    </div>
+
     <section class="gallery-container">
-        <!-- 注意：这里现在是空的，内容将由下方的 JavaScript 自动生成 -->
         <div class="gallery" id="gallery-grid"></div>
     </section>
 
@@ -119,20 +138,32 @@
 
     <script>
         // ==========================================
-        //  配置区域：在这里修改、添加、排序您的项目
+        //  配置区域：项目数据与分类
         // ==========================================
         
+        // 1. 定义分类 (id对应下面数据的type字段, label为显示的文字)
+        const categories = [
+            { id: 'all', label: 'ALL' },
+            { id: 'automotive', label: 'AUTOMOTIVE' },
+            { id: 'tvc', label: 'TVC / COMMERCIAL' },
+            { id: '3c', label: '3C PRODUCT' }
+        ];
+
+        // 2. 项目数据 (新增 'type' 字段用于筛选)
+        // type 的值必须与上方 categories 中的 id 对应
         const projectsData = [
             {
                 title: "AUDI Concept", 
                 category: "Automotive / Visualization",
+                type: "automotive", // 归类为 automotive
                 image: "images/奥迪.jpg",
                 video: "videos/3.mp4",
-                link: "project-audi.html" // 这里填单独详情页的文件名
+                link: "project-audi.html"
             },
             {
                 title: "BYD Yangwang U8L", 
                 category: "Automotive / Visualization",
+                type: "automotive",
                 image: "images/U8L-棕色-01.png",
                 video: "videos/2.mp4",
                 link: "project-u8l.html"
@@ -140,6 +171,7 @@
             {
                 title: "CEMOY Beauty", 
                 category: "TVC / Product",
+                type: "tvc", // 归类为 tvc
                 image: "images/cemoy/CEMOY3.png",
                 video: "videos/CEMOY.mp4",
                 link: "project-cemoy.html"
@@ -147,6 +179,7 @@
             {
                 title: "Volkswagen ID. Series Visualization", 
                 category: "Automotive / CGI",
+                type: "automotive", // 归类为 digital
                 image: "images/id7/id7_led.png",
                 video: "images/id7/id7_final.mp4",
                 link: "project-vw-id.html"
@@ -154,6 +187,7 @@
             {
                 title: "BYD SEALION 7 360° Visualization", 
                 category: "Automotive / CGI",
+                type: "automotive",
                 image: "images/byd-sealev.png",
                 video: "videos/2.mp4",
                 link: "project-byd.html"
@@ -161,13 +195,15 @@
             {
                 title: "XPENG G9 Launch", 
                 category: "Automotive / CGI",
+                type: "automotive",
                 image: "images/xpeng.png",
                 video: "videos/XP-G9_2024_Launch.mp4",
                 link: "project-xpeng.html"
             },
             {
                 title: "POP MART Thailand", 
-                category: "Automotive / CGI",
+                category: "Commercial / CGI",
+                type: "tvc",
                 image: "images/popmart-thai/ppmt-thai-logo.jpg",
                 video: "images/popmart-thai/ppmt-thai.mp4",
                 link: "project-popmart-thailand.html"
@@ -175,6 +211,7 @@
             {
                 title: "Dove", 
                 category: "TVC / CGI",
+                type: "tvc",
                 image: "images/dove/square/横版_0827_Dove_随心而悦_刘亦菲 v2_1.jpg",
                 video: "images/dove/square/横版_0827_Dove_随心而悦_刘亦菲 v2_1.mp4",
                 link: "project-dove.html"
@@ -182,68 +219,119 @@
         ];
 
         // ==========================================
-        //  逻辑区域：自动生成 HTML (无需修改)
+        //  逻辑区域：筛选与渲染 (已优化)
         // ==========================================
 
         const galleryGrid = document.getElementById('gallery-grid');
+        const filterMenu = document.getElementById('filter-menu');
 
-        projectsData.forEach(item => {
-            // 创建链接包裹层
-            const link = document.createElement('a');
-            link.href = item.link;
-            link.target = "_blank"; // 在新标签页打开
-            link.className = 'project-link reveal-item'; // 添加动画类名
+        // 初始化函数
+        function init() {
+            renderFilters();
+            renderGallery('all'); // 默认显示全部
+        }
 
-            // 生成卡片HTML结构
-            link.innerHTML = `
-                <div class="project-card">
-                    <div class="card-media">
-                        <img src="${item.image}" alt="${item.title}">
-                        <video src="${item.video}" muted loop playsinline></video>
+        // 1. 渲染筛选按钮
+        function renderFilters() {
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = cat.id === 'all' ? 'filter-btn active' : 'filter-btn';
+                btn.textContent = cat.label;
+                
+                // 绑定点击事件
+                btn.onclick = () => {
+                    // 切换激活状态样式
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    // 重新渲染网格
+                    renderGallery(cat.id);
+                };
+                
+                filterMenu.appendChild(btn);
+            });
+        }
+
+        // 2. 核心：渲染网格内容
+        function renderGallery(filterType) {
+            // 清空现有内容
+            galleryGrid.innerHTML = '';
+
+            // 筛选数据
+            const filteredData = filterType === 'all' 
+                ? projectsData 
+                : projectsData.filter(item => item.type === filterType);
+
+            // 生成 HTML
+            filteredData.forEach(item => {
+                const link = document.createElement('a');
+                link.href = item.link;
+                link.target = "_blank"; 
+                // 添加 reveal-item 类名以便后续触发动画
+                link.className = 'project-link reveal-item'; 
+
+                link.innerHTML = `
+                    <div class="project-card">
+                        <div class="card-media">
+                            <img src="${item.image}" alt="${item.title}">
+                            <video src="${item.video}" muted loop playsinline></video>
+                        </div>
+                        <div class="project-info">
+                            <div class="p-title">${item.title}</div>
+                            <div class="p-cat">${item.category}</div>
+                        </div>
                     </div>
-                    <div class="project-info">
-                        <div class="p-title">${item.title}</div>
-                        <div class="p-cat">${item.category}</div>
-                    </div>
-                </div>
-            `;
-            galleryGrid.appendChild(link);
-        });
+                `;
+                galleryGrid.appendChild(link);
+            });
+
+            // 重新绑定交互事件（因为DOM节点是新生成的）
+            bindHoverEffects();
+            bindScrollAnimations();
+        }
 
         // ==========================================
-        //  交互区域：视频播放与滚动动画
+        //  交互区域：事件绑定封装
         // ==========================================
 
-        // 1. 视频悬停播放逻辑
-        // 因为是动态生成的，我们需要在生成后绑定事件，或者使用事件委托。
-        // 这里使用简单的事件绑定：
-        document.querySelectorAll('.project-card').forEach(card => {
-            const v = card.querySelector('video');
-            const media = card.querySelector('.card-media');
-            if(v && media) {
-                // 当鼠标进入 media 区域播放，离开停止
-                media.addEventListener('mouseenter', () => v.play());
-                media.addEventListener('mouseleave', () => { v.pause(); v.currentTime = 0; });
-            }
-        });
+        function bindHoverEffects() {
+            document.querySelectorAll('.project-card').forEach(card => {
+                const v = card.querySelector('video');
+                const media = card.querySelector('.card-media');
+                if(v && media) {
+                    // 防止重复绑定，先移除旧的监听器（虽然innerHTML清空了，但这是好习惯）
+                    media.onmouseenter = null;
+                    media.onmouseleave = null;
 
-        // 2. 滚动动画逻辑
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    // 找到内部的 card 进行动画
-                    const card = entry.target.querySelector('.project-card');
-                    if(card) {
-                        setTimeout(() => {
-                            card.classList.add('active');
-                        }, index * 100); 
-                    }
-                    observer.unobserve(entry.target);
+                    media.onmouseenter = () => v.play();
+                    media.onmouseleave = () => { v.pause(); v.currentTime = 0; };
                 }
             });
-        }, { threshold: 0.05 });
+        }
 
-        document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+        function bindScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        const card = entry.target.querySelector('.project-card');
+                        if(card) {
+                            // 重新触发进场动画
+                            card.classList.remove('active'); // 重置
+                            // 稍微延时，形成阶梯效果
+                            setTimeout(() => {
+                                card.classList.add('active');
+                            }, index * 100); 
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+
+            document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
+        }
+
+        // 启动页面逻辑
+        init();
+
     </script>
 </body>
 </html>

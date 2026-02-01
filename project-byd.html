@@ -6,6 +6,7 @@
     <title>Project Details | Zachary Shee</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
     
+    <!-- 引入全景图插件样式 -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
 
     <style>
@@ -19,33 +20,47 @@
         .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
         .nav-links a:hover { opacity: 1; }
 
-        /* --- 1. Hero 区域 (已修改：增加淡入动效) --- */
+        /* --- 1. Hero 区域 --- */
         .project-hero { width: 100%; height: 85vh; position: relative; overflow: hidden; margin-bottom: 100px; }
         
-        /* 修改了下面这一块：增加了 opacity:0 和 animation */
+        /* [新增] Hero 底部渐变消失遮罩 */
+        .project-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; 
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-color) 100%);
+            z-index: 2; 
+            pointer-events: none; 
+        }
+
+        /* 图片/视频样式 */
         .project-hero img, .project-hero video { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
             filter: brightness(0.7); 
             
-            opacity: 1; /* 初始状态：完全透明 */
-            animation: heroFadeIn 2s ease-out forwards; /* 执行淡入动画，持续3秒 */
+            opacity: 0; /* 初始状态：完全透明 */
+            animation: heroFadeIn 2s ease-out forwards; /* 执行淡入动画 */
         }
 
         .hero-text { position: absolute; bottom: 60px; left: 60px; z-index: 10; }
         
-        /* 保持原有的文字动画不变 */
         .ph-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px);}
         .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px);}
 
-        /* --- 2. 项目描述信息 (修改：宽度与对齐) --- */
-        /* 修改：max-width 改为 1800px 与下方图片对齐 */
-        .project-meta { max-width: 1800px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        /* --- 2. 项目描述信息 (已修复：恢复为标准逻辑) --- */
+        /* [修复] max-width 改回 1200px，使其更加紧凑易读 */
+        .project-meta { max-width: 1200px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        
         .meta-list div { margin-bottom: 25px; }
         .meta-label { color: var(--accent-color); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; border-top: 1px solid #333; padding-top: 15px; display: inline-block; width: 100%; }
-        /* 修改：描述文字靠右侧区域显示，但文字本身左对齐 */
-        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; max-width: 800px; margin-left: auto; }
+        
+        /* [修复] 去掉了 margin-left: auto 和 max-width 限制，恢复标准排版 */
+        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; }
 
         /* --- 3. 核心布局系统 --- */
         .content-container { 
@@ -56,7 +71,6 @@
         .layout-module { width: 100%; position: relative; opacity: 0; transform: translateY(40px); transition: 0.8s ease; }
         .layout-module.active { opacity: 1; transform: translateY(0); }
         
-        /* 支持 img 和 video 自适应 */
         .layout-module img, .layout-module video { width: 100%; height: auto; display: block; object-fit: cover; }
 
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -72,10 +86,10 @@
         .tm-text h4 { font-size: 1.2rem; margin-bottom: 15px; color: white; }
         .tm-text p { color: #888; line-height: 1.6; }
 
-        /* --- 4. 全景图模块样式 (新增) --- */
+        /* --- 4. 全景图模块样式 --- */
         .pano-wrapper {
             width: 100%;
-            height: 600px; /* 全景图高度 */
+            height: 600px; 
             position: relative;
             background: #111;
             overflow: hidden;
@@ -87,7 +101,7 @@
         }
         .pano-preview img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: blur(4px) brightness(0.6); /* 预览时轻微模糊变暗 */
+            filter: blur(4px) brightness(0.6); 
             transition: 0.5s;
         }
         .pano-preview:hover img { filter: blur(2px) brightness(0.8); }
@@ -103,7 +117,6 @@
         /* 响应式处理 */
         @media (max-width: 768px) {
             .project-meta { grid-template-columns: 1fr; gap: 40px; }
-            .meta-desc { margin-left: 0; } /* 手机端取消靠右 */
             .content-container { padding: 0 20px; }
             .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
             .text-module { padding: 40px 0; }
@@ -115,7 +128,7 @@
         .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
         .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
         
-        /* 新增：头图专用的淡入动画 */
+        /* 动画定义 */
         @keyframes heroFadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -195,6 +208,7 @@
         </div>
     </footer>
 
+    <!-- 引入全景图插件JS -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
     <script>
@@ -221,7 +235,7 @@
                     "panorama": imagePath,
                     "autoLoad": true, // 点击后自动加载
                     "showControls": true,
-                    "mouseZoom": false, // 防止滚轮滚动页面时意外缩放，设为false则需按Ctrl缩放，或者设为true
+                    "mouseZoom": false, 
                     "hfov": 110
                 });
             }, 500);
