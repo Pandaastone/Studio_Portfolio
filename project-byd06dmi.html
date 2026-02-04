@@ -86,23 +86,21 @@
         .tm-text h4 { font-size: 1.2rem; margin-bottom: 15px; color: white; }
         .tm-text p { color: #888; line-height: 1.6; }
 
-        /* --- 4. 全景图模块样式 --- */
+        /* --- 4. 全景图模块样式 (升级版) --- */
         .pano-wrapper {
-            width: 100%;
-            height: 600px; 
-            position: relative;
-            background: #111;
-            overflow: hidden;
+            width: 100%; height: 700px; /* 稍微加高一点 */
+            position: relative; background: #111; overflow: hidden;
+            border: 1px solid #222;
         }
+        
         /* 预览层 */
         .pano-preview {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            cursor: pointer; z-index: 2; transition: opacity 0.5s;
+            cursor: pointer; z-index: 5; transition: opacity 0.5s; background: #000;
         }
         .pano-preview img {
             width: 100%; height: 100%; object-fit: cover;
-            filter: blur(4px) brightness(0.6); 
-            transition: 0.5s;
+            filter: blur(4px) brightness(0.6); transition: 0.5s;
         }
         .pano-preview:hover img { filter: blur(2px) brightness(0.8); }
         .pano-btn {
@@ -111,8 +109,32 @@
             text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
             background: rgba(0,0,0,0.3); pointer-events: none;
         }
-        /* 实际查看器容器 */
+
+        /* 实际查看器 */
         .pano-viewer { width: 100%; height: 100%; z-index: 1; }
+
+        /* [新增] 悬浮控制栏样式 */
+        .pano-controls {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 4; display: flex; gap: 40px;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
+            padding: 15px 30px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0; pointer-events: none; transition: opacity 0.5s;
+        }
+        /* 当预览层消失后，显示控制栏 */
+        .pano-wrapper.loaded .pano-controls { opacity: 1; pointer-events: all; }
+
+        .control-group { display: flex; align-items: center; gap: 15px; }
+        .group-label { color: #888; font-size: 0.7rem; letter-spacing: 1px; font-weight: 600; margin-right: 5px; }
+        
+        .opt-btn {
+            background: transparent; border: 1px solid #444; color: #aaa;
+            padding: 8px 16px; border-radius: 20px; cursor: pointer;
+            font-size: 0.75rem; letter-spacing: 1px; transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .opt-btn:hover { border-color: #888; color: white; }
+        .opt-btn.active { background: white; color: black; border-color: white; font-weight: 600; }
 
         /* 响应式处理 */
         @media (max-width: 768px) {
@@ -150,9 +172,9 @@
     </nav>
 
     <header class="project-hero">
-        <img src="images/byd06/BYD06DM-i-main.jpg" alt="Hero Background">
+        <img src="images/byd06/BYD06DM-i-main.webp" alt="Hero Background">
         <div class="hero-text">
-            <div class="ph-title">BYD Seal 07DM-i 360° Visualization</div>
+            <div class="ph-title">BYD Seal 06DM-i 360° Visualization</div>
             <div class="ph-cat">Interior 360° Visualization</div>
         </div>
     </header>
@@ -171,14 +193,14 @@
     <section class="content-container">
         
         <div class="layout-module grid-3">
-            <img src="images/byd06/BYD-06DM-i---白内前排.jpg">
-            <img src="images/byd06/BYD06DM-i-main3.jpg">
-            <img src="images/byd06/BYD-06-DM-i_白内后排.jpg">
+            <img src="images/byd06/BYD-06DM-i---白内前排.webp">
+            <img src="images/byd06/BYD06DM-i-main3.webp">
+            <img src="images/byd06/BYD-06-DM-i_白内后排.webp">
         </div>
         
         <div class="layout-module grid-2">
-            <img src="images/byd06/BYD06DM-i-main.jpg">
-            <img src="images/byd06/BYD06DM-i-main2.jpg">
+            <img src="images/byd06/BYD06DM-i-main.webp">
+            <img src="images/byd06/BYD06DM-i-main2.webp">
         </div>
 
         <div class="layout-module text-module">
@@ -187,13 +209,38 @@
             <p>Press the Shift key to zoom in, and the Ctrl key to zoom out.</p>
         </div>
 
+        <!-- 升级后的全景图模块 -->
         <div class="layout-module pano-module">
-            <div class="pano-wrapper" id="pano1">
-                <div class="pano-preview" onclick="loadPano('pano1', 'images/byd06/BYD-06-DM-i_黑内前排360_v1.jpg')">
-                    <img src="images/byd06/BYD06DM-i-main.jpg" alt="360 Preview">
+            <div class="pano-wrapper" id="pano-container">
+                
+                <!-- 1. 点击开始遮罩 -->
+                <div class="pano-preview" onclick="initPano()">
+                    <!-- 这里放一张默认的预览图 -->
+                    <img src="images/BYD-AU/mainview.webp" alt="360 Preview">
                     <div class="pano-btn">Click to Explore 360°</div>
                 </div>
-                <div class="pano-viewer"></div>
+
+                <!-- 2. 全景图查看器容器 -->
+                <div id="pano-viewer" class="pano-viewer"></div>
+
+                <!-- 悬浮控制栏 -->
+                <div class="pano-controls">
+                    <!-- 视角切换 -->
+                    <div class="control-group">
+                        <span class="group-label">VIEW</span>
+                        <button class="opt-btn active" onclick="switchPano('view', 'front', this)">FRONT</button>
+                        <button class="opt-btn" onclick="switchPano('view', 'rear', this)">REAR</button>
+                    </div>
+                    
+                    <!-- 颜色切换 (保留结构，目前只显示 BLACK) -->
+                    <div class="control-group" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 15px;">
+                        <span class="group-label">COLOR</span>
+                        <button class="opt-btn active" onclick="switchPano('color', 'black', this)">BLACK</button>
+                        <button class="opt-btn" onclick="switchPano('color', 'white', this)">WHITE</button>
+                    </div>
+                        <!-- 如果以后其他项目有白色，直接复制这一行把 black 改成 white 即可 -->
+                </div>
+
             </div>
         </div>
 
@@ -218,27 +265,91 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
 
-        // 2. 全景图加载逻辑 (性能优化版)
-        function loadPano(containerId, imagePath) {
-            const container = document.getElementById(containerId);
-            const preview = container.querySelector('.pano-preview');
-            const viewer = container.querySelector('.pano-viewer');
+        // ==========================================
+        //  全景图配置与逻辑区域
+        // ==========================================
 
-            // 隐藏预览层
+        // 1. 图片路径配置
+        // 逻辑键名规则：'视角_颜色'
+        // 虽然只有黑色，但保持这个命名规则方便以后扩展
+        const panoImages = {
+            // [修改] 黑色内饰路径 (前排/后排)
+            'front_black': 'images/byd06/BYD-06-DM-i_黑内前排360_v1.webp',
+            'rear_black':  'images/byd06/BYD-06-DM-i_黑内后排360_v1.webp',
+            
+            // [新增] 白色内饰路径 (前排/后排)
+            'front_white': 'images/byd06/BYD 06 DM-i_前排白内360_v3.webp',
+            'rear_white':  'images/byd06/BYD 06 DM-i_后排白内360_v2.webp'
+        };
+
+        // 2. 当前状态 (默认前排 + 黑色)
+        let currentState = {
+            view: 'front', 
+            color: 'black' 
+        };
+
+        let viewer = null;
+
+        // 3. 初始化
+        function initPano() {
+            const wrapper = document.getElementById('pano-container');
+            const preview = wrapper.querySelector('.pano-preview');
+
             preview.style.opacity = '0';
             setTimeout(() => {
                 preview.style.display = 'none';
-                
-                // 初始化 Pannellum
-                pannellum.viewer(viewer, {
-                    "type": "equirectangular",
-                    "panorama": imagePath,
-                    "autoLoad": true, // 点击后自动加载
-                    "showControls": true,
-                    "mouseZoom": false, 
-                    "hfov": 110
-                });
+                wrapper.classList.add('loaded');
+                loadPanoImage();
             }, 500);
+        }
+
+        // 4. 加载全景图核心逻辑
+        function loadPanoImage() {
+            // 组合键名：例如 "front_black"
+            // 这样写的好处是，以后您添加了白色按钮，这段代码完全不用改
+            const key = `${currentState.view}_${currentState.color}`;
+            const imagePath = panoImages[key];
+
+            // 容错处理：如果配置表里没这就图（比如某个车只有前排有白色），则不加载
+            if (!imagePath) {
+                console.warn('Image not found for:', key);
+                return; 
+            }
+
+            if (viewer) {
+                viewer.destroy();
+            }
+
+            viewer = pannellum.viewer('pano-viewer', {
+                "type": "equirectangular",
+                "panorama": imagePath,
+                "autoLoad": true,
+                "showControls": true,
+                "hfov": 110,
+                "yaw": 0,
+                "pitch": 0,
+                "sceneFadeDuration": 1000 
+            });
+        }
+
+        // 5. 切换逻辑 (通用版)
+        function switchPano(type, value, btnElement) {
+            // type: 'view' 或 'color'
+            // value: 'front'/'rear' 或 'black'/'white'
+            
+            // 如果点击的是当前已激活的选项，不做任何事
+            if (currentState[type] === value) return;
+
+            // 更新状态
+            currentState[type] = value;
+
+            // 更新按钮样式 (只更新同组的按钮)
+            const parentGroup = btnElement.parentElement;
+            parentGroup.querySelectorAll('.opt-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // 重新加载
+            loadPanoImage();
         }
     </script>
 </body>
