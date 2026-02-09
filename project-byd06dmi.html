@@ -255,11 +255,11 @@
         </div>
     </footer>
 
-    <!-- 引入全景图插件JS -->
+    <!-- 引入全景图插件JS (保持不变) -->
     <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
     <script>
-        // 1. 滚动揭示动画
+        // 1. 滚动揭示动画 (保持不变)
         const observer = new IntersectionObserver(entries => {
             entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
         }, { threshold: 0.1 });
@@ -269,17 +269,21 @@
         //  全景图配置与逻辑区域
         // ==========================================
 
-        // 1. 图片路径配置
-        // 逻辑键名规则：'视角_颜色'
-        // 虽然只有黑色，但保持这个命名规则方便以后扩展
-        const panoImages = {
-            // [修改] 黑色内饰路径 (前排/后排)
-            'front_black': 'images/byd06/BYD-06-DM-i_黑内前排360_v1.webp',
-            'rear_black':  'images/byd06/BYD-06-DM-i_黑内后排360_v1.webp',
-            
-            // [新增] 白色内饰路径 (前排/后排)
-            'front_white': 'images/byd06/BYD 06 DM-i_前排白内360_v3.webp',
-            'rear_white':  'images/byd06/BYD 06 DM-i_后排白内360_v2.webp'
+        // 1. 配置所有场景信息
+        const scenesConfig = {
+            // [修改] 删除了 "title" 属性，这样左下角就不会出现多余的文字框
+            'front_black': {
+                "panorama": "images/byd06/BYD-06-DM-i_黑内前排360_v1.webp"
+            },
+            'rear_black': {
+                "panorama": "images/byd06/BYD-06-DM-i_黑内后排360_v1.webp"
+            },
+            'front_white': {
+                "panorama": "images/byd06/BYD 06 DM-i_前排白内360_v3.webp"
+            },
+            'rear_white': {
+                "panorama": "images/byd06/BYD 06 DM-i_后排白内360_v2.webp"
+            }
         };
 
         // 2. 当前状态 (默认前排 + 黑色)
@@ -290,7 +294,7 @@
 
         let viewer = null;
 
-        // 3. 初始化
+        // 3. 初始化 (只执行一次)
         function initPano() {
             const wrapper = document.getElementById('pano-container');
             const preview = wrapper.querySelector('.pano-preview');
@@ -299,57 +303,56 @@
             setTimeout(() => {
                 preview.style.display = 'none';
                 wrapper.classList.add('loaded');
-                loadPanoImage();
+                startViewer(); 
             }, 500);
         }
 
-        // 4. 加载全景图核心逻辑
-        function loadPanoImage() {
-            // 组合键名：例如 "front_black"
-            // 这样写的好处是，以后您添加了白色按钮，这段代码完全不用改
-            const key = `${currentState.view}_${currentState.color}`;
-            const imagePath = panoImages[key];
+        // 启动查看器
+        function startViewer() {
+            if(viewer) return;
 
-            // 容错处理：如果配置表里没这就图（比如某个车只有前排有白色），则不加载
-            if (!imagePath) {
-                console.warn('Image not found for:', key);
-                return; 
-            }
-
-            if (viewer) {
-                viewer.destroy();
-            }
+            const initialScene = `${currentState.view}_${currentState.color}`;
 
             viewer = pannellum.viewer('pano-viewer', {
-                "type": "equirectangular",
-                "panorama": imagePath,
-                "autoLoad": true,
-                "showControls": true,
-                "hfov": 110,
-                "yaw": 0,
-                "pitch": 0,
-                "sceneFadeDuration": 1000 
+                "default": {
+                    "firstScene": initialScene,
+                    "sceneFadeDuration": 1000,
+                    "autoLoad": true,
+                    "showControls": true,
+                    "hfov": 110,
+                    "showSceneMenu": false // [新增] 确保不显示场景菜单列表
+                },
+                "scenes": scenesConfig
             });
         }
 
-        // 5. 切换逻辑 (通用版)
+        // 5. 切换逻辑
         function switchPano(type, value, btnElement) {
-            // type: 'view' 或 'color'
-            // value: 'front'/'rear' 或 'black'/'white'
-            
-            // 如果点击的是当前已激活的选项，不做任何事
             if (currentState[type] === value) return;
 
             // 更新状态
             currentState[type] = value;
 
-            // 更新按钮样式 (只更新同组的按钮)
+            // 更新按钮样式
             const parentGroup = btnElement.parentElement;
             parentGroup.querySelectorAll('.opt-btn').forEach(btn => btn.classList.remove('active'));
             btnElement.classList.add('active');
 
-            // 重新加载
-            loadPanoImage();
+            const targetSceneId = `${currentState.view}_${currentState.color}`;
+
+            if (scenesConfig[targetSceneId]) {
+                // [核心修改] 获取当前视角的参数
+                // getPitch: 俯仰角, getYaw: 偏航角, getHfov: 缩放程度
+                const currentPitch = viewer.getPitch();
+                const currentYaw = viewer.getYaw();
+                const currentHfov = viewer.getHfov();
+
+                // [核心修改] loadScene 的后三个参数分别是 pitch, yaw, hfov
+                // 传入这些参数后，切换场景时就会继承上一个场景的视角，而不会重置
+                viewer.loadScene(targetSceneId, currentPitch, currentYaw, currentHfov); 
+            } else {
+                console.warn('Scene not found:', targetSceneId);
+            }
         }
     </script>
 </body>
