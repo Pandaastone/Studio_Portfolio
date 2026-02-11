@@ -28,49 +28,35 @@
             min-height: 100vh;
         }
 
-        /* --- 核心动效定义 (回归舒缓质感) --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            /* 使用特定的贝塞尔曲线，还原“原版”那种优雅的刹车感 */
-            transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1.000); 
-        }
-        .reveal.active { opacity: 1; transform: translateY(0); }
-
-        .reveal-left {
-            opacity: 0;
-            transform: translateX(-40px);
-            transition: all 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        }
-        .reveal-left.active { opacity: 1; transform: translateX(0); }
-
-        .reveal-right {
-            opacity: 0;
-            transform: translateX(40px);
-            transition: all 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
-        }
-        .reveal-right.active { opacity: 1; transform: translateX(0); }
-
-        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
-
-        /* --- 1. 导航栏 (与 Work 页面像素级一致) --- */
+        /* --- 1. 导航栏 (完全复用 Index 页面代码，确保 0 位移) --- */
         nav {
-            position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center;
-            padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 60px;
+            z-index: 1000;
+            mix-blend-mode: difference; /* 关键：与 Index 保持一致的混合模式 */
         }
-        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
-        .nav-links a {
-            color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s;
+        .logo { font-weight: 600; letter-spacing: 2px; }
+        .logo a { color: white; text-decoration: none; }
+        .nav-links a { 
+            color: white; text-decoration: none; margin-left: 35px; 
+            font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; 
+            transition: opacity 0.3s;
         }
         .nav-links a:hover, .nav-links a.active { opacity: 1; }
 
-        /* --- 2. 页面头部 (彻底修复跳动) --- */
-        .page-header { 
-            /* 严格保持 180px 顶部 padding，与 Work 页面一致 */
-            padding: 180px 60px 0px; 
-            text-align: center; 
-            position: relative; 
-            display: block; 
+        /* --- 2. 页面头部 (垂直居中修正) --- */
+        .about-hero { 
+            min-height: 100vh; /* 占满全屏 */
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* 垂直居中 */
+            align-items: center;
+            text-align: center;
+            padding: 0 20px; /* 取消顶部 Padding，由 Flex 自动居中 */
+            position: relative;
         }
         
         .page-title { 
@@ -78,7 +64,7 @@
             font-weight: 800; 
             text-transform: uppercase; 
             margin-bottom: 20px; 
-            /* 关键：不设置 line-height，让其继承默认值，防止与 Work 页面产生 2px 偏差 */
+            line-height: 1.2;
             
             opacity: 0; transform: translateY(30px); 
             animation: fadeInUp 1s forwards 0.2s;
@@ -86,24 +72,17 @@
         
         .page-desc { 
             color: var(--text-muted); 
-            font-size: 1rem; /* 调整回标准字号 */
-            letter-spacing: 0.5px;
+            font-size: 1rem; 
             max-width: 900px;
             font-weight: 300;
             line-height: 1.8;
-            /* 关键：使用 margin: 0 auto 确保水平完美居中 */
-            margin: 0 auto 80px;
+            margin: 0 auto 60px;
             
             opacity: 0; transform: translateY(30px); 
             animation: fadeInUp 1s forwards 0.4s;
         }
 
         /* --- 奖项展示 --- */
-        .awards-section {
-            padding: 0 60px 100px;
-            text-align: center;
-        }
-
         .awards-grid {
             display: flex;
             justify-content: center;
@@ -121,7 +100,7 @@
             opacity: 0; 
             transform: translateY(30px);
             
-            /* 动效：使用与文字一致的贝塞尔曲线 */
+            /* 动效 */
             transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1.000);
         }
         
@@ -151,7 +130,7 @@
             grid-template-columns: 0.9fr 1.1fr;
             gap: 80px;
             margin-bottom: 200px;
-            align-items: center; /* 垂直居中 */
+            align-items: center;
         }
         
         .member-card.reverse { grid-template-columns: 1.1fr 0.9fr; }
@@ -185,7 +164,6 @@
             font-size: 0.95rem; font-weight: 300; line-height: 1.7; color: #ccc; margin-bottom: 20px;
             
             opacity: 0; transform: translateY(30px);
-            /* 使用贝塞尔曲线，还原舒缓感 */
             transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1.000);
         }
         .bio-text p.active { opacity: 1; transform: translateY(0); }
@@ -252,6 +230,30 @@
         .f-col a { color: #888; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
         .f-col a:hover { color: white; }
 
+        /* 动效类 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1.000); 
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-40px);
+            transition: all 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        }
+        .reveal-left.active { opacity: 1; transform: translateX(0); }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(40px);
+            transition: all 1.2s cubic-bezier(0.215, 0.610, 0.355, 1.000);
+        }
+        .reveal-right.active { opacity: 1; transform: translateX(0); }
+
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
         /* 响应式 */
         @media (max-width: 900px) {
             .page-title { font-size: 2.5rem; line-height: 1.2; }
@@ -284,7 +286,7 @@
         </div>
     </nav>
 
-    <div class="page-header">
+    <div class="about-hero">
         <div class="page-title">
             A COLLECTIVE OF<br>CREATIVE MINDS
         </div>
@@ -293,9 +295,7 @@
             We provide creative services and technical support in digital imaging, spanning 
             product advertising, motion graphics, 3D design, visualization, and creative rendering.
         </div>
-    </div>
 
-    <section class="awards-section">
         <div class="awards-grid">
             <div class="award-item">
                 <img src="images/vega.webp" alt="Vega Award Gold" class="award-img">
@@ -310,7 +310,7 @@
                 <span class="award-label">MUSE Award - Silver</span>
             </div>
         </div>
-    </section>
+    </div>
 
     <section class="team-section">
         <span class="section-header" style="text-align: left; margin-bottom: 80px;">Core Members</span>
@@ -345,7 +345,7 @@
 
         <div class="member-card reverse">
             <div class="member-photo reveal-right">
-                <img src="images/GuoWei_Lee.webp" alt="GuoWei Lee">
+                <img src="images/GuoWei_Lee.jpg" alt="GuoWei Lee">
             </div>
             <div class="member-info reveal">
                 <h2 class="member-name">GUOWEI LEE</h2>
@@ -435,7 +435,7 @@
         // 选择所有带动画类的元素
         document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revealObserver.observe(el));
 
-        // 2. 奖项交错动画 (手动管理，不使用 reveal 类)
+        // 2. 奖项交错动画
         const awardsObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if(entry.isIntersecting) {
