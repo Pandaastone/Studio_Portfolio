@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Zachary Shee</title>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- 引入全景图插件样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
+
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* 导航栏 */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- 1. Hero 区域 --- */
+        .project-hero { width: 100%; height: 85vh; position: relative; overflow: hidden; margin-bottom: 100px; }
+        
+        /* [新增] Hero 底部渐变消失遮罩 */
+        .project-hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; 
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-color) 100%);
+            z-index: 2; 
+            pointer-events: none; 
+        }
+
+        /* 图片/视频样式 */
+        .project-hero img, .project-hero video { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: cover; 
+            filter: brightness(0.7); 
+            
+            opacity: 0; /* 初始状态：完全透明 */
+            animation: heroFadeIn 2s ease-out forwards; /* 执行淡入动画 */
+        }
+
+        .hero-text { position: absolute; bottom: 60px; left: 60px; z-index: 10; }
+        
+        .ph-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px);}
+        .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px);}
+
+        /* --- 2. 项目描述信息 (已修复：恢复为标准逻辑) --- */
+        /* [修复] max-width 改回 1200px，使其更加紧凑易读 */
+        .project-meta { max-width: 1200px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        
+        .meta-list div { margin-bottom: 25px; }
+        .meta-label { color: var(--accent-color); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; border-top: 1px solid #333; padding-top: 15px; display: inline-block; width: 100%; }
+        
+        /* [修复] 去掉了 margin-left: auto 和 max-width 限制，恢复标准排版 */
+        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; }
+
+        /* --- 3. 核心布局系统 --- */
+        .content-container { 
+            max-width: 1800px; margin: 0 auto 100px; padding: 0 60px; 
+            display: flex; flex-direction: column; gap: 20px; 
+        }
+
+        .layout-module { width: 100%; position: relative; opacity: 0; transform: translateY(40px); transition: 0.8s ease; }
+        .layout-module.active { opacity: 1; transform: translateY(0); }
+        
+        .layout-module img, .layout-module video { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        
+        .text-module { padding: 80px 0; text-align: center; max-width: 800px; margin: 0 auto; }
+        .text-module h3 { font-size: 1.5rem; margin-bottom: 20px; }
+        .text-module p { font-size: 1rem; color: #aaa; line-height: 1.8; }
+
+        .text-media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .tm-text { padding: 20px; }
+        .tm-text h4 { font-size: 1.2rem; margin-bottom: 15px; color: white; }
+        .tm-text p { color: #888; line-height: 1.6; }
+
+        /* --- 4. 全景图模块样式 (升级版) --- */
+        .pano-wrapper {
+            width: 100%; height: 700px; /* 稍微加高一点 */
+            position: relative; background: #111; overflow: hidden;
+            border: 1px solid #222;
+        }
+        
+        /* 预览层 */
+        .pano-preview {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            cursor: pointer; z-index: 5; transition: opacity 0.5s; background: #000;
+        }
+        .pano-preview img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: blur(4px) brightness(0.6); transition: 0.5s;
+        }
+        .pano-preview:hover img { filter: blur(2px) brightness(0.8); }
+        .pano-btn {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border: 1px solid white; padding: 15px 30px; color: white;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem;
+            background: rgba(0,0,0,0.3); pointer-events: none;
+        }
+
+        /* 实际查看器 */
+        .pano-viewer { width: 100%; height: 100%; z-index: 1; }
+
+        /* [新增] 悬浮控制栏样式 */
+        .pano-controls {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 4; display: flex; gap: 40px;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
+            padding: 15px 30px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
+            opacity: 0; pointer-events: none; transition: opacity 0.5s;
+        }
+        /* 当预览层消失后，显示控制栏 */
+        .pano-wrapper.loaded .pano-controls { opacity: 1; pointer-events: all; }
+
+        .control-group { display: flex; align-items: center; gap: 15px; }
+        .group-label { color: #888; font-size: 0.7rem; letter-spacing: 1px; font-weight: 600; margin-right: 5px; }
+        
+        .opt-btn {
+            background: transparent; border: 1px solid #444; color: #aaa;
+            padding: 8px 16px; border-radius: 20px; cursor: pointer;
+            font-size: 0.75rem; letter-spacing: 1px; transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+        .opt-btn:hover { border-color: #888; color: white; }
+        .opt-btn.active { background: white; color: black; border-color: white; font-weight: 600; }
+
+        /* 响应式处理 */
+        @media (max-width: 768px) {
+            .project-meta { grid-template-columns: 1fr; gap: 40px; }
+            .content-container { padding: 0 20px; }
+            .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
+            .text-module { padding: 40px 0; }
+            .pano-wrapper { height: 400px; }
+        }
+
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        
+        /* 动画定义 */
+        @keyframes heroFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <img src="images/byd07/07 DM - i - 流光灰 - 前排.webp" alt="Hero Background">
+        <div class="hero-text">
+            <div class="ph-title">BYD Seal 07 DM-i 360° Visualization</div>
+            <div class="ph-cat">Interior 360° Visualization</div>
+        </div>
+    </header>
+
+    <section class="project-meta">
+        <div class="meta-list">
+            <div><span class="meta-label">CLIENT</span>BYD</div>
+            <div><span class="meta-label">ROLE</span>CGI Artist, Retouch</div>
+            <div><span class="meta-label">SOFTWARE</span>3DsMax / VRay / Photoshop</div>
+        </div>
+        <div class="meta-desc">
+            <p>We created a 360-degree panoramic interior view of the BYD Sealion 07 Australian version.  This initiative aims to provide users with an intuitive visual shopping experience.</p>
+        </div>
+    </section>
+
+    <section class="content-container">
+        
+        <div class="layout-module grid-2">
+            <img src="images/byd07/07 DM - i - 流光灰 - 前排.webp">
+            <img src="images/byd07/07 DM - i - 流光灰 - 后排.webp">
+        </div>
+        
+        <div class="layout-module grid-2">
+            <img src="images/byd07/07 DM - i - 美态香红 - 前排.webp">
+            <img src="images/byd07/07 DM - i - 美态香红 - 后排.webp">
+        </div>
+
+        <div class="layout-module text-module">
+            <h3>PANORAMIC VIEW MONITOR</h3>
+            <p>Tips:  Hold down the mouse button and drag to move the view.</p>
+            <p>Press the Shift key to zoom in, and the Ctrl key to zoom out.</p>
+        </div>
+
+        <!-- 升级后的全景图模块 -->
+        <div class="layout-module pano-module">
+            <div class="pano-wrapper" id="pano-container">
+                
+                <!-- 1. 点击开始遮罩 -->
+                <div class="pano-preview" onclick="initPano()">
+                    <!-- 这里放一张默认的预览图 -->
+                    <img src="images/byd07/07 DM - i - 流光灰 - 前排.webp" alt="360 Preview">
+                    <div class="pano-btn">Click to Explore 360°</div>
+                </div>
+
+                <!-- 2. 全景图查看器容器 -->
+                <div id="pano-viewer" class="pano-viewer"></div>
+
+                <!-- 悬浮控制栏 -->
+                <div class="pano-controls">
+                    <!-- 视角切换 -->
+                    <div class="control-group">
+                        <span class="group-label">VIEW</span>
+                        <button class="opt-btn active" onclick="switchPano('view', 'front', this)">FRONT</button>
+                        <button class="opt-btn" onclick="switchPano('view', 'rear', this)">REAR</button>
+                    </div>
+                    
+                    <!-- 颜色切换 (保留结构，目前只显示 BLACK) -->
+                    <div class="control-group" style="border-left: 1px solid rgba(255,255,255,0.2); padding-left: 15px;">
+                        <span class="group-label">COLOR</span>
+                        <button class="opt-btn active" onclick="switchPano('color', 'black', this)">GRAY/BLACK</button>
+                        <button class="opt-btn" onclick="switchPano('color', 'white', this)">YELLOW/RED</button>
+                    </div>
+                        <!-- 如果以后其他项目有白色，直接复制这一行把 black 改成 white 即可 -->
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 引入全景图插件JS (保持不变) -->
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+    <script>
+        // 1. 滚动揭示动画 (保持不变)
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
+
+        // ==========================================
+        //  全景图配置与逻辑区域
+        // ==========================================
+
+        // 1. 配置所有场景信息
+        const scenesConfig = {
+            // [修改] 删除了 "title" 属性，这样左下角就不会出现多余的文字框
+            'front_black': {
+                "panorama": "images/byd07/07 DM - i - 流光灰 - 360前排_v3.webp"
+            },
+            'rear_black': {
+                "panorama": "images/byd07/07 DM - i - 流光灰 - 360后排_v1.webp"
+            },
+            'front_white': {
+                "panorama": "images/byd07/07 DM - i - 美态香红 - 360前排_v3.webp"
+            },
+            'rear_white': {
+                "panorama": "images/byd07/07 DM - i - 美态香红 - 360后排_v2.webp"
+            }
+        };
+
+        // 2. 当前状态 (默认前排 + 黑色)
+        let currentState = {
+            view: 'front', 
+            color: 'black' 
+        };
+
+        let viewer = null;
+
+        // 3. 初始化 (只执行一次)
+        function initPano() {
+            const wrapper = document.getElementById('pano-container');
+            const preview = wrapper.querySelector('.pano-preview');
+
+            preview.style.opacity = '0';
+            setTimeout(() => {
+                preview.style.display = 'none';
+                wrapper.classList.add('loaded');
+                startViewer(); 
+            }, 500);
+        }
+
+        // 启动查看器
+        function startViewer() {
+            if(viewer) return;
+
+            const initialScene = `${currentState.view}_${currentState.color}`;
+
+            viewer = pannellum.viewer('pano-viewer', {
+                "default": {
+                    "firstScene": initialScene,
+                    "sceneFadeDuration": 1000,
+                    "autoLoad": true,
+                    "showControls": true,
+                    "hfov": 110,
+                    "showSceneMenu": false // [新增] 确保不显示场景菜单列表
+                },
+                "scenes": scenesConfig
+            });
+        }
+
+        // 5. 切换逻辑
+        function switchPano(type, value, btnElement) {
+            if (currentState[type] === value) return;
+
+            // 更新状态
+            currentState[type] = value;
+
+            // 更新按钮样式
+            const parentGroup = btnElement.parentElement;
+            parentGroup.querySelectorAll('.opt-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            const targetSceneId = `${currentState.view}_${currentState.color}`;
+
+            if (scenesConfig[targetSceneId]) {
+                // [核心修改] 获取当前视角的参数
+                // getPitch: 俯仰角, getYaw: 偏航角, getHfov: 缩放程度
+                const currentPitch = viewer.getPitch();
+                const currentYaw = viewer.getYaw();
+                const currentHfov = viewer.getHfov();
+
+                // [核心修改] loadScene 的后三个参数分别是 pitch, yaw, hfov
+                // 传入这些参数后，切换场景时就会继承上一个场景的视角，而不会重置
+                viewer.loadScene(targetSceneId, currentPitch, currentYaw, currentHfov); 
+            } else {
+                console.warn('Scene not found:', targetSceneId);
+            }
+        }
+    </script>
+</body>
+</html>
