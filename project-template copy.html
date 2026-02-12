@@ -68,7 +68,12 @@
             .content-container { padding: 0 20px; }
             .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
             .text-module { padding: 40px 0; }
+            .manual-columns { flex-direction: column; }
         }
+
+        .manual-columns { display: flex; gap: 20px; align-items: flex-start; }
+        .col-left, .col-right { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .manual-columns img, .manual-columns video { width: 100%; height: auto; display: block; object-fit: cover; }
 
         footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
         .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
@@ -81,8 +86,7 @@
         /* =========================================
            [修改] 图片/视频查看器 (Lightbox) 样式
            ========================================= */
-        /* [修改] 同时让 img 和 video 鼠标变为放大镜 */
-        .layout-module img,
+        .layout-module img, 
         .layout-module video { 
             cursor: zoom-in; 
             transition: filter 0.3s;
@@ -103,22 +107,17 @@
         }
         .lightbox-overlay.active { display: flex; animation: fadeIn 0.3s ease-out; }
 
-        /* [修改] 支持 img 和 video */
-        .lightbox-overlay img,
+        .lightbox-overlay img, 
         .lightbox-overlay video {
             max-width: 90%; 
             max-height: 90%;
             object-fit: contain;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             user-select: none;
-            display: none; /* 默认隐藏，由 JS 控制显示 */
+            display: none; 
         }
-        
-        /* [新增] 控制显示的类 */
-        .lightbox-overlay img.show,
-        .lightbox-overlay video.show {
-            display: block;
-        }
+        .lightbox-overlay video.show,
+        .lightbox-overlay img.show { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
@@ -137,9 +136,9 @@
 
     <!-- 1. 顶部 Hero 区域 -->
     <header class="project-hero">
-        <img src="images/cemoy/CEMOY5.webp" alt="Hero Image">
+        <img src="images/奥迪.jpg" alt="Hero Image">
         <div class="hero-text">
-            <div class="ph-title">CEMOY × 伊能静</div>
+            <div class="ph-title">Audi Beijing Design</div>
             <div class="ph-cat">TVC CGI</div>
         </div>
     </header>
@@ -152,100 +151,96 @@
             <div><span class="meta-label">SOFTWARE</span>Cinema 4D / Redshift / After Effects / Houdini</div>
         </div>
         <div class="meta-desc">
-            <p>This is a high-end TV commercial we produced for the Cemoy whitening skincare product endorsed by Annie Yi.  This video aims to promote the star product of the 21-day series—CEMÔY 21-Day Essence. Inspired by three Nobel Prize-winning scientific targets, it features the unique Tri-polargise™ ingredient for root-cause anti-aging, providing the energy source needed by cells in three stages: energizing, revitalizing, and regenerating, rebuilding the skin's self-circulation, and providing segmented energy over 21 days to fundamentally solve skin aging problems.</p>
+            <p>This is a high-end TV commercial we produced...</p>
         </div>
     </section>
 
-    <!-- 3. 内容展示区域 -->
+    <!-- 3. 内容展示区域 (这里就是您自由排版的地方) -->
     <section class="content-container">
         
+        <!-- 示例：全屏视频 -->
         <div class="layout-module">
             <video src="videos/CEMOY.mp4" controls muted loop style="width: 100%"></video>
         </div>
 
+        <!-- 示例：三张图片并排 (Grid 3) -->
         <div class="layout-module grid-3">
-            <img src="images/cemoy/CEMOY3.webp">
-            <video src="images/cemoy/CEMOY_1.mp4" autoplay muted loop playsinline></video>
-            <img src="images/cemoy/CEMOY9.webp">
-        </div>
-        
-        <div class="layout-module grid-2">
-            <img src="images/cemoy/CEMOY10.webp">
-            <video src="images/cemoy/CEMOY_2.mp4" autoplay muted loop playsinline></video>
+            <img src="images/audi_beijing/audi-ending.png">
+            <img src="images/audi_beijing/audi-ending2.png">
+            <img src="images/audi_beijing/audi-ending2.png">
         </div>
 
-        <div class="layout-module grid-3">
-            <img src="images/cemoy/CEMOY4.webp">
-            <video src="images/cemoy/CEMOY_6.mp4" autoplay muted loop playsinline></video>
-            <img src="images/cemoy/CEMOY12.webp">
-        </div>
-
+        <!-- 示例：单张大图 -->
         <div class="layout-module">
             <img src="images/CEMOY_logo.jpg">
         </div>
-
-        <div class="layout-module text-module">
-            <h3>BREAKDOWN</h3>
-            <p>We tried many methods to achieve a high-end visual effect.</p>
-        </div>
-
-        <div class="layout-module grid-2">
-            <img src="images/cemoy/layout/cemoy_houdini.webp">
-            <video src="images/cemoy/layout/Cut18_0605_v13.mp4" autoplay muted loop playsinline></video>
-        </div>
-
-        <div class="layout-module grid-3">
-            <video src="images/cemoy/layout/Cut18_0605_v12.m4v" autoplay muted loop playsinline></video>
-            <video src="images/cemoy/layout/Cut14_v4.mp4" autoplay muted loop playsinline></video>
-            <video src="images/cemoy/layout/Cut11_v29.m4v" autoplay muted loop playsinline></video>
-        </div>
         
-        <!-- 
-        ================================================
-        【排版工具箱】 复制下面的代码块到上面的 content-container 中即可使用
-        ================================================
-        
-        1. 单张全宽图:
-        <div class="layout-module">
-            <img src="图片路径.jpg">
-        </div>
+    </section>
 
-        2. 两张图并排:
-        <div class="layout-module grid-2">
-            <img src="图1.jpg">
-            <img src="图2.jpg">
-        </div>
+    <!-- 
+    ================================================
+    【排版工具箱】 复制下面的代码块到上面的 content-container 中即可使用
+    ================================================
+    
+    1. 单张全宽图:
+    <div class="layout-module">
+        <img src="图片路径.jpg">
+    </div>
 
-        3. 三张图并排:
-        <div class="layout-module grid-3">
-            <img src="图1.jpg">
-            <img src="图2.jpg">
-            <img src="图3.jpg">
-        </div>
+    2. 两张图并排:
+    <div class="layout-module grid-2">
+        <img src="图1.jpg">
+        <img src="图2.jpg">
+    </div>
 
-        4. 纯文字说明段落:
-        <div class="layout-module text-module">
-            <h3>标题</h3>
-            <p>这里是正文内容...</p>
-        </div>
+    3. 三张图并排:
+    <div class="layout-module grid-3">
+        <img src="图1.jpg">
+        <img src="图2.jpg">
+        <img src="图3.jpg">
+    </div>
 
-        5. 视频 (带控制条):
-        <div class="layout-module">
-            <video src="视频.mp4" controls loop></video>
-        </div>
+    4. 纯文字说明段落:
+    <div class="layout-module text-module">
+        <h3>标题</h3>
+        <p>这里是正文内容...</p>
+    </div>
 
-        6. 左图右文:
-        <div class="layout-module text-media-grid">
-            <img src="图.jpg">
-            <div class="tm-text">
-                <h4>标题</h4>
-                <p>描述文字...</p>
+    5. 视频 (带控制条):
+    <div class="layout-module">
+        <video src="视频.mp4" controls loop></video>
+    </div>
+
+    6. 左图右文:
+    <div class="layout-module text-media-grid">
+        <img src="图.jpg">
+        <div class="tm-text">
+            <h4>标题</h4>
+            <p>描述文字...</p>
+        </div>
+    </div>
+
+    7.自动长图排版
+    <div class="layout-module manual-columns">
+        <div class="col-left">
+            <img src="images/cemoy/你的长竖图.jpg">
+        </div>
+        <div class="col-right">
+            <img src="images/cemoy/你的短竖图.jpg">
+            <div class="text-module" style="padding: 20px 0; text-align: left;">
+                <p>这里可以写图片注释...</p>
             </div>
         </div>
-        ================================================
-        -->
+    </div>
 
-    </section>
+    8.单张竖图
+    <div class="layout-module" style="display: flex; justify-content: center;">
+            <div style="width: 33%; min-width: 300px;">
+                <img src="images/cemoy/你的单张长竖图.jpg" style="width: 100%;">
+            </div>
+        </div>
+    ================================================
+    -->
 
     <footer>
         <div class="footer-content">
@@ -272,40 +267,36 @@
         document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
 
         // =========================================
-        // [修改] 图片/视频查看器逻辑 (Lightbox Logic)
+        // [修改] 图片/视频查看器逻辑
         // =========================================
         const lightbox = document.getElementById('lightbox');
         const lightboxImg = document.getElementById('lightbox-img');
         const lightboxVideo = document.getElementById('lightbox-video');
 
-        // 1. 监听所有图片的点击
+        // 图片点击
         document.querySelectorAll('.layout-module img').forEach(img => {
             img.addEventListener('click', function() {
                 const src = this.getAttribute('src');
                 if(src) {
-                    // 显示图片，隐藏视频
                     lightboxImg.src = src;
                     lightboxImg.classList.add('show');
                     lightboxVideo.classList.remove('show');
-                    
                     lightbox.classList.add('active');
                     document.body.style.overflow = 'hidden';
                 }
             });
         });
 
-        // 2. [新增] 监听所有视频的点击
+        // 视频点击
         document.querySelectorAll('.layout-module video').forEach(vid => {
             vid.addEventListener('click', function() {
-                // 只放大没有控制条的视频 (即作为GIF展示的视频)
+                // 排除带控制条的视频
                 if (!this.hasAttribute('controls')) {
                     const src = this.getAttribute('src');
                     if(src) {
-                        // 显示视频，隐藏图片
                         lightboxVideo.src = src;
                         lightboxVideo.classList.add('show');
                         lightboxImg.classList.remove('show');
-                        
                         lightbox.classList.add('active');
                         document.body.style.overflow = 'hidden';
                     }
@@ -313,17 +304,13 @@
             });
         });
 
-        // 3. 关闭查看器
         function closeLightbox() {
             lightbox.classList.remove('active');
             document.body.style.overflow = '';
-            
-            // 延迟清理
             setTimeout(() => { 
                 lightboxImg.src = ''; 
                 lightboxImg.classList.remove('show');
-                
-                lightboxVideo.src = ''; // 停止播放
+                lightboxVideo.src = ''; 
                 lightboxVideo.classList.remove('show');
             }, 300);
         }
