@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Details | Zachary Shee</title>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        /* 导航栏 */
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* --- 1. Hero 区域 --- */
+        .project-hero { width: 100%; height: 85vh; position: relative; overflow: hidden; margin-bottom: 100px; }
+        .project-hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-color) 100%);
+            z-index: 2; pointer-events: none;
+        }
+        .project-hero img, .project-hero video { 
+            width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7);
+            opacity: 0; animation: heroFadeIn 3s ease-out forwards; 
+        }
+
+        .hero-text { position: absolute; bottom: 60px; left: 60px; z-index: 10; }
+        .ph-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px);}
+        .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px);}
+
+        /* --- 2. 项目描述信息 --- */
+        .project-meta { max-width: 1200px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        .meta-list div { margin-bottom: 25px; }
+        .meta-label { color: var(--accent-color); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; border-top: 1px solid #333; padding-top: 15px; display: inline-block; width: 100%; }
+        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; }
+
+        /* --- 3. 内容布局系统 --- */
+        .content-container { 
+            max-width: 1800px; margin: 0 auto 100px; padding: 0 60px; 
+            display: flex; flex-direction: column; gap: 20px; 
+        }
+
+        .layout-module { width: 100%; position: relative; opacity: 0; transform: translateY(40px); transition: 0.8s ease; }
+        .layout-module.active { opacity: 1; transform: translateY(0); }
+        .layout-module img, .layout-module video { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        
+        .text-module { padding: 80px 0; text-align: center; max-width: 800px; margin: 0 auto; }
+        .text-module h3 { font-size: 1.5rem; margin-bottom: 20px; }
+        .text-module p { font-size: 1rem; color: #aaa; line-height: 1.8; }
+
+        .text-media-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .tm-text { padding: 20px; }
+        .tm-text h4 { font-size: 1.2rem; margin-bottom: 15px; color: white; }
+        .tm-text p { color: #888; line-height: 1.6; }
+
+        @media (max-width: 768px) {
+            .project-meta { grid-template-columns: 1fr; gap: 40px; }
+            .content-container { padding: 0 20px; }
+            .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
+            .text-module { padding: 40px 0; }
+            .manual-columns { flex-direction: column; }
+        }
+
+        .manual-columns { display: flex; gap: 20px; align-items: flex-start; }
+        .col-left, .col-right { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+        .manual-columns img, .manual-columns video { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        
+        @keyframes heroFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* =========================================
+           [修改] 图片/视频查看器 (Lightbox) 样式
+           ========================================= */
+        .layout-module img, 
+        .layout-module video { 
+            cursor: zoom-in; 
+            transition: filter 0.3s;
+        }
+        .layout-module img:hover,
+        .layout-module video:hover {
+            filter: brightness(1.1);
+        }
+
+        .lightbox-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: none;
+            justify-content: center; align-items: center;
+            cursor: zoom-out;
+            backdrop-filter: blur(5px);
+        }
+        .lightbox-overlay.active { display: flex; animation: fadeIn 0.3s ease-out; }
+
+        .lightbox-overlay img, 
+        .lightbox-overlay video {
+            max-width: 90%; 
+            max-height: 90%;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            user-select: none;
+            display: none; 
+        }
+        .lightbox-overlay video.show,
+        .lightbox-overlay img.show { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        </div>
+    </nav>
+
+    <!-- 1. 顶部 Hero 区域 -->
+    <header class="project-hero">
+        <img src="images/dreamephone/花纹.webp" alt="Hero Image">
+        <div class="hero-text">
+            <div class="ph-title">DREAME PHONE</div>
+            <div class="ph-cat">AIGC</div>
+        </div>
+    </header>
+
+    <!-- 2. 项目信息区域 -->
+    <section class="project-meta">
+        <div class="meta-list">
+            <div><span class="meta-label">CLIENT</span>Dreame</div>
+            <div><span class="meta-label">ROLE</span>AI Artist</div>
+            <div><span class="meta-label">SOFTWARE</span>Phoneshop / AIGC</div>
+        </div>
+        <div class="meta-desc">
+            <p>We have created these exceptional and high-quality images using AI tools.</p>
+        </div>
+    </section>
+
+    <!-- 3. 内容展示区域 (这里就是您自由排版的地方) -->
+    <section class="content-container">
+
+        <div class="layout-module grid-2">
+            <img src="images/dreamephone/花纹3.webp">
+            <img src="images/dreamephone/花纹8.webp">
+        </div>
+
+        <div class="layout-module grid-3">
+            <img src="images/dreamephone/花纹4.webp">
+            <img src="images/dreamephone/花纹5.webp">
+            <img src="images/dreamephone/花纹6.webp">
+        </div>
+
+        <div class="layout-module grid-2">
+            <img src="images/dreamephone/特写1.webp">
+            <img src="images/dreamephone/特写2.webp">
+        </div>
+
+        <div class="layout-module text-module">
+            <h3>AIGC Model</h3>
+            <p>We utilized AI tools to complete these photographic works</p>
+        </div>
+               
+        <div class="layout-module grid-3">
+            <img src="images/dreamephone/花纹_平面图2.webp">
+            <img src="images/dreamephone/花纹_平面图4.webp">
+            <img src="images/dreamephone/花纹_平面图5_无logo.webp">
+        </div>
+
+        <div class="layout-module grid-2">
+            <img src="images/dreamephone/花纹_平面图3-横构图.webp">
+            <img src="images/dreamephone/花纹_平面图5-横构图.webp">
+        </div>
+
+        <div class="layout-module">
+            <img src="images/dreamephone/花纹_平面图6-横构图.webp">
+        </div>
+
+        <!--
+        <div class="layout-module text-media-grid">
+            <video src="images/aion-nda/城区_场景6_移除手_有手.webm" autoplay muted loop playsinline></video>
+            <div class="tm-text">
+                <h4>POV</h4>
+                <p>Autonomous driving function in urban areas</p>
+            </div>
+        </div> -->
+        
+                
+    </section>
+
+    <!-- 
+    ================================================
+    【排版工具箱】 复制下面的代码块到上面的 content-container 中即可使用
+    ================================================
+    
+    1. 单张全宽图:
+    <div class="layout-module">
+        <img src="图片路径.jpg">
+    </div>
+
+    2. 两张图并排:
+    <div class="layout-module grid-2">
+        <img src="图1.jpg">
+        <img src="图2.jpg">
+    </div>
+
+    3. 三张图并排:
+    <div class="layout-module grid-3">
+        <img src="图1.jpg">
+        <img src="图2.jpg">
+        <img src="图3.jpg">
+    </div>
+
+    4. 纯文字说明段落:
+    <div class="layout-module text-module">
+        <h3>标题</h3>
+        <p>这里是正文内容...</p>
+    </div>
+
+    5. 视频 (带控制条):
+    <div class="layout-module">
+        <video src="视频.mp4" controls loop></video>
+    </div>
+
+    6. 左图右文:
+    <div class="layout-module text-media-grid">
+        <img src="图.jpg">
+        <div class="tm-text">
+            <h4>标题</h4>
+            <p>描述文字...</p>
+        </div>
+    </div>
+
+    7.自动长图排版
+    <div class="layout-module manual-columns">
+        <div class="col-left">
+            <img src="images/cemoy/你的长竖图.jpg">
+        </div>
+        <div class="col-right">
+            <img src="images/cemoy/你的短竖图.jpg">
+            <div class="text-module" style="padding: 20px 0; text-align: left;">
+                <p>这里可以写图片注释...</p>
+            </div>
+        </div>
+    </div>
+
+    8.单张竖图
+    <div class="layout-module" style="display: flex; justify-content: center;">
+            <div style="width: 33%; min-width: 300px;">
+                <img src="images/cemoy/你的单张长竖图.jpg" style="width: 100%;">
+            </div>
+        </div>
+    ================================================
+    -->
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- [修改] 图片/视频查看器 HTML -->
+    <div id="lightbox" class="lightbox-overlay" onclick="closeLightbox()">
+        <!-- 图片容器 -->
+        <img id="lightbox-img" src="" alt="Full View">
+        <!-- [新增] 视频容器 -->
+        <video id="lightbox-video" autoplay muted loop playsinline></video>
+    </div>
+
+    <script>
+        // 滚动揭示动画
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
+
+        // =========================================
+        // [修改] 图片/视频查看器逻辑
+        // =========================================
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxVideo = document.getElementById('lightbox-video');
+
+        // 图片点击
+        document.querySelectorAll('.layout-module img').forEach(img => {
+            img.addEventListener('click', function() {
+                const src = this.getAttribute('src');
+                if(src) {
+                    lightboxImg.src = src;
+                    lightboxImg.classList.add('show');
+                    lightboxVideo.classList.remove('show');
+                    lightbox.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        // 视频点击
+        document.querySelectorAll('.layout-module video').forEach(vid => {
+            vid.addEventListener('click', function() {
+                // 排除带控制条的视频
+                if (!this.hasAttribute('controls')) {
+                    const src = this.getAttribute('src');
+                    if(src) {
+                        lightboxVideo.src = src;
+                        lightboxVideo.classList.add('show');
+                        lightboxImg.classList.remove('show');
+                        lightbox.classList.add('active');
+                        document.body.style.overflow = 'hidden';
+                    }
+                }
+            });
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+            setTimeout(() => { 
+                lightboxImg.src = ''; 
+                lightboxImg.classList.remove('show');
+                lightboxVideo.src = ''; 
+                lightboxVideo.classList.remove('show');
+            }, 300);
+        }
+        
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+    </script>
+</body>
+</html>
