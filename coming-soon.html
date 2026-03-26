@@ -43,6 +43,13 @@
         }
         .nav-links a:hover, .nav-links a.active { opacity: 1; }
 
+        /* [新增] 语言切换器样式 */
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+
         /* --- 2. 核心内容区 --- */
         .coming-soon-container {
             flex: 1; 
@@ -192,46 +199,70 @@
 
     <nav>
         <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
-        <div class="nav-links">
-            <a href="work.html">WORK</a>
-            <a href="about.html">ABOUT</a>
-            <a href="course.html">COURSE</a>
-            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="mailto:pandaastone@gmail.com" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <!-- 多语言切换 -->
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
         </div>
     </nav>
 
     <main class="coming-soon-container">
         <div class="glow-bg"></div>
 
-        <div class="status-code">Not available now</div>
+        <div class="status-code" data-i18n="cs_status">Not available now</div>
 
-        <h1 class="main-title">
+        <h1 class="main-title" data-i18n="cs_title">
             COMING<br>SOON
         </h1>
 
-        <p class="sub-desc">
+        <p class="sub-desc" data-i18n="cs_desc">
             We are currently crafting the visuals for this project.<br>
             Please check back later for the full case study.
         </p>
 
-        <a href="work.html" class="back-btn">Back to Work</a>
+        <a href="work.html" class="back-btn" data-i18n="cs_back">Back to Work</a>
     </main>
 
     <footer>
         <div class="footer-content">
             <div class="footer-left">
                 <h3>ZACHARY SHEE</h3>
-                <p>Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                <p data-i18n="footer_desc">Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
                 <br>
-                <p style="opacity: 0.4;">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+                <p style="opacity: 0.4;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
             </div>
             <div class="footer-links">
-                <div class="f-col"><div class="f-title">SITEMAP</div><a href="index.html">Home</a><a href="work.html">Work</a><a href="about.html">About</a><a href="course.html">Course</a></div>
-                <div class="f-col"><div class="f-title">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
-                <div class="f-col"><div class="f-title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+                <div class="f-col">
+                    <div class="f-title" data-i18n="footer_sitemap">SITEMAP</div>
+                    <a href="index.html" data-i18n="nav_work">Home</a>
+                    <a href="work.html" data-i18n="nav_work">Work</a>
+                    <a href="about.html" data-i18n="nav_about">About</a>
+                    <a href="course.html" data-i18n="nav_course">Course</a>
+                </div>
+                <div class="f-col">
+                    <div class="f-title" data-i18n="footer_social">SOCIAL</div>
+                    <a href="#" target="_blank">Instagram</a>
+                    <a href="#" target="_blank">Behance</a>
+                    <a href="#" target="_blank">Vimeo</a>
+                </div>
+                <div class="f-col">
+                    <div class="f-title" data-i18n="footer_contact_title">CONTACT</div>
+                    <a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a>
+                </div>
             </div>
         </div>
     </footer>
 
+    <!-- 语言控制脚本 -->
+    <script src="lang.js"></script>
 </body>
 </html>

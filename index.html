@@ -212,17 +212,33 @@
 
         .reveal { opacity: 0; transform: translateY(40px); transition: 1.2s all ease; }
         .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* 语言切换器样式 */
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+        @media (max-width: 768px) { .lang-switch { margin-left: 20px; } }
+
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo"><a href="/">ZACHARY SHEE</a></div>
-        <div class="nav-links">
-            <a href="work.html">WORK</a>
-            <a href="about.html">ABOUT</a>
-            <a href="course.html">COURSE</a>
-            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="mailto:pandaastone@gmail.com" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
         </div>
     </nav>
 
@@ -258,13 +274,13 @@
         </div>
         
         <div class="studio-text-container">
-            <p class="studio-text-p reveal-text">
+            <p class="studio-text-p reveal-text" data-i18n="studio_p1">
                 We are a design studio driven by creative services, and we believe our visual expertise can create greater value for our clients. We are committed to providing high-quality solutions for clients with varying budget ranges. Our team consists of designers, animators, 3D artists, and VFX artists.
             </p>
-            <p class="studio-text-p reveal-text">
+            <p class="studio-text-p reveal-text" data-i18n="studio_p2">
                 Our services encompass various creative fields, including TV commercials, 3C digital products, mobile phones, and automotive visualization. We have also won numerous awards, including the MUSE Design Award, Vega Award, and NYX Award.
             </p>
-            <p class="studio-text-p reveal-text">
+            <p class="studio-text-p reveal-text" data-i18n="studio_p3">
                 We have served many well-known brands, such as Audi, XPeng Motors, BMW, BYD Auto, Yangwang Auto, Denza, Pigeon, Cemoy, Hisense, POP MART, and many others.
             </p>
         </div>
@@ -277,11 +293,11 @@
             <div class="project-card"><img src="images/奥迪.jpg"><video src="videos/3.mp4" muted loop></video></div>
             <div class="project-card"><img src="images/xpeng.png"><video src="videos/XP-G9_2024_Launch.mp4" muted loop></video></div>
         </div>
-        <a href="work.html" class="more-btn">VIEW ALL WORKS</a>
+        <a href="work.html" class="more-btn" data-i18n="view_all">VIEW ALL WORKS</a>
     </section>
 
     <section class="brands-section reveal">
-        <div class="brands-title">CLIENTS & PARTNERS</div>
+        <div class="brands-title" data-i18n="clients_title">CLIENTS & PARTNERS</div>
         <div class="logo-slider">
             <img src="logos/audi.png" alt="Audi">
             <img src="logos/xpeng.png" alt="XPeng">
@@ -332,5 +348,7 @@
 
         document.querySelectorAll('.reveal-text').forEach(el => textObserver.observe(el));
     </script>
+
+<script src="lang.js"></script>
 </body>
 </html>

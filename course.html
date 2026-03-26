@@ -2,14 +2,13 @@
 <html lang="zh-CN">
 <head>
     <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
-            <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-KT4Q0CHQKL');
-        </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course | Zachary Shee</title>
@@ -20,10 +19,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
 
+        /* 导航栏 */
         nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
         .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
         .nav-links a { color: white; text-decoration: none; margin-left: 35px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
         .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        /* 语言切换器样式 */
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+        @media (max-width: 768px) { .lang-switch { margin-left: 20px; } }
 
         .course-header { padding: 180px 60px 80px; text-align: left; max-width: 1400px; margin: 0 auto; }
         
@@ -44,10 +52,8 @@
             background: #0a0a0a; border: 1px solid #222; padding: 30px; 
             display: flex; flex-direction: column; justify-content: space-between; height: 400px; position: relative; overflow: hidden;
             transition: transform 0.3s, border-color 0.3s; cursor: pointer;
-            /* 初始隐藏 */
             opacity: 0; transform: translateY(40px);
         }
-        /* 动画激活状态 */
         .course-card.active { animation: fadeInUp 1s forwards; }
         .course-card:hover { transform: translateY(-10px); border-color: #555; }
         
@@ -61,28 +67,56 @@
         .cc-info p { color: #888; font-size: 0.9rem; line-height: 1.5; }
         .cc-link { margin-top: 20px; font-size: 0.8rem; text-decoration: underline; color: white; opacity: 0.5; }
 
+        /* 页脚样式 */
+        footer { border-top: 1px solid #222; padding: 80px 60px; margin-top: auto; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        .footer-links { display: flex; gap: 60px; }
+        .f-col { display: flex; flex-direction: column; gap: 15px; }
+        .f-title { color: white; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
+        .f-col a { color: #888; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .f-col a:hover { color: white; }
+
         @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
 
+        @media (max-width: 900px) {
+            .course-list { grid-template-columns: 1fr; }
+            .course-card { height: 350px; }
+            nav { padding: 30px; }
+            .course-header { padding: 150px 30px 50px; }
+            .course-list { padding: 0 30px 100px; }
+            footer { padding: 60px 30px; }
+            .footer-content { flex-direction: column; }
+            .footer-links { flex-direction: column; gap: 30px; }
+        }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo"><a href="/">ZACHARY SHEE</a></div>
-        <div class="nav-links">
-            <a href="work.html">WORK</a>
-            <a href="about.html">ABOUT</a>
-            <a href="course.html" class="active">COURSE</a>
-            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" class="active" data-i18n="nav_course">COURSE</a>
+                <a href="mailto:pandaastone@gmail.com" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
         </div>
     </nav>
 
     <div class="course-header">
         <div class="c-title">
-            <span class="t-line-1">LEARN</span>
-            <span class="t-line-2">FROM STUDIO</span>
+            <span class="t-line-1" data-i18n="course_title_1">LEARN</span>
+            <span class="t-line-2" data-i18n="course_title_2">FROM STUDIO</span>
         </div>
-        <div class="c-sub">Master the techniques of high-end product visualization, 3D motion graphics, and art direction with our curated courses.</div>
+        <div class="c-sub" data-i18n="course_sub">Master the techniques of high-end product visualization, 3D motion graphics, and art direction with our curated courses.</div>
     </div>
 
     <div class="course-list">
@@ -91,9 +125,9 @@
             <div class="card-bg-glow"></div>
             <div class="cc-num">01</div>
             <div class="cc-info">
-                <h3>Product Lighting</h3>
-                <p>Master the art of studio lighting for 3C products using Cinema 4D and Redshift.</p>
-                <div class="cc-link">Coming Soon</div>
+                <h3 data-i18n="c1_title">Product Lighting</h3>
+                <p data-i18n="c1_desc">Master the art of studio lighting for 3C products using Cinema 4D and Redshift.</p>
+                <div class="cc-link" data-i18n="c1_link">Coming Soon</div>
             </div>
         </div>
         <!-- 卡片 2 -->
@@ -101,9 +135,9 @@
             <div class="card-bg-glow"></div>
             <div class="cc-num">02</div>
             <div class="cc-info">
-                <h3>Automotive CGI</h3>
-                <p>A complete workflow for automotive rendering, from data prep to final compositing.</p>
-                <div class="cc-link">View Details</div>
+                <h3 data-i18n="c2_title">Automotive CGI</h3>
+                <p data-i18n="c2_desc">A complete workflow for automotive rendering, from data prep to final compositing.</p>
+                <div class="cc-link" data-i18n="c2_link">View Details</div>
             </div>
         </div>
         <!-- 卡片 3 -->
@@ -111,18 +145,33 @@
             <div class="card-bg-glow"></div>
             <div class="cc-num">03</div>
             <div class="cc-info">
-                <h3>Motion Systems</h3>
-                <p>Create complex motion systems and simulations for commercial projects.</p>
-                <div class="cc-link">View Details</div>
+                <h3 data-i18n="c3_title">Motion Systems</h3>
+                <p data-i18n="c3_desc">Create complex motion systems and simulations for commercial projects.</p>
+                <div class="cc-link" data-i18n="c3_link">View Details</div>
             </div>
         </div>
     </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p data-i18n="footer_desc">Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                <br>
+                <p style="opacity: 0.4;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="f-col"><div class="f-title" data-i18n="footer_sitemap">SITEMAP</div><a href="index.html" data-i18n="nav_work">Home</a><a href="work.html" data-i18n="nav_work">Work</a><a href="about.html" data-i18n="nav_about">About</a><a href="course.html" data-i18n="nav_course">Course</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_social">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_contact_title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry, index) => {
                 if (entry.isIntersecting) {
-                    // 利用 style.animationDelay 实现动态交错
                     entry.target.style.animationDelay = `${index * 0.2}s`;
                     entry.target.classList.add('active');
                     observer.unobserve(entry.target);
@@ -132,5 +181,6 @@
 
         document.querySelectorAll('.reveal-item').forEach(el => observer.observe(el));
     </script>
+    <script src="lang.js"></script>
 </body>
 </html>

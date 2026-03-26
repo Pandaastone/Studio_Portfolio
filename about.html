@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
-            <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'G-KT4Q0CHQKL');
-        </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer ||[];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -39,14 +38,14 @@
             min-height: 100vh;
         }
 
-        /* --- 1. 导航栏 (完全复用 Index 页面代码，确保 0 位移) --- */
+        /* --- 1. 导航栏 --- */
         nav {
             position: fixed;
             top: 0; width: 100%;
             display: flex; justify-content: space-between; align-items: center;
             padding: 40px 60px;
             z-index: 1000;
-            mix-blend-mode: difference; /* 关键：与 Index 保持一致的混合模式 */
+            mix-blend-mode: difference;
         }
         .logo { font-weight: 600; letter-spacing: 2px; }
         .logo a { color: white; text-decoration: none; }
@@ -57,16 +56,24 @@
         }
         .nav-links a:hover, .nav-links a.active { opacity: 1; }
 
-        /* --- 2. 页面头部 (垂直居中修正) --- */
+        /* 语言切换器样式 */
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+        @media (max-width: 768px) { .lang-switch { margin-left: 20px; } }
+
+        /* --- 2. 页面头部 --- */
         .about-hero { 
-            min-height: 100vh; /* 占满全屏 */
+            min-height: 100vh; 
             width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* 垂直居中 */
+            justify-content: center; 
             align-items: center;
             text-align: center;
-            padding: 0 20px; /* 取消顶部 Padding，由 Flex 自动居中 */
+            padding: 0 20px; 
             position: relative;
         }
         
@@ -106,12 +113,8 @@
             flex-direction: column;
             align-items: center;
             gap: 20px;
-            
-            /* 初始状态 */
             opacity: 0; 
             transform: translateY(30px);
-            
-            /* 动效 */
             transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1.000);
         }
         
@@ -173,7 +176,6 @@
         /* 正文段落 */
         .bio-text p {
             font-size: 0.95rem; font-weight: 300; line-height: 1.7; color: #ccc; margin-bottom: 20px;
-            
             opacity: 0; transform: translateY(30px);
             transition: all 1s cubic-bezier(0.215, 0.610, 0.355, 1.000);
         }
@@ -289,19 +291,26 @@
 
     <nav>
         <div class="logo"><a href="/">ZACHARY SHEE</a></div>
-        <div class="nav-links">
-            <a href="work.html">WORK</a>
-            <a href="about.html" class="active">ABOUT</a>
-            <a href="course.html">COURSE</a>
-            <a href="mailto:pandaastone@gmail.com">CONTACT</a>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="about.html" class="active" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="mailto:pandaastone@gmail.com" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
         </div>
     </nav>
 
     <div class="about-hero">
-        <div class="page-title">
+        <div class="page-title" data-i18n="about_hero_title">
             A COLLECTIVE OF<br>CREATIVE MINDS
         </div>
-        <div class="page-desc">
+        <div class="page-desc" data-i18n="about_hero_desc">
             We are a team of independent artists active on the frontline of the industry. 
             We provide creative services and technical support in digital imaging, spanning 
             product advertising, motion graphics, 3D design, visualization, and creative rendering.
@@ -324,7 +333,7 @@
     </div>
 
     <section class="team-section">
-        <span class="section-header" style="text-align: left; margin-bottom: 80px;">Core Members</span>
+        <span class="section-header" style="text-align: left; margin-bottom: 80px;" data-i18n="about_team_title">Core Members</span>
 
         <div class="member-card">
             <div class="member-photo reveal-left">
@@ -334,18 +343,18 @@
                 <h2 class="member-name">ZACHARY SHEE</h2>
                 <div class="member-aka">aka PANDA</div>
                 
-                <div class="tagline-highlight">
+                <div class="tagline-highlight" data-i18n="about_tagline">
                     Sculpting light between motion and stillness.
                 </div>
                 
                 <div class="bio-text" id="bio-zachary">
-                    <p>My world exists between dimensions—where light and shadow are sculpted, and rhythm breathes in the spaces between frames. My tools are not just keys and pixels, but intuition and algorithm.</p>
-                    <p>Moving between the virtual and the real, I choose not only software—but dimensions. Each platform is more than a tool; it is a tangible dream. And every time I bridge different applications, I stretch the horizon of imagination a little further.</p>
-                    <p>CG space is both my canvas and my stage—where I choreograph light, direct motion, and give static ideas a narrative soul.</p>
-                    <p>Into the pulse of every brand I touch, I pour more than visuals—I weave flowing stories and emotional resonance. Commerce is not a constraint, but another form of creative terrain.</p>
-                    <p>The experience built through projects is what makes me not only understand people, but also dare to dream bolder. I believe design lives beyond the screen, and technology knows no bounds.</p>
-                    <p>Staying ahead is instinct; staying open is attitude.</p>
-                    <p>If you, too, believe that visuals can speak, motion can breathe, and technology can hold warmth—then I look forward to meeting you in the next project, where we’ll compose poetry out of pixels.</p>
+                    <p data-i18n="bio_z_p1">My world exists between dimensions—where light and shadow are sculpted, and rhythm breathes in the spaces between frames. My tools are not just keys and pixels, but intuition and algorithm.</p>
+                    <p data-i18n="bio_z_p2">Moving between the virtual and the real, I choose not only software—but dimensions. Each platform is more than a tool; it is a tangible dream. And every time I bridge different applications, I stretch the horizon of imagination a little further.</p>
+                    <p data-i18n="bio_z_p3">CG space is both my canvas and my stage—where I choreograph light, direct motion, and give static ideas a narrative soul.</p>
+                    <p data-i18n="bio_z_p4">Into the pulse of every brand I touch, I pour more than visuals—I weave flowing stories and emotional resonance. Commerce is not a constraint, but another form of creative terrain.</p>
+                    <p data-i18n="bio_z_p5">The experience built through projects is what makes me not only understand people, but also dare to dream bolder. I believe design lives beyond the screen, and technology knows no bounds.</p>
+                    <p data-i18n="bio_z_p6">Staying ahead is instinct; staying open is attitude.</p>
+                    <p data-i18n="bio_z_p7">If you, too, believe that visuals can speak, motion can breathe, and technology can hold warmth—then I look forward to meeting you in the next project, where we’ll compose poetry out of pixels.</p>
                     
                     <div class="quote-signature">
                         — Zachary Shee
@@ -360,12 +369,12 @@
             </div>
             <div class="member-info reveal">
                 <h2 class="member-name">GUOWEI LEE</h2>
-                <div class="member-aka">Partner / VFX Artist / Modeler</div>
+                <div class="member-aka" data-i18n="guowei_title">Partner / VFX Artist / Modeler</div>
                 
                 <div class="bio-text">
-                    <p>He is a combination of special effects artist and modeler. Capable of mastering various needs and challenges.</p>
-                    <p>With a deep understanding of structural complexity and visual impact, GuoWei brings technical precision to artistic vision.</p>
-                    <p>From hyper-realistic product details to abstract motion arts, he ensures that every explosion, liquid simulation, and mechanical movement follows the laws of nature while serving the narrative.</p>
+                    <p data-i18n="bio_g_p1">He is a combination of special effects artist and modeler. Capable of mastering various needs and challenges.</p>
+                    <p data-i18n="bio_g_p2">With a deep understanding of structural complexity and visual impact, GuoWei brings technical precision to artistic vision.</p>
+                    <p data-i18n="bio_g_p3">From hyper-realistic product details to abstract motion arts, he ensures that every explosion, liquid simulation, and mechanical movement follows the laws of nature while serving the narrative.</p>
                 </div>
             </div>
         </div>
@@ -373,7 +382,7 @@
     </section>
 
     <section class="clients-section reveal">
-        <span class="section-header">Selected Clients</span>
+        <span class="section-header" data-i18n="clients_sel">Selected Clients</span>
         <div class="client-grid">
             <img src="logos/audi.png" alt="Audi" class="client-logo">
             <img src="logos/bmw.png" alt="BMW" class="client-logo">
@@ -391,8 +400,8 @@
 
     <section class="contact-section reveal">
         <div class="contact-left">
-            <h2>LET'S CREATE<br>TOGETHER.</h2>
-            <p>Ready to start a project? Or just want to say hi? <br>We are always open to new ideas and collaborations.</p>
+            <h2 data-i18n="contact_title">LET'S CREATE<br>TOGETHER.</h2>
+            <p data-i18n="contact_desc">Ready to start a project? Or just want to say hi? <br>We are always open to new ideas and collaborations.</p>
         </div>
         
         <div class="contact-grid">
@@ -410,7 +419,7 @@
                 <img src="images/wechat_qr.jpg" alt="WeChat QR" class="qr-img"> 
                 <div class="qr-text" style="color:#ccc; font-size:0.9rem;">
                     <span style="display:block; color:white; font-weight:600; margin-bottom:5px;">WeChat</span>
-                    Scan to add me on WeChat.
+                    <span data-i18n="qr_text">Scan to add me on WeChat.</span>
                 </div>
             </div>
         </div>
@@ -420,14 +429,14 @@
         <div class="footer-content">
             <div class="footer-left">
                 <h3>ZACHARY SHEE</h3>
-                <p>Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                <p data-i18n="footer_desc">Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
                 <br>
-                <p style="opacity: 0.4;">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+                <p style="opacity: 0.4;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
             </div>
             <div class="footer-links">
-                <div class="f-col"><div class="f-title">SITEMAP</div><a href="index.html">Home</a><a href="work.html">Work</a><a href="about.html">About</a><a href="course.html">Course</a></div>
-                <div class="f-col"><div class="f-title">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
-                <div class="f-col"><div class="f-title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_sitemap">SITEMAP</div><a href="index.html">Home</a><a href="work.html" data-i18n="nav_work">Work</a><a href="about.html" data-i18n="nav_about">About</a><a href="course.html" data-i18n="nav_course">Course</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_social">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_contact_title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
             </div>
         </div>
     </footer>
@@ -452,7 +461,6 @@
                 if(entry.isIntersecting) {
                     const items = entry.target.querySelectorAll('.award-item');
                     items.forEach((item, index) => {
-                        // 150ms 紧凑间隔，配合 CSS 的 1s 贝塞尔曲线
                         setTimeout(() => {
                             item.classList.add('active');
                         }, index * 150); 
@@ -464,7 +472,6 @@
         
         const awardsContainer = document.querySelector('.awards-grid');
         if(awardsContainer) awardsObserver.observe(awardsContainer);
-
 
         // 3. 文字水流效果 (150ms 间隔)
         const textObserver = new IntersectionObserver((entries) => {
@@ -492,6 +499,9 @@
 
         document.querySelectorAll('.bio-text').forEach(el => textObserver.observe(el));
     </script>
+    
+    <!-- 引入多语言脚本 -->
+    <script src="lang.js"></script>
 
 </body>
 </html>
