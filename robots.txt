@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /coming-soon.html
+Disallow: /project-template.html
+Disallow: /project-template%20copy.html
+Disallow: /project-template copy.html
+Disallow: /project-xpeng.html
+
+Sitemap: https://www.zacharyshee.com/sitemap.xml
