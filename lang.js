@@ -3,7 +3,7 @@
 const translations = {
     'en': {
         // 导航与页脚
-        'nav_work': 'WORK', 'nav_about': 'ABOUT', 'nav_course': 'COURSE', 'nav_contact': 'CONTACT',
+        'nav_home': 'HOME', 'nav_work': 'WORK', 'nav_about': 'ABOUT', 'nav_course': 'COURSE', 'nav_contact': 'CONTACT',
         'footer_desc': 'Creative Design Studio.<br>Based in Shanghai, available Worldwide.',
         'footer_rights': '© 2024 Zachary Shee. All Rights Reserved.',
         'footer_sitemap': 'SITEMAP', 'footer_social': 'SOCIAL', 'footer_contact_title': 'CONTACT',
@@ -39,6 +39,29 @@ const translations = {
         'contact_desc': 'Ready to start a project? Or just want to say hi? <br>We are always open to new ideas and collaborations.',
         'qr_text': 'Scan to add me on WeChat.',
         
+        // 联系页 (Contact)
+        'contact_page_eyebrow': 'CONTACT / CONNECT',
+        'contact_page_title': 'LET\'S CREATE<br>OR JUST SAY HI.',
+        'contact_page_intro': 'For commercial CGI, product visualization, TVC, automotive visuals, AIGC experiments, technical exchange, course questions, or simply connecting before the next project.',
+        'contact_page_email_cta': 'EMAIL US',
+        'contact_page_work_cta': 'VIEW WORK',
+        'contact_page_email_label': 'EMAIL',
+        'contact_page_email_note': 'Best for briefs, schedules, and production details.',
+        'contact_page_discord_label': 'DISCORD',
+        'contact_page_discord_note': 'For overseas clients, peers, and lighter technical conversations.',
+        'contact_page_services_label': 'SERVICES',
+        'contact_page_service_1': 'Automotive CGI / 360 Visualization',
+        'contact_page_service_2': 'Product Visualization / 3C Product Visuals',
+        'contact_page_service_3': 'TVC / Commercial CGI / 3D Motion Graphics',
+        'contact_page_service_4': 'AIGC Visual Development / Creative Rendering',
+        'contact_page_brief_label': 'PROJECT BRIEF',
+        'contact_page_brief_1': 'Brand / company name and project type',
+        'contact_page_brief_2': 'Timeline, deliverables, and target platform',
+        'contact_page_brief_3': 'Reference style, existing brief, or NDA requirements',
+        'contact_page_brief_4': 'Budget range, if convenient',
+        'contact_page_wechat_note': 'Scan to connect on WeChat for quick project conversations.',
+        'contact_page_footer_desc': 'Creative Design Studio.<br>Open to collaborations worldwide.',
+        
         // 课程页 (Course)
         'course_title_1': 'LEARN', 'course_title_2': 'FROM STUDIO',
         'course_sub': 'Master the techniques of high-end product visualization, 3D motion graphics, and art direction with our curated courses.',
@@ -54,7 +77,7 @@ const translations = {
     },
     'zh': {
         // 导航与页脚
-        'nav_work': '作品', 'nav_about': '关于', 'nav_course': '课程', 'nav_contact': '联系',
+        'nav_home': '首页', 'nav_work': '作品', 'nav_about': '关于', 'nav_course': '课程', 'nav_contact': '联系',
         'footer_desc': '创意设计工作室。<br>立足上海，服务全球。',
         'footer_rights': '© 2024 Zachary Shee. 保留所有权利。',
         'footer_sitemap': '网站导航', 'footer_social': '社交媒体', 'footer_contact_title': '联系我们',
@@ -89,6 +112,29 @@ const translations = {
         'contact_title': '让我们<br>一起创造。',
         'contact_desc': '准备好开始一个项目了吗？或者只是想打个招呼？<br>我们随时欢迎新的想法和合作。',
         'qr_text': '扫码添加我的微信。',
+        
+        // 联系页 (Contact)
+        'contact_page_eyebrow': '联系 / 建联',
+        'contact_page_title': '一起创造，<br>或者先打个招呼。',
+        'contact_page_intro': '无论是商业 CGI、产品可视化、TVC、汽车视觉、AIGC 探索、技术交流、课程相关问题，还是只是想先认识一下，都欢迎联系。',
+        'contact_page_email_cta': '发送邮件',
+        'contact_page_work_cta': '查看作品',
+        'contact_page_email_label': '邮箱',
+        'contact_page_email_note': '适合发送项目 brief、周期安排和制作细节。',
+        'contact_page_discord_label': 'Discord',
+        'contact_page_discord_note': '适合海外客户、同行交流和轻量技术沟通。',
+        'contact_page_services_label': '服务方向',
+        'contact_page_service_1': '汽车 CGI / 360 可视化',
+        'contact_page_service_2': '产品可视化 / 3C 数码视觉',
+        'contact_page_service_3': 'TVC / 商业 CGI / 三维动态设计',
+        'contact_page_service_4': 'AIGC 视觉开发 / 创意渲染',
+        'contact_page_brief_label': '项目 brief 建议',
+        'contact_page_brief_1': '品牌 / 公司名称与项目类型',
+        'contact_page_brief_2': '时间周期、交付内容与投放平台',
+        'contact_page_brief_3': '参考风格、已有 brief 或 NDA 需求',
+        'contact_page_brief_4': '预算范围，如方便提供',
+        'contact_page_wechat_note': '扫码添加微信，适合快速沟通项目想法。',
+        'contact_page_footer_desc': '创意设计工作室。<br>开放全球范围内的合作。',
 
         // 课程页 (Course)
         'course_title_1': '向工作室', 'course_title_2': '学习',

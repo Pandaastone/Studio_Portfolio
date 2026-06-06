@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Zachary Shee Studio | CGI & 3D Motion Design</title>
+    <meta name="description" content="Contact Zachary Shee Studio for automotive CGI, product visualization, TVC CGI, 3D motion graphics, AIGC visual development, and creative rendering collaborations.">
+    <link rel="canonical" href="https://www.zacharyshee.com/contact.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Contact Zachary Shee Studio | CGI & 3D Motion Design">
+    <meta property="og:description" content="Start a collaboration for automotive CGI, product visualization, TVC CGI, 3D motion graphics, and AIGC visual development.">
+    <meta property="og:url" content="https://www.zacharyshee.com/contact.html">
+    <meta property="og:image" content="https://www.zacharyshee.com/images/wechat_qr.jpg">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "ContactPage",
+        "name": "Contact Zachary Shee Studio",
+        "url": "https://www.zacharyshee.com/contact.html",
+        "description": "Contact page for Zachary Shee Studio, a creative design studio specializing in CGI, 3D motion graphics, product visualization, automotive CGI, TVC, and AIGC visual development.",
+        "mainEntity": {
+            "@type": "Organization",
+            "name": "Zachary Shee Studio",
+            "url": "https://www.zacharyshee.com/",
+            "email": "pandaastone@gmail.com",
+            "knowsAbout": ["Automotive CGI", "Product Visualization", "TVC CGI", "3D Motion Graphics", "AIGC Visual Development", "Creative Rendering"]
+        }
+    }
+    </script>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255,255,255,0.14);
+            --panel-color: #0b0b0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 60px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.78);
+            backdrop-filter: blur(10px);
+        }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a {
+            color: white; text-decoration: none; margin-left: 35px;
+            font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--text-muted); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+
+        .contact-wrap {
+            min-height: 100vh;
+            padding: 180px 60px 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        .bg-glow {
+            position: fixed;
+            top: 18%;
+            right: -10%;
+            width: 720px;
+            height: 720px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 68%);
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: -1;
+            animation: contactGlow 10s infinite ease-in-out;
+        }
+        .contact-inner {
+            max-width: 1500px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 90px;
+            align-items: start;
+        }
+        .eyebrow {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.1s;
+        }
+        .contact-title {
+            font-size: clamp(3.4rem, 8vw, 7rem);
+            line-height: 0.92;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 34px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.25s;
+        }
+        .contact-copy {
+            max-width: 620px;
+            color: #cfcfcf;
+            font-size: 1.08rem;
+            line-height: 1.85;
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.45s;
+        }
+        .contact-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 44px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.65s;
+        }
+        .primary-link,
+        .secondary-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 28px;
+            border: 1px solid rgba(255,255,255,0.32);
+            color: white;
+            text-decoration: none;
+            font-size: 0.76rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .primary-link:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+        .secondary-link { opacity: 0.7; }
+        .secondary-link:hover { opacity: 1; border-color: white; }
+
+        .info-stack {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .info-block {
+            min-height: 155px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 22px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.9s ease, transform 0.9s ease, border-color 0.3s ease;
+        }
+        .info-block.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .info-block:hover { border-color: rgba(255,255,255,0.34); }
+        .info-block.wide { grid-column: span 2; }
+        .info-label {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .info-value {
+            color: white;
+            font-size: 1rem;
+            line-height: 1.55;
+            font-weight: 500;
+        }
+        .info-value a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,0.35);
+        }
+        .muted {
+            display: block;
+            color: var(--text-muted);
+            font-weight: 300;
+            margin-top: 8px;
+        }
+        .service-list,
+        .brief-list {
+            list-style: none;
+            display: grid;
+            gap: 10px;
+            color: #d8d8d8;
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
+        .qr-panel {
+            display: grid;
+            grid-template-columns: 110px 1fr;
+            gap: 22px;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+        }
+        .qr-panel img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            background: #222;
+        }
+        .qr-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .qr-desc {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        .footer-links { display: flex; gap: 60px; }
+        .f-col { display: flex; flex-direction: column; gap: 15px; }
+        .f-title { color: white; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
+        .f-col a { color: #888; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .f-col a:hover { color: white; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes contactGlow {
+            0%, 100% {
+                opacity: 0.55;
+                transform: translate(0, 0) scale(1);
+            }
+            45% {
+                opacity: 0.85;
+                transform: translate(-18px, 18px) scale(1.05);
+            }
+            70% {
+                opacity: 0.62;
+                transform: translate(12px, -10px) scale(0.98);
+            }
+        }
+
+        @media (max-width: 980px) {
+            nav { padding: 30px; }
+            .nav-links a { margin-left: 20px; }
+            .lang-switch { margin-left: 24px; }
+            .contact-wrap { padding: 150px 30px 90px; }
+            .contact-inner { grid-template-columns: 1fr; gap: 70px; }
+            .footer-content { flex-direction: column; }
+            .footer-links { flex-direction: column; gap: 30px; }
+        }
+        @media (max-width: 680px) {
+            .contact-title { font-size: 3rem; }
+            .info-stack { grid-template-columns: 1fr; }
+            .info-block.wide { grid-column: span 1; }
+            .qr-panel { grid-template-columns: 1fr; }
+            footer { padding: 60px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="contact.html" class="active" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="contact-wrap">
+        <div class="bg-glow"></div>
+        <div class="contact-inner">
+            <section>
+                <div class="eyebrow" data-i18n="contact_page_eyebrow">CONTACT / CONNECT</div>
+                <h1 class="contact-title" data-i18n="contact_page_title">LET'S CREATE<br>OR JUST SAY HI.</h1>
+                <p class="contact-copy" data-i18n="contact_page_intro">For commercial CGI, product visualization, TVC, automotive visuals, AIGC experiments, technical exchange, course questions, or simply connecting before the next project.</p>
+                <div class="contact-actions">
+                    <a class="primary-link" href="mailto:pandaastone@gmail.com" data-i18n="contact_page_email_cta">EMAIL US</a>
+                    <a class="secondary-link" href="work.html" data-i18n="contact_page_work_cta">VIEW WORK</a>
+                </div>
+            </section>
+
+            <section class="info-stack">
+                <div class="info-block">
+                    <span class="info-label" data-i18n="contact_page_email_label">EMAIL</span>
+                    <div class="info-value"><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+                    <span class="muted" data-i18n="contact_page_email_note">Best for briefs, schedules, and production details.</span>
+                </div>
+
+                <div class="info-block">
+                    <span class="info-label" data-i18n="contact_page_discord_label">DISCORD</span>
+                    <div class="info-value">zacharyshee</div>
+                    <span class="muted" data-i18n="contact_page_discord_note">For overseas clients, peers, and lighter technical conversations.</span>
+                </div>
+
+                <div class="info-block wide">
+                    <span class="info-label" data-i18n="contact_page_services_label">SERVICES</span>
+                    <ul class="service-list">
+                        <li data-i18n="contact_page_service_1">Automotive CGI / 360 Visualization</li>
+                        <li data-i18n="contact_page_service_2">Product Visualization / 3C Product Visuals</li>
+                        <li data-i18n="contact_page_service_3">TVC / Commercial CGI / 3D Motion Graphics</li>
+                        <li data-i18n="contact_page_service_4">AIGC Visual Development / Creative Rendering</li>
+                    </ul>
+                </div>
+
+                <div class="info-block wide">
+                    <span class="info-label" data-i18n="contact_page_brief_label">PROJECT BRIEF</span>
+                    <ul class="brief-list">
+                        <li data-i18n="contact_page_brief_1">Brand / company name and project type</li>
+                        <li data-i18n="contact_page_brief_2">Timeline, deliverables, and target platform</li>
+                        <li data-i18n="contact_page_brief_3">Reference style, existing brief, or NDA requirements</li>
+                        <li data-i18n="contact_page_brief_4">Budget range, if convenient</li>
+                    </ul>
+                </div>
+
+                <div class="info-block wide qr-panel">
+                    <img src="images/wechat_qr.jpg" alt="Zachary Shee WeChat QR code">
+                    <div>
+                        <div class="qr-title">WeChat</div>
+                        <div class="qr-desc" data-i18n="contact_page_wechat_note">Scan to connect on WeChat for quick project conversations.</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p data-i18n="contact_page_footer_desc">Creative Design Studio.<br>Open to collaborations worldwide.</p>
+                <br>
+                <p style="opacity: 0.4;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="f-col"><div class="f-title" data-i18n="footer_sitemap">SITEMAP</div><a href="index.html" data-i18n="nav_home">Home</a><a href="work.html" data-i18n="nav_work">Work</a><a href="about.html" data-i18n="nav_about">About</a><a href="course.html" data-i18n="nav_course">Course</a><a href="contact.html" data-i18n="nav_contact">Contact</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_social">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_contact_title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const contactObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    contactObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.info-block').forEach((el, index) => {
+            el.style.transitionDelay = `${0.28 + index * 0.1}s`;
+            contactObserver.observe(el);
+        });
+    </script>
+    <script src="lang.js"></script>
+</body>
+</html>
