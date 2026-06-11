@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RenderSync | Zachary Shee Studio</title>
+    <meta name="description" content="A product concept page for RenderSync, an internal mobile tool for checking CGI render progress anytime, anywhere.">
+    <link rel="canonical" href="https://www.zacharyshee.com/solution-rendersync-product.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="RenderSync | Zachary Shee Studio">
+    <meta property="og:description" content="RenderSync helps production teams keep render progress, device status, frame counts, and sync signals visible from anywhere.">
+    <meta property="og:url" content="https://www.zacharyshee.com/solution-rendersync-product.html">
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000;
+            --bg-soft: #050505;
+            --text: #f5f5f7;
+            --soft: #d5d5da;
+            --muted: #89898f;
+            --line: rgba(255,255,255,0.13);
+            --blue: #2997ff;
+            --green: #32d77a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+                #000;
+            background-size: 112px 112px;
+            mask-image: linear-gradient(to bottom, black, transparent 68%);
+            -webkit-mask-image: linear-gradient(to bottom, black, transparent 68%);
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 78% 22%, rgba(41,151,255,0.2), transparent 28%),
+                radial-gradient(circle at 18% 76%, rgba(50,215,122,0.12), transparent 34%),
+                linear-gradient(135deg, transparent 0 38%, rgba(255,255,255,0.05) 48%, transparent 58%);
+            opacity: 0.75;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 52px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .logo a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .nav-shell { display: flex; align-items: center; }
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            margin-left: 28px;
+            font-size: 0.75rem;
+            letter-spacing: 1.4px;
+            opacity: 0.58;
+            transition: opacity 0.25s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active { opacity: 1; }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            margin-left: 38px;
+            color: var(--text);
+            opacity: 0.62;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        .lang-switch span { cursor: pointer; transition: opacity 0.25s; }
+        .lang-switch span:hover,
+        .lang-switch span.active { opacity: 1; font-weight: 800; }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.45; }
+
+        .hero {
+            min-height: 88svh;
+            padding: 138px 52px 86px;
+            display: grid;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-inner {
+            width: min(100%, 1480px);
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .eyebrow {
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 2.8px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: fadeInUp 0.85s forwards 0.08s;
+        }
+
+        .hero-title {
+            font-size: clamp(4.4rem, 9.4vw, 10.8rem);
+            line-height: 0.86;
+            font-weight: 900;
+            letter-spacing: 0;
+            margin-left: -0.06em;
+            opacity: 0;
+            transform: translateY(34px);
+            animation: fadeInUp 0.95s forwards 0.16s;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.75rem, 3.45vw, 4.1rem);
+            line-height: 1.05;
+            font-weight: 820;
+            letter-spacing: 0;
+            max-width: 1120px;
+            margin-top: 32px;
+            opacity: 0;
+            transform: translateY(32px);
+            animation: fadeInUp 0.95s forwards 0.26s;
+        }
+
+        .hero-copy {
+            color: var(--soft);
+            font-size: clamp(1.05rem, 1.35vw, 1.28rem);
+            line-height: 1.76;
+            max-width: 720px;
+            margin-top: 26px;
+            opacity: 0;
+            transform: translateY(28px);
+            animation: fadeInUp 0.95s forwards 0.36s;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+            margin-top: 38px;
+            opacity: 0;
+            transform: translateY(28px);
+            animation: fadeInUp 0.95s forwards 0.46s;
+        }
+
+        .link-button {
+            color: var(--blue);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .link-button:hover { text-decoration: underline; }
+
+        .signal-field {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .signal-line {
+            position: absolute;
+            right: -10%;
+            width: 56vw;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.24), rgba(41,151,255,0.6), transparent);
+            opacity: 0.58;
+            transform-origin: right center;
+        }
+
+        .signal-line:nth-child(1) { top: 22%; transform: rotate(-18deg); }
+        .signal-line:nth-child(2) { top: 42%; transform: rotate(-8deg); opacity: 0.38; }
+        .signal-line:nth-child(3) { top: 66%; transform: rotate(11deg); }
+        .signal-line:nth-child(4) { top: 80%; transform: rotate(18deg); opacity: 0.28; }
+
+        .signal-dot {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 0 10px rgba(50,215,122,0.08), 0 0 36px rgba(50,215,122,0.42);
+            animation: pulse 4.2s ease-in-out infinite;
+        }
+
+        .signal-dot.blue {
+            background: var(--blue);
+            box-shadow: 0 0 0 10px rgba(41,151,255,0.08), 0 0 36px rgba(41,151,255,0.44);
+        }
+
+        .signal-dot:nth-of-type(5) { right: 18%; top: 27%; }
+        .signal-dot:nth-of-type(6) { right: 34%; top: 56%; animation-delay: 0.8s; }
+        .signal-dot:nth-of-type(7) { right: 10%; top: 72%; animation-delay: 1.4s; }
+
+        .section {
+            padding: 96px 52px;
+            background: #000;
+        }
+
+        .section.soft {
+            background: var(--bg-soft);
+        }
+
+        .section-inner {
+            width: min(100%, 1480px);
+            margin: 0 auto;
+        }
+
+        .section-head {
+            max-width: 1050px;
+            margin-bottom: 52px;
+        }
+
+        .section-kicker {
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 2.8px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: clamp(2.35rem, 4.8vw, 5.6rem);
+            line-height: 0.98;
+            font-weight: 860;
+            letter-spacing: 0;
+        }
+
+        .section-copy {
+            color: var(--soft);
+            font-size: clamp(1rem, 1.25vw, 1.2rem);
+            line-height: 1.78;
+            max-width: 780px;
+            margin-top: 30px;
+        }
+
+        .statement {
+            min-height: 52vh;
+            display: grid;
+            align-items: center;
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+        }
+
+        .statement-text {
+            font-size: clamp(2.7rem, 5.8vw, 6.6rem);
+            line-height: 0.98;
+            font-weight: 860;
+            letter-spacing: 0;
+            max-width: 1320px;
+        }
+
+        .signal-list {
+            border-top: 1px solid var(--line);
+        }
+
+        .signal-row {
+            display: grid;
+            grid-template-columns: minmax(190px, 0.34fr) minmax(0, 1fr);
+            gap: 40px;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--line);
+            align-items: start;
+        }
+
+        .signal-index {
+            color: var(--muted);
+            font-size: 0.78rem;
+            letter-spacing: 2.5px;
+            text-transform: uppercase;
+        }
+
+        .signal-text {
+            color: var(--text);
+            font-size: clamp(1.25rem, 2.1vw, 2.35rem);
+            line-height: 1.18;
+            font-weight: 720;
+            letter-spacing: 0;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 26px;
+            margin-top: 56px;
+        }
+
+        .value-item {
+            min-height: 220px;
+            border-top: 1px solid var(--line);
+            padding-top: 28px;
+        }
+
+        .value-title {
+            font-size: clamp(1.35rem, 2vw, 2.2rem);
+            line-height: 1.08;
+            font-weight: 820;
+            letter-spacing: 0;
+            margin-bottom: 18px;
+        }
+
+        .value-copy {
+            color: var(--muted);
+            font-size: 1rem;
+            line-height: 1.72;
+        }
+
+        .status-panel {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 60px;
+            align-items: end;
+            border-top: 1px solid var(--line);
+            padding-top: 46px;
+        }
+
+        .status-title {
+            font-size: clamp(2.15rem, 4.2vw, 4.9rem);
+            line-height: 1;
+            font-weight: 850;
+            letter-spacing: 0;
+        }
+
+        .status-list {
+            border-top: 1px solid var(--line);
+        }
+
+        .status-row {
+            display: grid;
+            grid-template-columns: 150px 1fr;
+            gap: 28px;
+            padding: 22px 0;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .status-label {
+            color: var(--muted);
+            font-size: 0.75rem;
+            letter-spacing: 2.2px;
+            text-transform: uppercase;
+        }
+
+        .status-value {
+            color: var(--text);
+            font-size: 1.05rem;
+            line-height: 1.5;
+            font-weight: 650;
+        }
+
+        .cta-section {
+            padding: 86px 52px 122px;
+            background: #000;
+            text-align: center;
+        }
+
+        .cta-title {
+            font-size: clamp(2.45rem, 5vw, 5.8rem);
+            line-height: 0.98;
+            font-weight: 860;
+            letter-spacing: 0;
+            max-width: 900px;
+            margin: 0 auto 30px;
+        }
+
+        .cta-copy {
+            color: var(--muted);
+            font-size: 1.08rem;
+            line-height: 1.75;
+            max-width: 700px;
+            margin: 0 auto 34px;
+        }
+
+        footer { border-top: 1px solid #1d1d1f; padding: 80px 52px; background: #000; }
+        .footer-content { max-width: 1440px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.1rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
+        .footer-links { display: flex; gap: 60px; }
+        .f-col { display: flex; flex-direction: column; gap: 15px; }
+        .f-title { color: var(--text); font-size: 0.8rem; font-weight: 700; margin-bottom: 5px; }
+        .f-col a { color: var(--muted); text-decoration: none; font-size: 0.82rem; transition: color 0.3s; }
+        .f-col a:hover { color: var(--text); }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.52; }
+            50% { transform: scale(1.35); opacity: 1; }
+        }
+
+        @media (max-width: 980px) {
+            nav { padding: 28px 30px; }
+            .nav-links a { margin-left: 20px; }
+            .lang-switch { margin-left: 24px; }
+            .hero,
+            .section,
+            .cta-section { padding-left: 30px; padding-right: 30px; }
+            .hero-title { font-size: 4.4rem; }
+            .hero-subtitle,
+            .section-title,
+            .statement-text,
+            .cta-title { font-size: 2.55rem; }
+            .value-grid,
+            .status-panel { grid-template-columns: 1fr; }
+            .signal-row { grid-template-columns: 1fr; gap: 18px; }
+            .footer-content { flex-direction: column; }
+            .footer-links { flex-direction: column; gap: 30px; }
+        }
+
+        @media (max-width: 620px) {
+            nav { align-items: flex-start; gap: 18px; }
+            .nav-shell { flex-direction: column; align-items: flex-end; gap: 12px; }
+            .nav-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px 18px; }
+            .nav-links a { margin-left: 0; }
+            .lang-switch { margin-left: 0; }
+            .hero { padding-top: 178px; }
+            .hero-title { font-size: 3.25rem; }
+            .hero-subtitle,
+            .section-title,
+            .statement-text,
+            .cta-title { font-size: 2.2rem; }
+            .hero-subtitle { line-height: 1.12; }
+            .section { padding-top: 74px; padding-bottom: 74px; }
+            .statement { min-height: 42vh; }
+            .signal-line { width: 86vw; right: -36%; }
+            .status-row { grid-template-columns: 1fr; gap: 8px; }
+            footer { padding: 60px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-shell">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="solutions.html" class="active" data-i18n="nav_solutions">SOLUTIONS</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="contact.html" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="signal-field" aria-hidden="true">
+            <span class="signal-line"></span>
+            <span class="signal-line"></span>
+            <span class="signal-line"></span>
+            <span class="signal-line"></span>
+            <span class="signal-dot blue"></span>
+            <span class="signal-dot"></span>
+            <span class="signal-dot blue"></span>
+        </div>
+        <div class="hero-inner">
+            <div class="eyebrow" data-i18n="rs_product_eyebrow">MOBILE RENDER MONITORING</div>
+            <h1 class="hero-title">RenderSync</h1>
+            <div class="hero-subtitle" data-i18n="rs_product_title">Know every render from anywhere.</div>
+            <p class="hero-copy" data-i18n="rs_product_intro">RenderSync keeps render progress, device status, frame counts, and sync signals visible when the team is away from the workstation.</p>
+            <div class="hero-actions">
+                <a class="link-button" href="contact.html" data-i18n="rs_product_primary">Talk about workflow</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="section soft">
+        <div class="section-inner statement">
+            <h2 class="statement-text" data-i18n="rs_product_section_1_title">Render status should follow the team, not the other way around.</h2>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-inner">
+            <div class="section-head">
+                <div class="section-kicker" data-i18n="rs_product_section_1_label">Built for production movement</div>
+                <h2 class="section-title" data-i18n="rs_product_flow_title">One glance before leaving the desk.</h2>
+                <p class="section-copy" data-i18n="rs_product_section_1_copy">RenderSync is designed around the small moments where production slows down: leaving the desk, checking a device, waiting for a frame, or needing to know if a render still needs attention.</p>
+            </div>
+
+            <div class="signal-list">
+                <div class="signal-row">
+                    <div class="signal-index">01 / LIVE</div>
+                    <div class="signal-text" data-i18n="rs_product_signal_1">Current render task and task state</div>
+                </div>
+                <div class="signal-row">
+                    <div class="signal-index">02 / SYNC</div>
+                    <div class="signal-text" data-i18n="rs_product_signal_2">Device online status and last sync time</div>
+                </div>
+                <div class="signal-row">
+                    <div class="signal-index">03 / FRAMES</div>
+                    <div class="signal-text" data-i18n="rs_product_signal_3">Completed frames, remaining frames, and frame time</div>
+                </div>
+                <div class="signal-row">
+                    <div class="signal-index">04 / ALERT</div>
+                    <div class="signal-text" data-i18n="rs_product_signal_4">Progress notifications and attention points</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section soft">
+        <div class="section-inner">
+            <div class="section-head">
+                <div class="section-kicker" data-i18n="rs_product_section_2_label">What it changes</div>
+                <h2 class="section-title" data-i18n="rs_product_value_title">Less checking. More confidence.</h2>
+                <p class="section-copy" data-i18n="rs_product_feature_3_copy">Stay informed from a phone before stepping into review, travel, or another task.</p>
+            </div>
+
+            <div class="value-grid">
+                <div class="value-item">
+                    <h3 class="value-title" data-i18n="rs_product_feature_1_title">Live task clarity</h3>
+                    <p class="value-copy" data-i18n="rs_product_feature_1_copy">See what is rendering, which task is active, and whether the current job is still moving.</p>
+                </div>
+                <div class="value-item">
+                    <h3 class="value-title" data-i18n="rs_product_feature_2_title">Device awareness</h3>
+                    <p class="value-copy" data-i18n="rs_product_feature_2_copy">Check device online status and sync signals so render issues are easier to notice early.</p>
+                </div>
+                <div class="value-item">
+                    <h3 class="value-title" data-i18n="rs_product_feature_3_title">Mobile confidence</h3>
+                    <p class="value-copy" data-i18n="rs_product_step_3">The team can leave the workstation and still know whether the render needs attention.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="section-inner status-panel">
+            <h2 class="status-title" data-i18n="rs_product_status_title">Built as a studio production layer.</h2>
+            <div class="status-list">
+                <div class="status-row">
+                    <div class="status-label" data-i18n="solutions_status_label">STATUS</div>
+                    <div class="status-value" data-i18n="rs_status">In Testing / Internal Use</div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label" data-i18n="solutions_purpose_label">PURPOSE</div>
+                    <div class="status-value" data-i18n="rs_purpose">Anytime mobile render tracking</div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label" data-i18n="solutions_signals_label">SIGNALS</div>
+                    <div class="status-value" data-i18n="rs_signals">Progress / Devices / Frames / Sync</div>
+                </div>
+                <div class="status-row">
+                    <div class="status-label" data-i18n="solutions_field_label">FIELD</div>
+                    <div class="status-value" data-i18n="rs_field">Mobile App / CGI Pipeline</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <h2 class="cta-title" data-i18n="rs_product_cta_title">Render status, visible beyond the workstation.</h2>
+        <p class="cta-copy" data-i18n="rs_product_cta_copy">RenderSync is currently an internal testing tool, built around the practical need to keep render status visible beyond the workstation.</p>
+        <a class="link-button" href="solutions.html" data-i18n="solution_back">BACK TO SOLUTIONS</a>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p data-i18n="footer_desc">Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                <br>
+                <p style="opacity: 0.55;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="f-col"><div class="f-title" data-i18n="footer_sitemap">SITEMAP</div><a href="index.html" data-i18n="nav_home">Home</a><a href="work.html" data-i18n="nav_work">Work</a><a href="solutions.html" data-i18n="nav_solutions">Solutions</a><a href="about.html" data-i18n="nav_about">About</a><a href="course.html" data-i18n="nav_course">Course</a><a href="contact.html" data-i18n="nav_contact">Contact</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_social">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_contact_title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="lang.js"></script>
+</body>
+</html>

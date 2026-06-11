@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoComposite Pipeline Preparing | Zachary Shee Studio</title>
+    <meta name="robots" content="noindex, follow">
+    <meta name="description" content="AutoComposite Pipeline is an internal Zachary Shee Studio production tool currently being prepared for automotive configurator compositing workflows.">
+    <link rel="canonical" href="https://www.zacharyshee.com/solution-autocomposite-pipeline.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="AutoComposite Pipeline Preparing | Zachary Shee Studio">
+    <meta property="og:description" content="An internal production tool for automated automotive configurator compositing, currently being prepared by Zachary Shee Studio.">
+    <meta property="og:url" content="https://www.zacharyshee.com/solution-autocomposite-pipeline.html">
+    <meta property="og:image" content="https://www.zacharyshee.com/images/BYD-AU/mainview.webp">
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255,255,255,0.15);
+            --soft-border: rgba(255,255,255,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 40px 60px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.78);
+            backdrop-filter: blur(10px);
+        }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a {
+            color: white; text-decoration: none; margin-left: 28px;
+            font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--text-muted); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+
+        .placeholder-wrap {
+            min-height: 100vh;
+            padding: 170px 60px 100px;
+            display: grid;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .placeholder-wrap::after {
+            content: '';
+            position: absolute;
+            top: 16%;
+            right: -8%;
+            width: 760px;
+            height: 760px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 68%);
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: -1;
+            animation: softGlow 10s infinite ease-in-out;
+        }
+        .placeholder-inner {
+            max-width: 1500px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 0.9fr;
+            gap: 90px;
+            align-items: center;
+        }
+        .eyebrow,
+        .status-label,
+        .panel-label {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .eyebrow {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.1s;
+        }
+        .placeholder-title {
+            font-size: clamp(3.2rem, 7vw, 6.8rem);
+            line-height: 0.94;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 34px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.25s;
+        }
+        .placeholder-copy {
+            max-width: 660px;
+            color: #cfcfcf;
+            font-size: 1.08rem;
+            line-height: 1.85;
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.45s;
+        }
+        .placeholder-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 44px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s forwards 0.65s;
+        }
+        .primary-link,
+        .secondary-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 52px;
+            padding: 0 28px;
+            border: 1px solid rgba(255,255,255,0.32);
+            color: white;
+            text-decoration: none;
+            font-size: 0.76rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+        .primary-link:hover {
+            background: white;
+            color: black;
+            border-color: white;
+        }
+        .secondary-link { opacity: 0.7; }
+        .secondary-link:hover { opacity: 1; border-color: white; }
+
+        .status-panel {
+            width: min(100%, 560px);
+            justify-self: end;
+            border-top: 1px solid var(--border-color);
+            padding-top: 24px;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 1s forwards 0.35s;
+        }
+        .status-image {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 26px;
+            border: 1px solid var(--soft-border);
+            background: #111;
+            aspect-ratio: 16 / 9;
+        }
+        .status-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            filter: grayscale(1) brightness(0.62) contrast(1.08);
+        }
+        .status-image::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0));
+        }
+        .status-grid {
+            display: grid;
+            gap: 18px;
+        }
+        .status-row {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 22px;
+            border-top: 1px solid var(--soft-border);
+            padding-top: 18px;
+        }
+        .status-value {
+            color: #e8e8e8;
+            font-size: 1rem;
+            line-height: 1.55;
+        }
+
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        .footer-links { display: flex; gap: 60px; }
+        .f-col { display: flex; flex-direction: column; gap: 15px; }
+        .f-title { color: white; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
+        .f-col a { color: #888; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .f-col a:hover { color: white; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes softGlow {
+            0%, 100% { opacity: 0.55; transform: translate(0, 0) scale(1); }
+            50% { opacity: 0.84; transform: translate(-20px, 16px) scale(1.04); }
+        }
+
+        @media (max-width: 980px) {
+            nav { padding: 30px; }
+            .nav-links a { margin-left: 20px; }
+            .lang-switch { margin-left: 24px; }
+            .placeholder-wrap { padding: 150px 30px 90px; }
+            .placeholder-inner { grid-template-columns: 1fr; gap: 70px; }
+            .status-panel {
+                width: 100%;
+                justify-self: stretch;
+            }
+            .footer-content { flex-direction: column; }
+            .footer-links { flex-direction: column; gap: 30px; }
+        }
+        @media (max-width: 680px) {
+            .placeholder-title { font-size: 3rem; }
+            .status-row { grid-template-columns: 1fr; gap: 8px; }
+            footer { padding: 60px 30px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div style="display: flex; align-items: center;">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="solutions.html" class="active" data-i18n="nav_solutions">SOLUTIONS</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="contact.html" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="placeholder-wrap">
+        <div class="placeholder-inner">
+            <section>
+                <div class="eyebrow" data-i18n="auto_placeholder_eyebrow">AUTOCOMPOSITE PIPELINE</div>
+                <h1 class="placeholder-title" data-i18n="auto_placeholder_title">TOOL PAGE<br>IN PREPARATION</h1>
+                <p class="placeholder-copy" data-i18n="auto_placeholder_intro">We are currently preparing the public-facing page for this internal compositing pipeline. The tool is being developed around automotive configurator delivery, preset-based compositing, and repeatable batch output workflows.</p>
+                <div class="placeholder-actions">
+                    <a class="primary-link" href="solutions.html" data-i18n="auto_placeholder_back">BACK TO SOLUTIONS</a>
+                    <a class="secondary-link" href="contact.html" data-i18n="auto_placeholder_contact">CONTACT US</a>
+                </div>
+            </section>
+
+            <section class="status-panel">
+                <div class="status-image">
+                    <img src="images/BYD-AU/mainview.webp" alt="Automotive configurator CGI preview" width="3000" height="1500">
+                </div>
+                <div class="status-grid">
+                    <div class="status-row">
+                        <span class="status-label" data-i18n="auto_placeholder_status_label">STATUS</span>
+                        <div class="status-value" data-i18n="auto_placeholder_status_value">Preparing / In Development</div>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label" data-i18n="auto_placeholder_focus_label">FOCUS</span>
+                        <div class="status-value" data-i18n="auto_placeholder_focus_value">Automated compositing for automotive configurator image sets</div>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-label" data-i18n="auto_placeholder_next_label">NEXT</span>
+                        <div class="status-value" data-i18n="auto_placeholder_next_value">Workflow visuals, clearer capability notes, and production examples are being prepared.</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p data-i18n="footer_desc">Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                <br>
+                <p style="opacity: 0.4;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+            </div>
+            <div class="footer-links">
+                <div class="f-col"><div class="f-title" data-i18n="footer_sitemap">SITEMAP</div><a href="index.html" data-i18n="nav_home">Home</a><a href="work.html" data-i18n="nav_work">Work</a><a href="solutions.html" data-i18n="nav_solutions">Solutions</a><a href="about.html" data-i18n="nav_about">About</a><a href="course.html" data-i18n="nav_course">Course</a><a href="contact.html" data-i18n="nav_contact">Contact</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_social">SOCIAL</div><a href="#" target="_blank">Instagram</a><a href="#" target="_blank">Behance</a><a href="#" target="_blank">Vimeo</a></div>
+                <div class="f-col"><div class="f-title" data-i18n="footer_contact_title">CONTACT</div><a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="lang.js"></script>
+</body>
+</html>
