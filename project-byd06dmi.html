@@ -67,9 +67,6 @@
     <link rel="icon" type="image/png" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
     
-    <!-- 引入全景图插件样式 -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
-
     <style>
         :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -153,6 +150,23 @@
             position: relative; background: #111; overflow: hidden;
             border: 1px solid #222;
         }
+        .pano-wrapper:fullscreen,
+        .pano-wrapper:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            background: #000;
+        }
+        .pano-wrapper.pano-expanded {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            border: none;
+            background: #000;
+        }
+        body.pano-expanded-active { overflow: hidden; }
         
         /* 预览层 */
         .pano-preview {
@@ -177,7 +191,7 @@
         /* [新增] 悬浮控制栏样式 */
         .pano-controls {
             position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-            z-index: 4; display: flex; gap: 40px;
+            z-index: 4; display: flex; align-items: center; gap: 28px;
             background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px);
             padding: 15px 30px; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1);
             opacity: 0; pointer-events: none; transition: opacity 0.5s;
@@ -191,11 +205,32 @@
         .opt-btn {
             background: transparent; border: 1px solid #444; color: #aaa;
             padding: 8px 16px; border-radius: 20px; cursor: pointer;
-            font-size: 0.75rem; letter-spacing: 1px; transition: all 0.3s;
+            font-size: 0.75rem; letter-spacing: 1px;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
             font-family: 'Inter', sans-serif;
         }
         .opt-btn:hover { border-color: #888; color: white; }
-        .opt-btn.active { background: white; color: black; border-color: white; font-weight: 600; }
+        .opt-btn.active { background: white; color: black; border-color: white; }
+        .pano-tool-group {
+            border-left: 1px solid rgba(255,255,255,0.2);
+            padding-left: 15px;
+            gap: 8px;
+        }
+        .pano-tool-btn {
+            width: 36px; height: 36px; padding: 0;
+            display: inline-flex; align-items: center; justify-content: center;
+            line-height: 1;
+        }
+        .pano-tool-btn svg {
+            width: 15px;
+            height: 15px;
+            display: block;
+            stroke: currentColor;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
 
         /* 响应式处理 */
         @media (max-width: 768px) {
@@ -204,6 +239,19 @@
             .grid-2, .grid-3, .grid-1-2, .text-media-grid { grid-template-columns: 1fr; gap: 20px; }
             .text-module { padding: 40px 0; }
             .pano-wrapper { height: 400px; }
+            .pano-controls {
+                width: calc(100% - 30px);
+                bottom: 18px;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px 18px;
+                padding: 12px 14px;
+                border-radius: 24px;
+            }
+            .control-group { gap: 8px; }
+            .group-label { display: none; }
+            .opt-btn { padding: 8px 12px; }
+            .pano-tool-group { padding-left: 12px; }
         }
 
         footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
@@ -300,6 +348,33 @@
                         <button class="opt-btn active" onclick="switchPano('color', 'black', this)">BLACK</button>
                         <button class="opt-btn" onclick="switchPano('color', 'white', this)">WHITE</button>
                     </div>
+                    <div class="control-group pano-tool-group">
+                        <button class="opt-btn pano-tool-btn" onclick="resetPanoView()" aria-label="Reset view" title="Reset view">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M4 4v5h5"></path>
+                                <path d="M7.1 5.3A8 8 0 1 1 5.2 15.7"></path>
+                            </svg>
+                        </button>
+                        <button class="opt-btn pano-tool-btn" onclick="zoomPano('out')" aria-label="Zoom out" title="Zoom out">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M5 12h14"></path>
+                            </svg>
+                        </button>
+                        <button class="opt-btn pano-tool-btn" onclick="zoomPano('in')" aria-label="Zoom in" title="Zoom in">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M12 5v14"></path>
+                                <path d="M5 12h14"></path>
+                            </svg>
+                        </button>
+                        <button class="opt-btn pano-tool-btn" onclick="togglePanoFullscreen()" aria-label="Fullscreen" title="Fullscreen">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                                <path d="M16 3h3a2 2 0 0 1 2 2v3"></path>
+                                <path d="M8 21H5a2 2 0 0 1-2-2v-3"></path>
+                                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                            </svg>
+                        </button>
+                    </div>
                         <!-- 如果以后其他项目有白色，直接复制这一行把 black 改成 white 即可 -->
                 </div>
 
@@ -317,8 +392,8 @@
         </div>
     </footer>
 
-    <!-- 引入全景图插件JS (保持不变) -->
-    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <!-- 360 viewer -->
+    <script src="vendor/marzipano.js"></script>
 
     <script>
         // 1. 滚动揭示动画 (保持不变)
@@ -333,19 +408,29 @@
 
         // 1. 配置所有场景信息
         const scenesConfig = {
-            // [修改] 删除了 "title" 属性，这样左下角就不会出现多余的文字框
             'front_black': {
-                "panorama": "images/byd06/BYD-06-DM-i_黑内前排360_v1.webp"
+                image: 'images/byd06/BYD-06-DM-i_黑内前排360_v1.webp',
+                width: 7500
             },
             'rear_black': {
-                "panorama": "images/byd06/BYD-06-DM-i_黑内后排360_v1.webp"
+                image: 'images/byd06/BYD-06-DM-i_黑内后排360_v1.webp',
+                width: 7500
             },
             'front_white': {
-                "panorama": "images/byd06/BYD 06 DM-i_前排白内360_v3.webp"
+                image: 'images/byd06/BYD 06 DM-i_前排白内360_v3.webp',
+                width: 10000
             },
             'rear_white': {
-                "panorama": "images/byd06/BYD 06 DM-i_后排白内360_v2.webp"
+                image: 'images/byd06/BYD 06 DM-i_后排白内360_v2.webp',
+                width: 10000
             }
+        };
+
+        const toRadians = degrees => degrees * Math.PI / 180;
+        const defaultView = {
+            yaw: 0,
+            pitch: 0,
+            fov: toRadians(60)
         };
 
         // 2. 当前状态 (默认前排 + 黑色)
@@ -355,17 +440,26 @@
         };
 
         let viewer = null;
+        let sharedView = null;
+        let activeScene = null;
+        let zoomAnimationFrame = null;
+        let viewAnimationFrame = null;
+        let pendingResizeHorizontalFov = null;
+        const scenes = {};
 
         // 3. 初始化 (只执行一次)
         function initPano() {
             const wrapper = document.getElementById('pano-container');
             const preview = wrapper.querySelector('.pano-preview');
 
+            if (!viewer) {
+                startViewer();
+            }
+
             preview.style.opacity = '0';
             setTimeout(() => {
                 preview.style.display = 'none';
                 wrapper.classList.add('loaded');
-                startViewer(); 
             }, 500);
         }
 
@@ -373,19 +467,47 @@
         function startViewer() {
             if(viewer) return;
 
-            const initialScene = `${currentState.view}_${currentState.color}`;
-
-            viewer = pannellum.viewer('pano-viewer', {
-                "default": {
-                    "firstScene": initialScene,
-                    "sceneFadeDuration": 1000,
-                    "autoLoad": true,
-                    "showControls": true,
-                    "hfov": 110,
-                    "showSceneMenu": false // [新增] 确保不显示场景菜单列表
-                },
-                "scenes": scenesConfig
+            const panoElement = document.getElementById('pano-viewer');
+            viewer = new Marzipano.Viewer(panoElement, {
+                controls: {
+                    mouseViewMode: 'drag'
+                }
             });
+
+            const limiter = Marzipano.RectilinearView.limit.traditional(
+                4200,
+                toRadians(90),
+                toRadians(125)
+            );
+            sharedView = new Marzipano.RectilinearView(defaultView, limiter);
+
+            Object.keys(scenesConfig).forEach(sceneId => {
+                const config = scenesConfig[sceneId];
+                const source = Marzipano.ImageUrlSource.fromString(config.image);
+                const geometry = new Marzipano.EquirectGeometry([{ width: config.width }]);
+
+                scenes[sceneId] = viewer.createScene({
+                    source,
+                    geometry,
+                    view: sharedView,
+                    pinFirstLevel: true
+                });
+            });
+
+            const initialScene = `${currentState.view}_${currentState.color}`;
+            switchToScene(initialScene, 0);
+        }
+
+        function preloadSceneImages() {
+            Object.values(scenesConfig).forEach(config => {
+                const preload = new Image();
+                preload.src = config.image;
+            });
+        }
+
+        function warmUpPano() {
+            startViewer();
+            preloadSceneImages();
         }
 
         // 5. 切换逻辑
@@ -402,19 +524,222 @@
 
             const targetSceneId = `${currentState.view}_${currentState.color}`;
 
-            if (scenesConfig[targetSceneId]) {
-                // [核心修改] 获取当前视角的参数
-                // getPitch: 俯仰角, getYaw: 偏航角, getHfov: 缩放程度
-                const currentPitch = viewer.getPitch();
-                const currentYaw = viewer.getYaw();
-                const currentHfov = viewer.getHfov();
+            switchToScene(targetSceneId, 450);
+        }
 
-                // [核心修改] loadScene 的后三个参数分别是 pitch, yaw, hfov
-                // 传入这些参数后，切换场景时就会继承上一个场景的视角，而不会重置
-                viewer.loadScene(targetSceneId, currentPitch, currentYaw, currentHfov); 
-            } else {
-                console.warn('Scene not found:', targetSceneId);
+        function switchToScene(sceneId, duration) {
+            const targetScene = scenes[sceneId];
+            if (!targetScene) {
+                console.warn('Scene not found:', sceneId);
+                return;
             }
+
+            if (activeScene === targetScene) return;
+
+            targetScene.switchTo({
+                transitionDuration: duration
+            });
+
+            activeScene = targetScene;
+        }
+
+        function resetPanoView() {
+            if (!sharedView) return;
+            cancelZoomAnimation();
+            animatePanoView(defaultView);
+        }
+
+        function zoomPano(direction) {
+            if (!sharedView) return;
+            cancelViewAnimation();
+
+            const currentFov = sharedView.fov();
+            const zoomRatio = direction === 'in' ? 0.86 : 1.14;
+            animatePanoFov(currentFov * zoomRatio);
+        }
+
+        function cancelZoomAnimation() {
+            if (zoomAnimationFrame) {
+                cancelAnimationFrame(zoomAnimationFrame);
+                zoomAnimationFrame = null;
+            }
+        }
+
+        function cancelViewAnimation() {
+            if (viewAnimationFrame) {
+                cancelAnimationFrame(viewAnimationFrame);
+                viewAnimationFrame = null;
+            }
+        }
+
+        function animatePanoFov(targetFov) {
+            cancelZoomAnimation();
+
+            const startFov = sharedView.fov();
+            const duration = 220;
+            const startTime = performance.now();
+            const easeOutCubic = progress => 1 - Math.pow(1 - progress, 3);
+
+            function step(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const easedProgress = easeOutCubic(progress);
+                const nextFov = startFov + (targetFov - startFov) * easedProgress;
+
+                sharedView.setFov(nextFov);
+
+                if (progress < 1) {
+                    zoomAnimationFrame = requestAnimationFrame(step);
+                } else {
+                    zoomAnimationFrame = null;
+                }
+            }
+
+            zoomAnimationFrame = requestAnimationFrame(step);
+        }
+
+        function shortestAngleDelta(from, to) {
+            return Math.atan2(Math.sin(to - from), Math.cos(to - from));
+        }
+
+        function animatePanoView(targetView) {
+            cancelViewAnimation();
+
+            const startView = sharedView.parameters({});
+            const duration = 360;
+            const startTime = performance.now();
+            const yawDelta = shortestAngleDelta(startView.yaw, targetView.yaw);
+            const pitchDelta = targetView.pitch - startView.pitch;
+            const fovDelta = targetView.fov - startView.fov;
+            const easeOutCubic = progress => 1 - Math.pow(1 - progress, 3);
+
+            function step(now) {
+                const progress = Math.min((now - startTime) / duration, 1);
+                const easedProgress = easeOutCubic(progress);
+
+                sharedView.setParameters({
+                    yaw: startView.yaw + yawDelta * easedProgress,
+                    pitch: startView.pitch + pitchDelta * easedProgress,
+                    fov: startView.fov + fovDelta * easedProgress
+                });
+
+                if (progress < 1) {
+                    viewAnimationFrame = requestAnimationFrame(step);
+                } else {
+                    sharedView.setParameters(targetView);
+                    viewAnimationFrame = null;
+                }
+            }
+
+            viewAnimationFrame = requestAnimationFrame(step);
+        }
+
+        function getPanoAspect() {
+            const wrapper = document.getElementById('pano-container');
+            const rect = wrapper.getBoundingClientRect();
+            return rect.height ? rect.width / rect.height : 1;
+        }
+
+        function verticalToHorizontalFov(verticalFov, aspect) {
+            return 2 * Math.atan(Math.tan(verticalFov / 2) * aspect);
+        }
+
+        function horizontalToVerticalFov(horizontalFov, aspect) {
+            return 2 * Math.atan(Math.tan(horizontalFov / 2) / aspect);
+        }
+
+        function getCurrentHorizontalFov() {
+            if (!sharedView) return null;
+            return verticalToHorizontalFov(sharedView.fov(), getPanoAspect());
+        }
+
+        function preparePanoResize() {
+            pendingResizeHorizontalFov = getCurrentHorizontalFov();
+        }
+
+        function updatePanoSize(preservedHorizontalFov = null) {
+            if (viewer && typeof viewer.updateSize === 'function') {
+                viewer.updateSize();
+            }
+
+            const horizontalFov = typeof preservedHorizontalFov === 'number'
+                ? preservedHorizontalFov
+                : pendingResizeHorizontalFov;
+            if (sharedView && horizontalFov) {
+                sharedView.setFov(horizontalToVerticalFov(horizontalFov, getPanoAspect()));
+            }
+        }
+
+        function schedulePanoResize(preservedHorizontalFov = null) {
+            const horizontalFov = typeof preservedHorizontalFov === 'number'
+                ? preservedHorizontalFov
+                : pendingResizeHorizontalFov;
+            setTimeout(() => updatePanoSize(horizontalFov), 120);
+            setTimeout(() => {
+                updatePanoSize(horizontalFov);
+                pendingResizeHorizontalFov = null;
+            }, 360);
+        }
+
+        function enterPanoExpandedMode() {
+            const wrapper = document.getElementById('pano-container');
+            if (!pendingResizeHorizontalFov) {
+                preparePanoResize();
+            }
+            wrapper.classList.add('pano-expanded');
+            document.body.classList.add('pano-expanded-active');
+            schedulePanoResize();
+        }
+
+        function exitPanoExpandedMode() {
+            const wrapper = document.getElementById('pano-container');
+            preparePanoResize();
+            wrapper.classList.remove('pano-expanded');
+            document.body.classList.remove('pano-expanded-active');
+            schedulePanoResize();
+        }
+
+        function togglePanoFullscreen() {
+            const wrapper = document.getElementById('pano-container');
+            const fullscreenElement = document.fullscreenElement || document.webkitFullscreenElement;
+
+            if (fullscreenElement) {
+                preparePanoResize();
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+                return;
+            }
+
+            if (wrapper.classList.contains('pano-expanded')) {
+                exitPanoExpandedMode();
+                return;
+            }
+
+            preparePanoResize();
+            if (wrapper.requestFullscreen) {
+                wrapper.requestFullscreen().then(() => schedulePanoResize()).catch(enterPanoExpandedMode);
+            } else if (wrapper.webkitRequestFullscreen) {
+                wrapper.webkitRequestFullscreen();
+                schedulePanoResize();
+            } else {
+                enterPanoExpandedMode();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => schedulePanoResize());
+        document.addEventListener('webkitfullscreenchange', () => schedulePanoResize());
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && document.getElementById('pano-container').classList.contains('pano-expanded')) {
+                exitPanoExpandedMode();
+            }
+        });
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(warmUpPano, { timeout: 2000 });
+        } else {
+            window.addEventListener('load', warmUpPano);
         }
     </script>
 </body>
