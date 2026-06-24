@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carslan Product CGI Case Study | Zachary Shee Studio</title>
+    <meta name="description" content="Carslan product CGI case study featuring cosmetic product visualization, motion rendering, clean beauty packaging, and commercial campaign visuals.">
+    <link rel="canonical" href="https://www.zacharyshee.com/project-carslan.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Carslan Product CGI Case Study | Zachary Shee Studio">
+    <meta property="og:description" content="Cosmetic product CGI and motion visualization for Carslan beauty campaign assets.">
+    <meta property="og:url" content="https://www.zacharyshee.com/project-carslan.html">
+    <meta property="og:image" content="https://www.zacharyshee.com/images/carslan/全家福_result.webp">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "CreativeWork",
+                "@id": "https://www.zacharyshee.com/project-carslan.html#creativework",
+                "name": "Carslan Product CGI Case Study",
+                "url": "https://www.zacharyshee.com/project-carslan.html",
+                "image": "https://www.zacharyshee.com/images/carslan/全家福_result.webp",
+                "description": "Carslan product CGI case study featuring cosmetic product visualization, motion rendering, clean beauty packaging, and commercial campaign visuals.",
+                "genre": "Cosmetic Product CGI",
+                "keywords": "Carslan, product CGI, cosmetics visualization, beauty campaign, 3D product rendering, commercial CGI",
+                "creator": {
+                    "@type": "Organization",
+                    "name": "Zachary Shee Studio",
+                    "url": "https://www.zacharyshee.com/"
+                },
+                "client": {
+                    "@type": "Organization",
+                    "name": "Carslan"
+                },
+                "video": {
+                    "@type": "VideoObject",
+                    "name": "Carslan product CGI motion film",
+                    "description": "Cosmetic product CGI and motion visualization for Carslan campaign assets.",
+                    "thumbnailUrl": "https://www.zacharyshee.com/images/carslan/全家福_result.webp",
+                    "contentUrl": "https://www.zacharyshee.com/images/carslan/Prefinal_carslan.mp4",
+                    "embedUrl": "https://www.zacharyshee.com/project-carslan.html"
+                }
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": "https://www.zacharyshee.com/project-carslan.html#breadcrumb",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Work",
+                        "item": "https://www.zacharyshee.com/work.html"
+                    },
+                    {
+                        "@type": "ListItem",
+                        "position": 2,
+                        "name": "Carslan Product CGI Case Study",
+                        "item": "https://www.zacharyshee.com/project-carslan.html"
+                    }
+                ]
+            }
+        ]
+    }
+    </script>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #000000; --text-color: #ffffff; --accent-color: #888888; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+        nav { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 40px 60px; z-index: 1000; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 28px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        .project-hero { width: 100%; height: 85vh; position: relative; overflow: hidden; margin-bottom: 100px; }
+        .project-hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, transparent 0%, var(--bg-color) 100%);
+            z-index: 2; pointer-events: none;
+        }
+        .project-hero img, .project-hero video {
+            width: 100%; height: 100%; object-fit: cover; filter: brightness(0.72);
+            opacity: 0; animation: heroFadeIn 3s ease-out forwards;
+        }
+
+        .hero-text { position: absolute; bottom: 60px; left: 60px; z-index: 10; }
+        .ph-title { font-size: clamp(2rem, 5vw, 4rem); font-weight: 800; text-transform: uppercase; margin-bottom: 10px; opacity: 0; animation: fadeInUp 1s forwards 0.3s; transform: translateY(30px); }
+        .ph-cat { color: var(--accent-color); font-size: 1rem; letter-spacing: 2px; opacity: 0; animation: fadeInUp 1s forwards 0.5s; transform: translateY(30px); text-transform: uppercase; }
+
+        .project-meta { max-width: 1200px; margin: 0 auto 120px; padding: 0 60px; display: grid; grid-template-columns: 300px 1fr; gap: 60px; }
+        .meta-list div { margin-bottom: 25px; }
+        .meta-label { color: var(--accent-color); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 5px; text-transform: uppercase; border-top: 1px solid #333; padding-top: 15px; display: inline-block; width: 100%; }
+        .meta-desc { font-size: 1.2rem; line-height: 1.6; color: #ddd; font-weight: 200; }
+
+        .content-container {
+            max-width: 1800px; margin: 0 auto 100px; padding: 0 60px;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .layout-module { width: 100%; position: relative; opacity: 0; transform: translateY(40px); transition: 0.8s ease; }
+        .layout-module.active { opacity: 1; transform: translateY(0); }
+        .layout-module img, .layout-module video { width: 100%; height: auto; display: block; object-fit: cover; }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+        .text-module { padding: 80px 0; text-align: center; max-width: 820px; margin: 0 auto; }
+        .text-module h3 { font-size: 1.5rem; margin-bottom: 20px; text-transform: uppercase; }
+        .text-module p { font-size: 1rem; color: #aaa; line-height: 1.8; }
+
+        footer { border-top: 1px solid #222; padding: 80px 60px; background: #050505; }
+        .footer-content { max-width: 1800px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+
+        @keyframes heroFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            nav { padding: 30px; }
+            .nav-links a { margin-left: 20px; }
+            .project-hero { height: 72vh; }
+            .hero-text { left: 30px; bottom: 46px; }
+            .project-meta { grid-template-columns: 1fr; gap: 40px; padding: 0 30px; }
+            .content-container { padding: 0 20px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; gap: 20px; }
+            .text-module { padding: 40px 0; }
+            footer { padding: 60px 30px; }
+        }
+    </style>
+    <link rel="stylesheet" href="lightbox.css">
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+        <div class="nav-links">
+            <a href="work.html">WORK</a>
+            <a href="solutions.html">SOLUTIONS</a>
+            <a href="about.html">ABOUT</a>
+            <a href="course.html">COURSE</a>
+            <a href="contact.html">CONTACT</a>
+        </div>
+    </nav>
+
+    <header class="project-hero">
+        <img src="images/carslan/全家福_result.webp" alt="Carslan cosmetic product CGI hero visual">
+        <div class="hero-text">
+            <h1 class="ph-title">CARSLAN</h1>
+            <div class="ph-cat">Product CGI / Beauty Visuals</div>
+        </div>
+    </header>
+
+    <section class="project-meta">
+        <div class="meta-list">
+            <div><span class="meta-label">CLIENT</span>Carslan</div>
+            <div><span class="meta-label">ROLE</span>CGI Artist, 3D</div>
+            <div><span class="meta-label">SOFTWARE</span>Cinema 4D / Redshift / After Effects</div>
+        </div>
+        <div class="meta-desc">
+            <p>A product CGI visual project created for Carslan cosmetic campaign assets. The work focuses on clean beauty packaging, reflective white product surfaces, controlled studio lighting, and a minimal architectural set that frames the products with a precise, premium tone.</p>
+        </div>
+    </section>
+
+    <section class="content-container">
+        <div class="layout-module">
+            <video src="images/carslan/Prefinal_carslan.mp4" controls muted loop playsinline style="width: 100%"></video>
+        </div>
+
+        <div class="layout-module grid-2">
+            <img src="images/carslan/粉底液_v01_result.webp" alt="Carslan foundation product CGI render">
+            <img src="images/carslan/粉底液2_result.webp" alt="Carslan foundation packaging CGI render">
+        </div>
+
+        <div class="layout-module grid-3">
+            <img src="images/carslan/防晒粉饼_result.webp" alt="Carslan powder compact CGI render">
+            <img src="images/carslan/粉底液2_v01_result.webp" alt="Carslan product close-up CGI render">
+            <img src="images/carslan/全家福_result.webp" alt="Carslan cosmetic product family CGI render">
+        </div>
+
+        <div class="layout-module text-module">
+            <h3>Motion Layout</h3>
+            <p>We explored product motion, camera rhythm, and lighting transitions to keep the campaign visuals clean, controlled, and focused on the package silhouette.</p>
+        </div>
+
+        <div class="layout-module">
+            <video src="images/carslan/Layout_0418_v25.m4v" controls muted loop playsinline style="width: 100%"></video>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ZACHARY SHEE</h3>
+                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('active'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.layout-module').forEach(el => observer.observe(el));
+    </script>
+    <script src="lightbox.js"></script>
+</body>
+</html>

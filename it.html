@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow,noarchive,noimageindex">
+    <meta name="googlebot" content="noindex,nofollow,noarchive,noimageindex">
+    <meta name="referrer" content="no-referrer">
+    <title>Private Preview | Zachary Shee Studio</title>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <style>
+        :root {
+            --bg: #000;
+            --surface: #080808;
+            --surface-soft: #111;
+            --line: rgba(255, 255, 255, 0.13);
+            --text: #fff;
+            --muted: rgba(255, 255, 255, 0.58);
+            --dim: rgba(255, 255, 255, 0.34);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 68% 8%, rgba(255, 255, 255, 0.06), transparent 34%),
+                linear-gradient(180deg, #050505 0%, #000 44%, #050505 100%);
+            color: var(--text);
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
+        }
+
+        button {
+            color: inherit;
+            font: inherit;
+        }
+
+        body.locked {
+            overflow: hidden;
+        }
+
+        body.locked .topbar,
+        body.locked .page {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        body.unlocked .password-gate {
+            display: none;
+        }
+
+        .password-gate {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            background:
+                radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.08), transparent 34%),
+                rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .password-panel {
+            width: min(440px, 100%);
+            border: 1px solid var(--line);
+            background: rgba(8, 8, 8, 0.88);
+            padding: 38px;
+        }
+
+        .password-kicker {
+            color: var(--dim);
+            font-size: 0.68rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 22px;
+        }
+
+        .password-title {
+            font-size: clamp(2.1rem, 7vw, 3.2rem);
+            line-height: 0.96;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .password-copy {
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.88rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .password-form {
+            display: grid;
+            gap: 12px;
+        }
+
+        .password-input {
+            width: 100%;
+            height: 48px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: 0;
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+            padding: 0 14px;
+            outline: none;
+            letter-spacing: 1px;
+        }
+
+        .password-input:focus {
+            border-color: rgba(255, 255, 255, 0.58);
+        }
+
+        .password-submit {
+            height: 48px;
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.72rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: background-color 0.24s ease, border-color 0.24s ease;
+        }
+
+        .password-submit:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.56);
+        }
+
+        .password-error {
+            min-height: 20px;
+            color: rgba(255, 255, 255, 0.52);
+            font-size: 0.76rem;
+            letter-spacing: 1px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 34px 60px;
+            background: rgba(0, 0, 0, 0.78);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .brand {
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+        }
+
+        .status {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            color: var(--dim);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .status span {
+            border: 1px solid var(--line);
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .page {
+            width: min(1640px, calc(100vw - 120px));
+            margin: 0 auto;
+        }
+
+        .hero {
+            padding: 116px 0 80px;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 420px;
+            gap: 80px;
+            align-items: end;
+        }
+
+        .eyebrow {
+            color: var(--muted);
+            font-size: 0.76rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            opacity: 0;
+            transform: translateY(24px);
+            animation: rise 0.9s ease forwards 0.08s;
+        }
+
+        h1 {
+            max-width: 980px;
+            font-size: clamp(4.4rem, 11vw, 10.5rem);
+            line-height: 0.88;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(36px);
+            animation: rise 1s ease forwards 0.18s;
+        }
+
+        .intro {
+            color: rgba(255, 255, 255, 0.66);
+            font-size: 1rem;
+            line-height: 1.8;
+            border-top: 1px solid var(--line);
+            padding-top: 24px;
+            opacity: 0;
+            transform: translateY(28px);
+            animation: rise 0.95s ease forwards 0.32s;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 22px;
+            padding-bottom: 120px;
+        }
+
+        .case-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(36px);
+            transition: transform 0.7s ease, opacity 0.7s ease, border-color 0.32s ease;
+        }
+
+        .case-card.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .case-card:hover {
+            border-color: rgba(255, 255, 255, 0.36);
+        }
+
+        .case-visual {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4 / 3;
+            overflow: hidden;
+            background: var(--surface-soft);
+        }
+
+        .case-visual img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) brightness(0.82);
+            transform: scale(1.01);
+            transition: transform 0.7s ease, filter 0.7s ease;
+        }
+
+        .case-card:hover .case-visual img {
+            filter: grayscale(0.35) brightness(0.96);
+            transform: scale(1.045);
+        }
+
+        .case-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 22px;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+                var(--surface);
+        }
+
+        .case-kicker {
+            color: rgba(255, 255, 255, 0.54);
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            line-height: 1.45;
+            margin-bottom: 14px;
+        }
+
+        .case-title {
+            font-size: clamp(1.28rem, 1.58vw, 2rem);
+            line-height: 1.02;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            overflow-wrap: anywhere;
+        }
+
+        .case-desc {
+            color: rgba(255, 255, 255, 0.68);
+            font-size: 0.82rem;
+            line-height: 1.65;
+        }
+
+        .case-meta {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            margin-top: auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            padding-top: 16px;
+            color: rgba(255, 255, 255, 0.64);
+            font-size: 0.62rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .viewer {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            background: rgba(0, 0, 0, 0.94);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .viewer.active {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 420px;
+            animation: fade 0.22s ease;
+        }
+
+        .viewer-stage {
+            min-width: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 76px;
+            background:
+                radial-gradient(circle at center, rgba(255, 255, 255, 0.06), transparent 42%),
+                #000;
+        }
+
+        .viewer-media {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+            box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
+        }
+
+        .viewer-media.show {
+            display: block;
+        }
+
+        .spread-gallery {
+            width: 100%;
+            height: 100%;
+            display: none;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .spread-gallery.show {
+            display: block;
+        }
+
+        .spread-main,
+        .spread-item {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+        }
+
+        .spread-zoom-trigger {
+            width: 100%;
+            display: block;
+            border: 0;
+            padding: 0;
+            background: transparent;
+            cursor: zoom-in;
+        }
+
+        .spread-main {
+            margin-bottom: 18px;
+        }
+
+        .spread-main img,
+        .spread-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .spread-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .spread-caption {
+            padding: 14px 16px;
+            color: rgba(255, 255, 255, 0.56);
+            font-size: 0.68rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .viewer.spread-mode .viewer-stage {
+            align-items: flex-start;
+            justify-content: flex-start;
+            overflow: hidden;
+        }
+
+        .viewer.spread-mode .viewer-actions,
+        .viewer.spread-mode .counter,
+        .viewer.spread-mode .thumb-list {
+            display: none;
+        }
+
+        .spread-zoom {
+            position: fixed;
+            inset: 0;
+            z-index: 220;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 76px;
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+        }
+
+        .spread-zoom.active {
+            display: flex;
+            animation: fade 0.2s ease;
+        }
+
+        .spread-zoom img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
+            box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+        }
+
+        .spread-zoom-close {
+            position: absolute;
+            top: 32px;
+            right: 36px;
+        }
+
+        .spread-zoom-caption {
+            position: absolute;
+            left: 50%;
+            bottom: 28px;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.58);
+            font-size: 0.68rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        .viewer-panel {
+            min-width: 0;
+            height: 100vh;
+            overflow-y: auto;
+            border-left: 1px solid var(--line);
+            background: rgba(8, 8, 8, 0.96);
+            padding: 44px 38px;
+        }
+
+        .viewer-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            margin-bottom: 56px;
+        }
+
+        .viewer-label {
+            color: var(--dim);
+            font-size: 0.68rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+
+        .icon-button {
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.24s ease, border-color 0.24s ease;
+        }
+
+        .icon-button:hover {
+            background: rgba(255, 255, 255, 0.13);
+            border-color: rgba(255, 255, 255, 0.42);
+        }
+
+        .icon-button svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            stroke-linecap: round;
+            fill: none;
+        }
+
+        .viewer-title {
+            font-size: 2.6rem;
+            line-height: 0.98;
+            letter-spacing: 0;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .viewer-desc {
+            color: rgba(255, 255, 255, 0.64);
+            font-size: 0.95rem;
+            line-height: 1.75;
+            margin-bottom: 34px;
+        }
+
+        .viewer-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 34px;
+        }
+
+        .nav-button {
+            flex: 1;
+            height: 46px;
+            border: 1px solid var(--line);
+            background: transparent;
+            color: rgba(255, 255, 255, 0.76);
+            cursor: pointer;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: background-color 0.24s ease, border-color 0.24s ease, color 0.24s ease;
+        }
+
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.36);
+            color: #fff;
+        }
+
+        .counter {
+            color: var(--dim);
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+
+        .thumb-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .thumb {
+            width: 100%;
+            min-height: 82px;
+            display: grid;
+            grid-template-columns: 116px minmax(0, 1fr);
+            gap: 16px;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.025);
+            color: rgba(255, 255, 255, 0.72);
+            padding: 8px;
+            text-align: left;
+            cursor: pointer;
+            transition: border-color 0.24s ease, background-color 0.24s ease;
+        }
+
+        .thumb.active,
+        .thumb:hover {
+            border-color: rgba(255, 255, 255, 0.38);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .thumb-visual {
+            width: 116px;
+            height: 66px;
+            overflow: hidden;
+            background: var(--surface-soft);
+        }
+
+        .thumb-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) brightness(0.8);
+        }
+
+        .thumb-title {
+            min-width: 0;
+            font-size: 0.74rem;
+            letter-spacing: 1.4px;
+            line-height: 1.35;
+            text-transform: uppercase;
+            overflow-wrap: anywhere;
+        }
+
+        .media-type {
+            display: block;
+            color: var(--dim);
+            font-size: 0.62rem;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .empty-note {
+            color: rgba(255, 255, 255, 0.4);
+            border-top: 1px solid var(--line);
+            padding: 42px 0 80px;
+            font-size: 0.86rem;
+            line-height: 1.8;
+        }
+
+        @keyframes rise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 1280px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 44px;
+            }
+
+            .case-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 1180px) {
+
+            .viewer.active {
+                grid-template-columns: 1fr;
+                grid-template-rows: minmax(0, 1fr) auto;
+            }
+
+            .viewer-stage {
+                height: 62vh;
+                padding: 56px 28px;
+            }
+
+            .viewer-panel {
+                height: 38vh;
+                border-left: 0;
+                border-top: 1px solid var(--line);
+            }
+
+            .spread-zoom {
+                padding: 64px 28px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 24px 22px;
+                align-items: flex-start;
+                gap: 18px;
+            }
+
+            .status {
+                justify-content: flex-end;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .status span {
+                padding: 7px 9px;
+            }
+
+            .page {
+                width: calc(100vw - 40px);
+            }
+
+            .hero {
+                padding: 76px 0 52px;
+            }
+
+            h1 {
+                font-size: clamp(3.2rem, 17vw, 5.8rem);
+            }
+
+            .case-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .case-visual {
+                aspect-ratio: 16 / 10;
+            }
+
+            .case-content {
+                padding: 28px;
+            }
+
+            .case-title {
+                font-size: clamp(2rem, 10vw, 3.2rem);
+            }
+
+            .case-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .viewer-stage {
+                height: 52vh;
+            }
+
+            .spread-zoom {
+                padding: 58px 16px;
+            }
+
+            .spread-zoom-close {
+                top: 18px;
+                right: 18px;
+            }
+
+            .viewer-panel {
+                height: 48vh;
+                padding: 30px 20px;
+            }
+
+            .spread-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .viewer-title {
+                font-size: 2rem;
+            }
+
+            .thumb {
+                grid-template-columns: 92px minmax(0, 1fr);
+            }
+
+            .thumb-visual {
+                width: 92px;
+                height: 54px;
+            }
+        }
+    </style>
+</head>
+<body class="locked">
+    <section class="password-gate" id="password-gate" aria-label="Private preview password gate">
+        <div class="password-panel">
+            <div class="password-kicker">Private Preview</div>
+            <h1 class="password-title">Access Required</h1>
+            <p class="password-copy">Enter the preview password to open the unlisted presentation shelf.</p>
+            <form class="password-form" id="password-form">
+                <input class="password-input" id="password-input" type="password" autocomplete="off" placeholder="Password" aria-label="Password">
+                <button class="password-submit" type="submit">Open Preview</button>
+                <div class="password-error" id="password-error" role="status" aria-live="polite"></div>
+            </form>
+        </div>
+    </section>
+
+    <header class="topbar">
+        <div class="brand">ZACHARY SHEE</div>
+        <div class="status" aria-label="Page status">
+            <span>Direct URL</span>
+            <span>No Public Nav</span>
+        </div>
+    </header>
+
+    <main class="page">
+        <section class="hero">
+            <div>
+                <div class="eyebrow">Private Preview</div>
+                <h1>Unlisted Work</h1>
+            </div>
+            <p class="intro">
+                A direct-access preview page for in-person project review. These materials are kept outside the public navigation, work index, and sitemap.
+            </p>
+        </section>
+
+        <section class="case-grid" id="case-grid" aria-label="Private preview cases"></section>
+
+        <p class="empty-note">
+            This page is designed as a lightweight presentation shelf. To add more private materials later, add a new case entry in the page data and keep it out of the public navigation.
+        </p>
+    </main>
+
+    <section class="viewer" id="viewer" aria-modal="true" role="dialog" aria-label="Private media viewer">
+        <div class="viewer-stage">
+            <img class="viewer-media" id="viewer-image" alt="">
+            <video class="viewer-media" id="viewer-video" controls muted loop playsinline></video>
+            <div class="spread-gallery" id="spread-gallery" aria-label="Spread image gallery"></div>
+        </div>
+        <aside class="viewer-panel">
+            <div class="viewer-top">
+                <div class="viewer-label">Preview Viewer</div>
+                <button class="icon-button" id="viewer-close" type="button" aria-label="Close viewer">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>
+                </button>
+            </div>
+            <h2 class="viewer-title" id="viewer-title"></h2>
+            <p class="viewer-desc" id="viewer-desc"></p>
+            <div class="viewer-actions">
+                <button class="nav-button" id="viewer-prev" type="button">Previous</button>
+                <button class="nav-button" id="viewer-next" type="button">Next</button>
+            </div>
+            <div class="counter" id="viewer-counter"></div>
+            <div class="thumb-list" id="thumb-list"></div>
+        </aside>
+    </section>
+
+    <section class="spread-zoom" id="spread-zoom" aria-modal="true" role="dialog" aria-label="Expanded WorldFirst image">
+        <button class="icon-button spread-zoom-close" id="spread-zoom-close" type="button" aria-label="Close expanded image">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12"></path><path d="M18 6L6 18"></path></svg>
+        </button>
+        <img id="spread-zoom-image" alt="">
+        <div class="spread-zoom-caption" id="spread-zoom-caption"></div>
+    </section>
+
+    <script>
+        const previewCases = [
+            {
+                title: "Pigeon Gift Box CG",
+                kicker: "Product CGI / Gift Set",
+                status: "Offline Review",
+                countLabel: "9 Assets",
+                cover: "images/beiq-gift/全家福KV_v3.png",
+                description: "Gift box key visuals, product beauty renders, and short motion layouts prepared for private review.",
+                items: [
+                    { type: "image", title: "Family KV", src: "images/beiq-gift/全家福KV_v3.png" },
+                    { type: "image", title: "Vertical Family KV", src: "images/beiq-gift/竖版全家福KV_v2.png", thumb: "images/beiq-gift/竖版全家福KV_v2.png" },
+                    { type: "image", title: "Beauty Render 01", src: "images/beiq-gift/Beauty_4.png" },
+                    { type: "image", title: "Beauty Render Green", src: "images/beiq-gift/Beauty_绿5.png" },
+                    { type: "image", title: "Cut 13 Still", src: "images/beiq-gift/Cut13_C_4K.webp" },
+                    { type: "video", title: "Cut 13 Motion", src: "images/beiq-gift/Cut13C.webm", thumb: "images/beiq-gift/Cut13_C_4K.webp" },
+                    { type: "image", title: "Cut 14 End Frame", src: "images/beiq-gift/Cut14_落版.webp" },
+                    { type: "image", title: "Cut 14 End Frame 02", src: "images/beiq-gift/Cut14_落版2.webp" },
+                    { type: "video", title: "Cut 14 Motion", src: "images/beiq-gift/Cut14_落版.webm", thumb: "images/beiq-gift/Cut14_落版.webp" }
+                ]
+            },
+            {
+                title: "WorldFirst Global Voyage",
+                kicker: "Brand Visual / Ecosystem Hub",
+                status: "Unlisted Review",
+                countLabel: "6 Images",
+                cover: "images/worldfirst/Final_banner.png",
+                description: "A wide-format visual set for WorldFirst Global Voyage. The final banner is shown first as the main image, followed by the full process and prefinal images in one spread view.",
+                layout: "spread",
+                items: [
+                    { type: "image", title: "Final Banner", src: "images/worldfirst/Final_banner.png", featured: true },
+                    { type: "image", title: "Prefinal", src: "images/worldfirst/prefinal.jpg" },
+                    { type: "image", title: "Process 01", src: "images/worldfirst/process1.jpg" },
+                    { type: "image", title: "Process 02", src: "images/worldfirst/process2.jpg" },
+                    { type: "image", title: "Process 03", src: "images/worldfirst/process3.jpg" },
+                    { type: "image", title: "Process 04", src: "images/worldfirst/process4.jpg" }
+                ]
+            },
+            {
+                title: "OPPO AI Image Refinement",
+                kicker: "AI Visual Enhancement / Upscale",
+                status: "NDA Preview",
+                countLabel: "10 Comparisons",
+                cover: "images/oppo/final/0523 - 8K-场景二_网红店打卡_V32_result.webp",
+                description: "Original and final visual comparisons for OPPO campaign scenes, including face-level AI upscale detail review.",
+                link: "project-oppo-ai.html",
+                items: []
+            },
+            {
+                title: "ATMOCE Product Asset Upgrade",
+                kicker: "AI Product Refinement",
+                status: "NDA Preview",
+                countLabel: "5 Comparisons",
+                cover: "images/atmoce/final/M-Microinverter.png",
+                description: "Original and final product asset comparisons showing AI-assisted material cleanup, silhouette refinement, and presentation-ready final images.",
+                link: "project-atmoce-ai.html",
+                items: []
+            },
+            {
+                title: "Vinda Commercial CG",
+                kicker: "TVC / Product Visuals",
+                status: "Offline Review",
+                countLabel: "4 Assets",
+                cover: "images/vinda/vinda-01.webp",
+                description: "Selected still and motion cuts prepared for future public case expansion.",
+                items: [
+                    { type: "image", title: "Vinda Still", src: "images/vinda/vinda-01.webp" },
+                    { type: "video", title: "Vinda Main Film", src: "images/vinda/vinda.mp4", thumb: "images/vinda/vinda-01.webp" },
+                    { type: "video", title: "CG Cut 01", src: "images/vinda/cg090_0826.webm", thumb: "images/vinda/vinda-01.webp" },
+                    { type: "video", title: "CG Cut 02", src: "images/vinda/cg090_0826_1.webm", thumb: "images/vinda/vinda-01.webp" }
+                ]
+            },
+            {
+                title: "AION Scenario Archive",
+                kicker: "Automotive CGI / NOA",
+                status: "Scenario Set",
+                countLabel: "18 Assets",
+                cover: "images/aion-nda/白天浓烟v03.png",
+                description: "Scenario stills and motion clips for intelligent driving visualization review.",
+                items: [
+                    { type: "image", title: "Daytime Smoke", src: "images/aion-nda/白天浓烟v03.png" },
+                    { type: "image", title: "Dark Lighting", src: "images/aion-nda/暗光v02.png" },
+                    { type: "image", title: "Glare Lighting", src: "images/aion-nda/炫光v06.png" },
+                    { type: "image", title: "Sunset Lighting", src: "images/aion-nda/sunset v07.png" },
+                    { type: "video", title: "Urban Scenario 03", src: "images/aion-nda/城区_场景3.webm", thumb: "images/aion-nda/白天浓烟v03.png" },
+                    { type: "video", title: "Urban Scenario 03 Source", src: "images/aion-nda/城区_场景3.m4v", thumb: "images/aion-nda/白天浓烟v03.png" },
+                    { type: "video", title: "Urban Merge", src: "images/aion-nda/城区_场景3_加塞.webm", thumb: "images/aion-nda/炫光v06.png" },
+                    { type: "video", title: "Urban Merge Source", src: "images/aion-nda/城区_场景3_加塞2.m4v", thumb: "images/aion-nda/炫光v06.png" },
+                    { type: "video", title: "Urban U-turn", src: "images/aion-nda/城区_场景3_掉头.webm", thumb: "images/aion-nda/暗光v02.png" },
+                    { type: "video", title: "Urban U-turn Source", src: "images/aion-nda/城区_场景3_掉头_v3.m4v", thumb: "images/aion-nda/暗光v02.png" },
+                    { type: "video", title: "Urban Roundabout", src: "images/aion-nda/城区_场景3_环岛.webm", thumb: "images/aion-nda/sunset v07.png" },
+                    { type: "video", title: "Urban Roundabout Source", src: "images/aion-nda/城区_场景3_环岛_v5.m4v", thumb: "images/aion-nda/sunset v07.png" },
+                    { type: "video", title: "POV With Hands", src: "images/aion-nda/城区_场景6_移除手_有手.webm", thumb: "images/aion-nda/白天浓烟v03.png" },
+                    { type: "video", title: "POV No Hands", src: "images/aion-nda/城区_场景6_移除手_没手.webm", thumb: "images/aion-nda/白天浓烟v03.png" },
+                    { type: "video", title: "Highway Scenario 03", src: "images/aion-nda/高速场景3.webm", thumb: "images/aion-nda/炫光v06.png" },
+                    { type: "video", title: "Highway Scenario 06", src: "images/aion-nda/高速场景6.webm", thumb: "images/aion-nda/sunset v07.png" },
+                    { type: "video", title: "Highway Scenario 06 Alt", src: "images/aion-nda/高速场景6-1.webm", thumb: "images/aion-nda/sunset v07.png" },
+                    { type: "video", title: "Highway Ramp", src: "images/aion-nda/高速场景6-下匝道.webm", thumb: "images/aion-nda/暗光v02.png" }
+                ]
+            },
+            {
+                title: "YANGWANG U8 / U8L AI Interior Environment",
+                kicker: "Automotive AI / Interior Environment",
+                status: "NDA Preview",
+                countLabel: "70 WebP Assets",
+                cover: "images/yw_u8l-u8_ai_int_evn/U8/360/U8_360_Preview_V02_result.webp",
+                description: "AI-assisted environment development for YANGWANG U8 and U8L interiors, from reference exploration through grouped stills and vehicle-specific 360 previews.",
+                link: "project-yw-u8-u8l-ai-int-evn.html",
+                items: []
+            }
+        ];
+
+        const grid = document.getElementById("case-grid");
+        const viewer = document.getElementById("viewer");
+        const viewerImage = document.getElementById("viewer-image");
+        const viewerVideo = document.getElementById("viewer-video");
+        const spreadGallery = document.getElementById("spread-gallery");
+        const spreadZoom = document.getElementById("spread-zoom");
+        const spreadZoomImage = document.getElementById("spread-zoom-image");
+        const spreadZoomCaption = document.getElementById("spread-zoom-caption");
+        const spreadZoomClose = document.getElementById("spread-zoom-close");
+        const viewerTitle = document.getElementById("viewer-title");
+        const viewerDesc = document.getElementById("viewer-desc");
+        const viewerCounter = document.getElementById("viewer-counter");
+        const thumbList = document.getElementById("thumb-list");
+        const closeButton = document.getElementById("viewer-close");
+        const prevButton = document.getElementById("viewer-prev");
+        const nextButton = document.getElementById("viewer-next");
+        const passwordForm = document.getElementById("password-form");
+        const passwordInput = document.getElementById("password-input");
+        const passwordError = document.getElementById("password-error");
+        const previewPassword = "szx123456";
+        const authKey = "itPreviewUnlocked";
+
+        const state = {
+            caseIndex: 0,
+            itemIndex: 0,
+            previousOverflow: ""
+        };
+
+        function createCard(previewCase, index) {
+            const card = document.createElement("article");
+            card.className = "case-card";
+            card.tabIndex = 0;
+            card.innerHTML = `
+                <div class="case-visual">
+                    <img src="${previewCase.cover}" alt="${previewCase.title}">
+                </div>
+                <div class="case-content">
+                    <div class="case-kicker">${previewCase.kicker}</div>
+                    <h2 class="case-title">${previewCase.title}</h2>
+                    <p class="case-desc">${previewCase.description}</p>
+                    <div class="case-meta">
+                        <span>${previewCase.status}</span>
+                        <span>${previewCase.countLabel}</span>
+                    </div>
+                </div>
+            `;
+            const openCard = () => {
+                if (previewCase.link) {
+                    window.location.href = previewCase.link;
+                    return;
+                }
+
+                openViewer(index, 0);
+            };
+
+            card.addEventListener("click", openCard);
+            card.addEventListener("keydown", event => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openCard();
+                }
+            });
+            return card;
+        }
+
+        function renderCards() {
+            previewCases.forEach((previewCase, index) => {
+                grid.appendChild(createCard(previewCase, index));
+            });
+
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add("active");
+                });
+            }, { threshold: 0.18 });
+
+            document.querySelectorAll(".case-card").forEach(card => observer.observe(card));
+        }
+
+        function clearStage() {
+            viewer.classList.remove("spread-mode");
+            spreadGallery.classList.remove("show");
+            spreadGallery.innerHTML = "";
+            viewerImage.classList.remove("show");
+            viewerImage.removeAttribute("src");
+            viewerImage.removeAttribute("alt");
+            viewerVideo.classList.remove("show");
+            viewerVideo.pause();
+            viewerVideo.removeAttribute("src");
+            viewerVideo.load();
+        }
+
+        function openSpreadZoom(src, title) {
+            spreadZoomImage.src = src;
+            spreadZoomImage.alt = title;
+            spreadZoomCaption.textContent = title;
+            spreadZoom.classList.add("active");
+        }
+
+        function closeSpreadZoom() {
+            spreadZoom.classList.remove("active");
+            spreadZoomImage.removeAttribute("src");
+            spreadZoomImage.removeAttribute("alt");
+            spreadZoomCaption.textContent = "";
+        }
+
+        function renderThumbs() {
+            const currentCase = previewCases[state.caseIndex];
+            thumbList.innerHTML = "";
+
+            currentCase.items.forEach((item, index) => {
+                const thumb = document.createElement("button");
+                thumb.type = "button";
+                thumb.className = `thumb${index === state.itemIndex ? " active" : ""}`;
+                const thumbSrc = item.thumb || item.src;
+                thumb.innerHTML = `
+                    <span class="thumb-visual"><img src="${thumbSrc}" alt=""></span>
+                    <span class="thumb-title">${item.title}<span class="media-type">${item.type}</span></span>
+                `;
+                thumb.addEventListener("click", () => showItem(index));
+                thumbList.appendChild(thumb);
+            });
+        }
+
+        function renderSpreadGallery(currentCase) {
+            const featured = currentCase.items.find(item => item.featured) || currentCase.items[0];
+            const supportingItems = currentCase.items.filter(item => item !== featured);
+
+            clearStage();
+            viewer.classList.add("spread-mode");
+            spreadGallery.classList.add("show");
+            thumbList.innerHTML = "";
+            viewerCounter.textContent = "";
+
+            spreadGallery.innerHTML = `
+                <figure class="spread-main">
+                    <button class="spread-zoom-trigger" type="button" data-src="${featured.src}" data-title="${featured.title}" aria-label="Expand ${featured.title}">
+                        <img src="${featured.src}" alt="${featured.title}">
+                    </button>
+                    <figcaption class="spread-caption">${featured.title}</figcaption>
+                </figure>
+                <div class="spread-grid">
+                    ${supportingItems.map(item => `
+                        <figure class="spread-item">
+                            <button class="spread-zoom-trigger" type="button" data-src="${item.src}" data-title="${item.title}" aria-label="Expand ${item.title}">
+                                <img src="${item.src}" alt="${item.title}">
+                            </button>
+                            <figcaption class="spread-caption">${item.title}</figcaption>
+                        </figure>
+                    `).join("")}
+                </div>
+            `;
+
+            spreadGallery.querySelectorAll(".spread-zoom-trigger").forEach(button => {
+                button.addEventListener("click", () => {
+                    openSpreadZoom(button.dataset.src, button.dataset.title);
+                });
+            });
+        }
+
+        function showItem(index) {
+            const currentCase = previewCases[state.caseIndex];
+            if (currentCase.layout === "spread") return;
+
+            state.itemIndex = (index + currentCase.items.length) % currentCase.items.length;
+            const item = currentCase.items[state.itemIndex];
+
+            clearStage();
+
+            if (item.type === "video") {
+                viewerVideo.src = item.src;
+                viewerVideo.classList.add("show");
+                viewerVideo.play().catch(() => {});
+            } else {
+                viewerImage.src = item.src;
+                viewerImage.alt = item.title;
+                viewerImage.classList.add("show");
+            }
+
+            viewerCounter.textContent = `${state.itemIndex + 1} / ${currentCase.items.length}`;
+            renderThumbs();
+        }
+
+        function openViewer(caseIndex, itemIndex) {
+            const currentCase = previewCases[caseIndex];
+            state.caseIndex = caseIndex;
+            state.itemIndex = itemIndex;
+            state.previousOverflow = document.body.style.overflow;
+
+            viewerTitle.textContent = currentCase.title;
+            viewerDesc.textContent = currentCase.description;
+            document.body.style.overflow = "hidden";
+            viewer.classList.add("active");
+
+            if (currentCase.layout === "spread") {
+                renderSpreadGallery(currentCase);
+            } else {
+                showItem(itemIndex);
+            }
+        }
+
+        function closeViewer() {
+            closeSpreadZoom();
+            viewer.classList.remove("active");
+            document.body.style.overflow = state.previousOverflow;
+            clearStage();
+        }
+
+        function showRelative(offset) {
+            if (!viewer.classList.contains("active")) return;
+            if (viewer.classList.contains("spread-mode")) return;
+            showItem(state.itemIndex + offset);
+        }
+
+        closeButton.addEventListener("click", closeViewer);
+        prevButton.addEventListener("click", () => showRelative(-1));
+        nextButton.addEventListener("click", () => showRelative(1));
+
+        viewer.addEventListener("click", event => {
+            if (event.target === viewer) closeViewer();
+        });
+
+        spreadZoom.addEventListener("click", event => {
+            if (event.target === spreadZoom) closeSpreadZoom();
+        });
+
+        spreadZoomClose.addEventListener("click", closeSpreadZoom);
+
+        document.addEventListener("keydown", event => {
+            if (spreadZoom.classList.contains("active")) {
+                if (event.key === "Escape") closeSpreadZoom();
+                return;
+            }
+
+            if (!viewer.classList.contains("active")) return;
+
+            if (event.key === "Escape") closeViewer();
+            if (event.key === "ArrowLeft") showRelative(-1);
+            if (event.key === "ArrowRight") showRelative(1);
+        });
+
+        function unlockPreview() {
+            document.body.classList.remove("locked");
+            document.body.classList.add("unlocked");
+            document.body.style.overflow = "";
+            if (!grid.children.length) renderCards();
+        }
+
+        passwordForm.addEventListener("submit", event => {
+            event.preventDefault();
+
+            if (passwordInput.value === previewPassword) {
+                sessionStorage.setItem(authKey, "true");
+                passwordError.textContent = "";
+                unlockPreview();
+                return;
+            }
+
+            passwordError.textContent = "Password incorrect.";
+            passwordInput.value = "";
+            passwordInput.focus();
+        });
+
+        if (sessionStorage.getItem(authKey) === "true") {
+            unlockPreview();
+        } else {
+            passwordInput.focus();
+        }
+    </script>
+</body>
+</html>
