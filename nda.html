@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confidential Projects | Zachary Shee Studio</title>
+    <!-- SEO Safeguard: Prevent search engine crawlers from indexing this page -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --text-color: #ffffff;
+            --accent-color: #888888;
+            --red-warning: #ff3b30;
+            --card-bg: #111111;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 导航栏 */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 60px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+        }
+        .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        .nav-links a { color: white; text-decoration: none; margin-left: 28px; font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6; transition: 0.3s; }
+        .nav-links a:hover { opacity: 1; }
+
+        /* 语言切换器 */
+        .lang-switch { display: flex; align-items: center; margin-left: 40px; font-size: 0.75rem; letter-spacing: 1px; color: white; opacity: 0.6; }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+        @media (max-width: 768px) { .lang-switch { margin-left: 20px; } }
+
+        /* --- 1. 密码保护页 (Passcode Gate) --- */
+        .gate-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: #000000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        .gate-container.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* 呼吸背景光效 */
+        .gate-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            animation: breathingGlow 8s infinite ease-in-out;
+            pointer-events: none;
+        }
+        @keyframes breathingGlow {
+            0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.15); }
+        }
+
+        /* 警告小标签 */
+        .warning-tag {
+            font-size: 0.62rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--red-warning);
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 59, 48, 0.25);
+            padding: 6px 18px;
+            border-radius: 50px;
+            background: rgba(255, 59, 48, 0.04);
+            opacity: 0; transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.2s;
+        }
+
+        .gate-title {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            line-height: 1.0;
+            margin-bottom: 24px;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.4s;
+        }
+        .gate-desc {
+            font-size: 0.85rem;
+            color: #888;
+            max-width: 480px;
+            margin-bottom: 60px;
+            line-height: 1.8;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.6s;
+        }
+
+        /* 密码输入框表单 */
+        .passcode-form {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 320px;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeInUp 0.8s forwards 0.8s;
+        }
+        .input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+        .passcode-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 12px 0px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 3px;
+            transition: border-bottom-color 0.3s;
+        }
+        .passcode-input:focus {
+            outline: none;
+            border-bottom-color: #fff;
+        }
+        .passcode-input::placeholder {
+            color: #444;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn {
+            background: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 32px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            margin-top: 25px;
+        }
+        .submit-btn:hover {
+            background: white;
+            color: black;
+            border-color: white;
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            color: var(--red-warning);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            height: 16px;
+            margin-top: 5px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .error-message.active {
+            opacity: 1;
+        }
+
+        /* 抖动动画 */
+        .shake {
+            animation: shakeAnim 0.5s ease-in-out;
+        }
+        @keyframes shakeAnim {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+
+        /* --- 2. 受保护的主页内容 (Protected Content) --- */
+        #protected-content {
+            opacity: 0;
+            transition: opacity 1s ease;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        #protected-content.visible {
+            opacity: 1;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            padding: 180px 60px 60px;
+            text-align: center;
+            position: relative;
+        }
+        .page-title {
+            font-size: 4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .page-subtitle {
+            color: var(--accent-color);
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+        .page-desc {
+            font-size: 0.95rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 作品网格 */
+        .gallery-container {
+            padding: 0 60px 120px;
+            max-width: 1800px;
+            margin: 0 auto;
+            flex: 1;
+            width: 100%;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+        }
+        @media (max-width: 1024px) {
+            .gallery { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .gallery { grid-template-columns: 1fr; gap: 40px; }
+            .page-header { padding: 140px 20px 40px; }
+            .gallery-container { padding: 0 20px 80px; }
+            .page-title { font-size: 2.5rem; }
+        }
+
+        /* 机密项目卡片 */
+        .project-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .project-card.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-media {
+            position: relative;
+            aspect-ratio: 16/9;
+            background: #111;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 机密卡片默认置灰模糊，营造机密受锁效果 */
+        .card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(1) blur(5px) brightness(0.4);
+            transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s ease;
+        }
+        .card-media video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0; left: 0;
+            opacity: 0;
+            filter: grayscale(1) brightness(0.6);
+            transition: opacity 0.6s ease, filter 0.6s ease;
+        }
+
+        /* 锁图标徽章 */
+        .lock-badge {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 54px; height: 54px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            transition: all 0.4s;
+        }
+        .lock-badge svg {
+            width: 20px; height: 20px;
+            fill: #fff;
+            transition: fill 0.3s, transform 0.4s;
+        }
+
+        /* 悬停交互：恢复明亮色彩、播放视频、旋转锁图标 */
+        .project-card:hover .card-media img {
+            filter: grayscale(0) blur(0px) brightness(0.7);
+            transform: scale(1.03);
+        }
+        .project-card:hover .card-media video {
+            opacity: 1;
+            filter: grayscale(0) brightness(0.8);
+        }
+        .project-card:hover .lock-badge {
+            background: rgba(255, 255, 255, 0.9);
+            border-color: #fff;
+            transform: translate(-50%, -50%) scale(1.08);
+        }
+        .project-card:hover .lock-badge svg {
+            fill: #000;
+        }
+
+        /* 项目信息 */
+        .project-info {
+            text-align: left;
+        }
+        .p-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .p-title .lock-icon-inline {
+            width: 12px; height: 12px;
+            fill: var(--accent-color);
+            opacity: 0.7;
+        }
+        .p-cat {
+            color: var(--accent-color);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 20%; left: 50%;
+            transform: translateX(-50%);
+            width: 800px; height: 800px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- 3. Behance 风格全面屏模态框 (Project Modal Overlay) --- */
+        .drawer-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9990;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+        }
+        .drawer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .project-drawer {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent;
+            z-index: 9995;
+            transform: scale(0.96);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, visibility 0.5s ease;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* 居中内容面板 */
+        }
+        .project-drawer.open {
+            transform: scale(1);
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        /* 模态框头部与关闭按钮 */
+        .drawer-header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 40px 50px 20px;
+            display: flex;
+            justify-content: flex-end;
+            position: sticky;
+            top: 0;
+            background: transparent;
+            z-index: 100;
+        }
+        .close-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            cursor: pointer;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+        }
+        .close-btn:hover {
+            opacity: 1;
+            border-color: #fff;
+            background: rgba(0, 0, 0, 0.8);
+            transform: translateY(-2px);
+        }
+        .close-btn svg {
+            width: 14px; height: 14px;
+            fill: #fff;
+        }
+
+        /* 模态框主体内容 */
+        .drawer-content {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0px 50px 100px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease 0.1s, transform 0.6s ease 0.1s;
+        }
+        .project-drawer.open .drawer-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .drawer-header { padding: 30px 25px 15px; }
+            .drawer-content { padding: 0 25px 60px; }
+        }
+
+        /* Behance 风格大图 Hero 模块 */
+        .drawer-hero {
+            width: 100%;
+            aspect-ratio: 21/9;
+            margin-bottom: 50px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .drawer-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .drawer-hero-overlay {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 50%;
+            background: linear-gradient(to bottom, transparent, var(--bg-color));
+            pointer-events: none;
+        }
+
+        /* 项目详情标题 */
+        .drawer-p-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .drawer-p-cat {
+            color: var(--accent-color);
+            font-size: 0.95rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+            text-align: left;
+        }
+
+        /* 图文信息分栏 */
+        .drawer-project-meta {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 60px;
+            margin-bottom: 70px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 40px;
+            text-align: left;
+        }
+        @media (max-width: 768px) {
+            .drawer-project-meta {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin-bottom: 40px;
+            }
+        }
+
+        .drawer-meta-list div {
+            margin-bottom: 25px;
+        }
+        .drawer-meta-label {
+            color: var(--accent-color);
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 6px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 6px;
+        }
+        .drawer-meta-value {
+            font-size: 0.95rem;
+            color: #ddd;
+        }
+        .drawer-meta-value.warning {
+            color: var(--red-warning);
+            font-weight: 600;
+        }
+
+        .drawer-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #ccc;
+            font-weight: 200;
+        }
+
+        /* 细节媒体模块列表 */
+        .drawer-media-section {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+        .media-module {
+            width: 100%;
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.05);
+            overflow: hidden;
+        }
+        .media-module img, .media-module video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* 页脚 */
+        footer {
+            border-top: 1px solid #222;
+            padding: 80px 60px;
+            margin-top: auto;
+            background: #050505;
+        }
+        .footer-content {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        .footer-left h3 { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .footer-left p { color: #666; font-size: 0.8rem; line-height: 1.6; }
+        .footer-links { display: flex; gap: 60px; }
+        .f-col { display: flex; flex-direction: column; gap: 15px; }
+        .f-title { color: white; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; }
+        .f-col a { color: #888; text-decoration: none; font-size: 0.8rem; transition: color 0.3s; }
+        .f-col a:hover { color: white; }
+
+        /* 锁屏语言切换器样式 */
+        .gate-lang-switch {
+            position: absolute;
+            top: 40px; right: 60px;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: white;
+            opacity: 0.6;
+            z-index: 10000;
+        }
+        .gate-lang-switch span { cursor: pointer; transition: 0.3s; }
+        .gate-lang-switch span:hover { opacity: 1; }
+        .gate-lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .gate-lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+        @media (max-width: 768px) {
+            .gate-lang-switch { top: 30px; right: 20px; }
+        }
+
+        /* 条款链接文本 */
+        .terms-link {
+            text-decoration: underline;
+            cursor: pointer;
+            color: #fff;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .terms-link:hover {
+            color: var(--accent-color);
+        }
+
+        /* --- 5. 条款说明模态框 (Terms Modal) --- */
+        .terms-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 10001; /* 必须高于项目抽屉的 9995 */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .terms-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .terms-modal-box {
+            width: 100%;
+            max-width: 720px;
+            max-height: 80vh;
+            background: #0d0d0d;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.96);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .terms-modal-overlay.active .terms-modal-box {
+            transform: scale(1);
+        }
+
+        .terms-modal-header {
+            padding: 25px 35px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .terms-modal-header h2 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .terms-close-icon {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+        .terms-close-icon:hover {
+            color: #fff;
+        }
+
+        .terms-modal-body {
+            padding: 35px;
+            overflow-y: auto;
+            flex: 1;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: #aaa;
+            text-align: left;
+        }
+        /* 严谨的法律条款排版 */
+        .terms-legal h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #fff;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        .terms-legal p {
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+        .terms-legal strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .terms-modal-footer {
+            padding: 20px 35px 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+        .terms-disagree-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #888;
+            padding: 10px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .terms-disagree-btn:hover {
+            border-color: var(--red-warning);
+            color: var(--red-warning);
+        }
+        .terms-agree-btn {
+            background: white;
+            border: 1px solid white;
+            color: black;
+            padding: 10px 28px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .terms-agree-btn:hover {
+            background: transparent;
+            color: white;
+        }
+
+        /* 保护罩与禁防提取 */
+        .protected-media {
+            position: relative;
+        }
+        .media-shield {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0); /* 透明保护 */
+            z-index: 10;
+            cursor: default;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* 自定义安全视频播放控制条 */
+        .custom-player-wrapper {
+            position: relative;
+            width: 100%;
+            background: #000;
+        }
+        .custom-controls {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            padding: 20px 25px;
+            box-sizing: border-box;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+            z-index: 25; /* 高于视频和水印，低于顶部和关闭按钮 */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .custom-player-wrapper:hover .custom-controls {
+            opacity: 1;
+            visibility: visible;
+        }
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .controls-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .player-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .player-btn:hover {
+            opacity: 1;
+        }
+        .player-btn svg {
+            width: 18px; height: 18px;
+            fill: #fff;
+        }
+        .time-display {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem;
+            color: #aaa;
+            letter-spacing: 0.5px;
+        }
+
+        /* 进度条样式 */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            position: relative;
+            border-radius: 2px;
+            transition: height 0.2s;
+        }
+        .progress-container:hover {
+            height: 6px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-color);
+            border-radius: 2px;
+            position: relative;
+        }
+        .progress-handle {
+            position: absolute;
+            right: -6px; top: 50%;
+            transform: translateY(-50%);
+            width: 12px; height: 12px;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .progress-container:hover .progress-handle {
+            opacity: 1;
+        }
+
+        /* 页面隐形动态视觉水印 */
+        .watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 50; /* 低于 header 的 100，高于内容 */
+            opacity: 0.035; /* 极轻度透明，防止干扰视线，但足够截图/拍照回溯 */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-rows: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 40px;
+            padding: 30px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+        .watermark-item {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: #fff;
+            transform: rotate(-25deg);
+            white-space: nowrap;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 密码验证屏 (Passcode Gate) -->
+    <div class="gate-container" id="passcode-gate">
+        <div class="gate-glow"></div>
+        <div class="gate-lang-switch">
+            <span onclick="toggleLanguage('en')" id="gate-lang-en">EN</span>
+            <span class="divider">/</span>
+            <span onclick="toggleLanguage('zh')" id="gate-lang-zh">中</span>
+        </div>
+        <div class="warning-tag" data-i18n="gate_work_subtitle">NDA Protected / For Review Only</div>
+        <h1 class="gate-title" data-i18n="gate_work_title">Confidential Works</h1>
+        <p class="gate-desc" data-i18n="gate_work_desc">The following projects are protected by Non-Disclosure Agreements (NDA) and cannot be publicly disclosed. Please do not share or distribute.</p>
+        
+        <form class="passcode-form" id="gate-form" onsubmit="handlePasscodeSubmit(event)">
+            <div class="input-wrapper">
+                <input type="password" class="passcode-input" id="passcode-field" placeholder="Passcode..." autofocus>
+            </div>
+            <div class="error-message" id="passcode-error" data-i18n="passcode_error">Incorrect passcode. Please try again.</div>
+            <button type="submit" class="submit-btn" data-i18n="passcode_submit">SUBMIT</button>
+        </form>
+    </div>
+
+    <!-- 2. 授权显示的内容区 (Protected Main Page) -->
+    <div id="protected-content" style="display: none;">
+        <nav>
+            <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
+            <div style="display: flex; align-items: center;">
+                <div class="nav-links">
+                    <a href="work.html" data-i18n="nav_work">WORK</a>
+                    <a href="solutions.html" data-i18n="nav_solutions">SOLUTIONS</a>
+                    <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                    <a href="course.html" data-i18n="nav_course">COURSE</a>
+                    <a href="contact.html" data-i18n="nav_contact">CONTACT</a>
+                </div>
+                <div class="lang-switch">
+                    <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                    <span class="divider">/</span>
+                    <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="bg-glow"></div>
+
+        <header class="page-header">
+            <h1 class="page-title" data-i18n="private_work_title">Confidential Works</h1>
+            <div class="page-subtitle" data-i18n="private_work_subtitle">NDA PROTECTED / FOR REVIEW ONLY</div>
+            <p class="page-desc" data-i18n="private_work_desc">The following projects are protected by Non-Disclosure Agreements (NDA) and cannot be publicly disclosed. Please do not share or distribute.</p>
+        </header>
+
+        <section class="gallery-container">
+            <div class="gallery" id="private-gallery">
+                <!-- 由 JS 根据授权情况动态渲染 -->
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-left">
+                    <h3>ZACHARY SHEE</h3>
+                    <p data-i18n="footer_desc">Creative Design Studio.<br>Based in Shanghai, available Worldwide.</p>
+                    <br>
+                    <p style="opacity: 0.4;" data-i18n="footer_rights">&copy; 2024 Zachary Shee. All Rights Reserved.</p>
+                </div>
+                <div class="footer-links">
+                    <div class="f-col">
+                        <div class="f-title" data-i18n="footer_sitemap">SITEMAP</div>
+                        <a href="index.html" data-i18n="nav_home">Home</a>
+                        <a href="work.html" data-i18n="nav_work">Work</a>
+                        <a href="solutions.html" data-i18n="nav_solutions">Solutions</a>
+                        <a href="about.html" data-i18n="nav_about">About</a>
+                        <a href="course.html" data-i18n="nav_course">Course</a>
+                        <a href="contact.html" data-i18n="nav_contact">Contact</a>
+                    </div>
+                    <div class="f-col">
+                        <div class="f-title" data-i18n="footer_social">SOCIAL</div>
+                        <a href="#" target="_blank">Instagram</a>
+                        <a href="#" target="_blank">Behance</a>
+                        <a href="#" target="_blank">Vimeo</a>
+                    </div>
+                    <div class="f-col">
+                        <div class="f-title" data-i18n="footer_contact_title">CONTACT</div>
+                        <a href="mailto:pandaastone@gmail.com">pandaastone@gmail.com</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 3. 抽屉背景遮罩 (Drawer Backdrop) -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+    <!-- 4. 抽屉详情面板 (Slide-over Drawer) -->
+    <aside class="project-drawer" id="project-drawer">
+        <!-- 页面隐形动态视觉水印 -->
+        <div class="watermark-overlay" id="watermark-container"></div>
+        <div class="drawer-header">
+            <button class="close-btn" onclick="closeDrawer()">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                <span id="close-btn-text">CLOSE</span>
+            </button>
+        </div>
+        <div class="drawer-content" id="drawer-content-body">
+            <!-- 动态生成 -->
+        </div>
+    </aside>
+
+    <script>
+        // 定义筛选类型，契合 lang.js 里的 window.toggleLanguage 联动
+        window.currentFilterType = 'all';
+
+        // 密码哈希: 'studio2026' 的 SHA-256
+        const CORRECT_HASH = "bee111eca90c948fa76c0147870d9d6e44c7a589a6805292637e9537f941292e";
+
+        // 机密项目数据定义
+        const privateProjectsData = [
+            {
+                id: "project-aegir",
+                title: { en: "Project Aegir (Confidential)", zh: "Aegir 计划 (机密级)" },
+                category: { en: "Automotive CGI / TVC", zh: "汽车 CGI / 商业广告" },
+                image: "images/奥迪.jpg",
+                video: "images/audi_beijing/audi-boxtransfer.mp4",
+                meta: {
+                    client: { en: "Confidential German Luxury Auto Brand", zh: "某豪华德系汽车品牌" },
+                    role: { en: "Lead CGI & Lighting Artist", zh: "三维渲染主美 / 灯光师" },
+                    software: "Cinema 4D / Redshift / Houdini / After Effects",
+                    status: { en: "NDA Protected - Internal Review Only", zh: "受 NDA 协议保护 - 仅供业务审阅" }
+                },
+                description: {
+                    en: "A confidential TVC visualization project for an unreleased flagship Electric SUV. We engineered high-fidelity physics-based shaders for active aerodynamic carbon fiber parts, and simulated full volumetric fog environments to frame the car's launch silhouette. Due to strict non-disclosure terms, specific brand markings and body lines have been abstractly modified.",
+                    zh: "为某款未发布的旗舰级纯电 SUV 研发制作的机密发布会预热 TVC 视觉物料。我们为该车型的可主动变形碳纤维气动套件开发了高精度物理着色器，并使用三维体积雾模拟车身穿梭的轮廓。由于严格的保密协议，车标及敏感车身线条已进行抽象与替代处理。"
+                },
+                showcase: [
+                    { type: "video", src: "images/audi_beijing/audi-boxtransfer.mp4", hasControls: false }, // 用户要求不带控制条，自动无声循环
+                    { type: "image", src: "images/奥迪.jpg" }
+                ]
+            },
+            {
+                id: "project-horizon",
+                title: { en: "Project Horizon (Confidential)", zh: "Horizon 计划 (机密级)" },
+                category: { en: "3C Product / Motion Design", zh: "3C 数码 / 动态设计" },
+                image: "images/cemoy/CEMOY3.webp",
+                video: "images/cemoy/CEMOY_1.mp4",
+                meta: {
+                    client: { en: "Global Smartphone Manufacturer", zh: "头部智能手机品牌" },
+                    role: { en: "3D Motion Graphics Artist", zh: "三维动态设计师" },
+                    software: "Cinema 4D / Octane Render / After Effects",
+                    status: { en: "NDA Protected - Client Pitch Only", zh: "受 NDA 协议保护 - 仅限提案审阅" }
+                },
+                description: {
+                    en: "Creative dynamic sequence demonstrating the complex internal hinge structure and folding mechanism of a next-generation folding screen device. This project involved high-resolution CAD conversion, mechanical animation rigging, and micro-material detailing to achieve premium visual quality. Real brand assets have been replaced with neutral, high-end CGI models.",
+                    zh: "一款下一代折叠屏手机复杂铰链结构及折叠动态的创意展示片。项目包含高精度工业 CAD 数据转换、精密机械传动动画绑定，以及微观材质的精细刻画。为了符合保密要求，片中已用中性的概念化高端机身模型替代真实品牌机型。"
+                },
+                showcase: [
+                    { type: "video", src: "images/cemoy/CEMOY_1.mp4", hasControls: false }, // 自动循环无控制条
+                    { type: "image", src: "images/cemoy/CEMOY3.webp" }
+                ]
+            },
+            {
+                id: "project-aura",
+                title: { en: "Project Aura (Confidential)", zh: "Aura 计划 (机密级)" },
+                category: { en: "VFX / Fluid Dynamics", zh: "流体特效 / 创意视觉" },
+                image: "images/byd-sealev.png",
+                video: "images/beiq-xmy/BeiQ-final.webm",
+                meta: {
+                    client: { en: "Premium Skincare Group", zh: "高端美妆护肤集团" },
+                    role: { en: "VFX / Fluid Simulation Artist", zh: "特技 / 流体模拟视觉师" },
+                    software: "Houdini / Cinema 4D / Redshift / Nuke",
+                    status: { en: "NDA Protected - Portfolio Pitch Only", zh: "受 NDA 协议保护 - 仅限作品集展示" }
+                },
+                description: {
+                    en: "An abstract CGI representation of cellular rejuvenation and micro-fluid penetration designed for an upcoming high-end serum. The simulation utilized advanced Houdini FLIP fluid solver tools to depict how active ingredients penetrate deep skin barrier layers, ensuring physically plausible dynamics combined with premium aesthetic lighting. Brand labels and packaging are omitted.",
+                    zh: "一款即将上市的高端修护精华液细胞级渗透及微米流体吸收过程的抽象 CGI 特效。项目采用 Houdini FLIP 流体求解器进行模拟，表现活性成分穿透肌肤屏障的过程，兼顾了真实的物理运动学规律和高端影棚布光质感。产品外包装及字样已做省略处理。"
+                },
+                showcase: [
+                    { type: "video", src: "images/beiq-xmy/BeiQ-final.webm", hasControls: true }, // 用户要求带控制条
+                    { type: "image", src: "images/byd-sealev.png" }
+                ]
+            }
+        ];
+
+        // 异步计算 SHA-256 哈希值
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return hashHex;
+        }
+
+        // 全局状态跟踪
+        window.activeDrawerProjectId = null;
+
+        // 页面初始化加载
+        window.addEventListener('DOMContentLoaded', () => {
+            // 开始异步预加载 IP 地址
+            fetchViewerIp();
+
+            // 设置多语言 placeholder 的辅助逻辑
+            applyPlaceholderTranslations();
+
+            // 检查 session 授权状态
+            if (sessionStorage.getItem('nda_authenticated') === 'true') {
+                showContentInstant();
+            }
+
+            // 绑定点击内容外侧关闭抽屉/模态框的逻辑
+            const drawer = document.getElementById('project-drawer');
+            if (drawer) {
+                drawer.addEventListener('click', function(e) {
+                    const isContent = e.target.closest('#drawer-content-body') || e.target.closest('.drawer-header');
+                    if (!isContent) {
+                        closeDrawer();
+                    }
+                });
+            }
+
+            // 禁用图片与媒体容器的右键和拖放行为
+            const protectedContainer = document.getElementById('protected-content');
+            if (protectedContainer) {
+                protectedContainer.addEventListener('contextmenu', e => {
+                    const tag = e.target.tagName;
+                    if (tag === 'IMG' || tag === 'VIDEO' || e.target.classList.contains('media-shield')) {
+                        e.preventDefault();
+                    }
+                });
+                protectedContainer.addEventListener('dragstart', e => {
+                    const tag = e.target.tagName;
+                    if (tag === 'IMG' || tag === 'VIDEO' || e.target.classList.contains('media-shield')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+
+        // 多语言 placeholder 处理
+        function applyPlaceholderTranslations() {
+            const lang = localStorage.getItem('preferredLang') || 'en';
+            const inputField = document.getElementById('passcode-field');
+            if (inputField) {
+                if (lang === 'zh') {
+                    inputField.placeholder = "访问密码...";
+                } else {
+                    inputField.placeholder = "Passcode...";
+                }
+            }
+            const closeText = document.getElementById('close-btn-text');
+            if (closeText) {
+                closeText.textContent = lang === 'zh' ? '关闭' : 'CLOSE';
+            }
+
+            // 同步更新锁屏语言切换按钮的高亮状态
+            const gateBtnEn = document.getElementById('gate-lang-en');
+            const gateBtnZh = document.getElementById('gate-lang-zh');
+            if (gateBtnEn && gateBtnZh) {
+                gateBtnEn.className = (lang === 'en' ? 'active' : '');
+                gateBtnZh.className = (lang === 'zh' ? 'active' : '');
+            }
+        }
+
+        // 处理密码提交
+        async function handlePasscodeSubmit(e) {
+            e.preventDefault();
+            const inputField = document.getElementById('passcode-field');
+            const errorMsg = document.getElementById('passcode-error');
+            const form = document.getElementById('gate-form');
+            const passcode = inputField.value;
+
+            const hash = await sha256(passcode);
+            if (hash === CORRECT_HASH) {
+                errorMsg.classList.remove('active');
+                // 密码正确，强制弹出条款协议进行确认，传入 true 代表验证模式
+                openTermsModal(true);
+            } else {
+                // 授权失败：抖动和错误提示
+                errorMsg.classList.add('active');
+                form.classList.add('shake');
+                setTimeout(() => form.classList.remove('shake'), 500);
+                inputField.focus();
+            }
+        }
+
+        // 密码输入正确时的淡出动效
+        function animateGateTransition() {
+            const gate = document.getElementById('passcode-gate');
+            const content = document.getElementById('protected-content');
+            
+            // 渲染网格
+            renderGallery();
+
+            // 执行淡入淡出
+            gate.classList.add('hidden');
+            content.style.display = 'flex';
+            setTimeout(() => {
+                content.classList.add('visible');
+                bindScrollAnimations();
+                // 解决淡出后的层级遮挡问题
+                setTimeout(() => { gate.style.display = 'none'; }, 800);
+            }, 50);
+        }
+
+        // 若已授权，直接无缝显示内容
+        function showContentInstant() {
+            const gate = document.getElementById('passcode-gate');
+            const content = document.getElementById('protected-content');
+            
+            gate.style.display = 'none';
+            content.style.display = 'flex';
+            content.classList.add('visible');
+
+            renderGallery();
+            setTimeout(bindScrollAnimations, 100);
+        }
+
+        // 渲染画廊网格 (与 lang.js 联动，实现无缝多语言切换)
+        window.renderGallery = function() {
+            // 同步翻译 placeholder 等动态内容
+            applyPlaceholderTranslations();
+
+            const lang = localStorage.getItem('preferredLang') || 'en';
+            const gallery = document.getElementById('private-gallery');
+            if (!gallery) return;
+
+            gallery.innerHTML = '';
+
+            // 检查页面是否已经解锁显现（判断锁屏 gate-container 是否隐藏）
+            const gate = document.getElementById('passcode-gate');
+            const isAlreadyRevealed = gate.classList.contains('hidden') || gate.style.display === 'none';
+
+            privateProjectsData.forEach(item => {
+                const card = document.createElement('div');
+                // 如果页面已经解锁，直接添加 active 类，防止切换语言时重复触发“滑入”动画或因未触发观察器而消失
+                card.className = isAlreadyRevealed ? 'project-card active' : 'project-card';
+                card.onclick = () => openDrawer(item.id);
+
+                card.innerHTML = `
+                    <div class="card-media protected-media">
+                        <div class="lock-badge">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                            </svg>
+                        </div>
+                        <img src="${item.image}" alt="${item.title[lang]}">
+                        <video src="${item.video}" muted loop playsinline></video>
+                        <div class="media-shield"></div>
+                    </div>
+                    <div class="project-info">
+                        <div class="p-title">
+                            <span>${item.title[lang]}</span>
+                        </div>
+                        <div class="p-cat">${item.category[lang]}</div>
+                    </div>
+                `;
+                gallery.appendChild(card);
+            });
+
+            // 重新绑定卡片悬停事件
+            bindHoverEffects();
+
+            // 如果是在初次解锁中，需要重新绑定滚动显现观察器来触发动画
+            if (!isAlreadyRevealed) {
+                bindScrollAnimations();
+            }
+
+            // 若当前有打开的抽屉，在切换语言时同步刷新抽屉内文字
+            if (window.activeDrawerProjectId) {
+                openDrawer(window.activeDrawerProjectId, true); // 传参 true 代表静默重载内容，不触发抽屉展开动画
+            }
+        };
+
+        // 视频悬停播放
+        function bindHoverEffects() {
+            document.querySelectorAll('.project-card').forEach(card => {
+                const v = card.querySelector('video');
+                const media = card.querySelector('.card-media');
+                if(v && media) {
+                    media.onmouseenter = () => v.play();
+                    media.onmouseleave = () => { v.pause(); v.currentTime = 0; };
+                }
+            });
+        }
+
+        // 滚动淡入揭示
+        function bindScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.05 });
+
+            document.querySelectorAll('.project-card').forEach(el => observer.observe(el));
+        }
+
+        /* --- 4. 抽屉操作逻辑 --- */
+        function openDrawer(projectId, isSilentReload = false) {
+            const lang = localStorage.getItem('preferredLang') || 'en';
+            const project = privateProjectsData.find(p => p.id === projectId);
+            if (!project) return;
+
+            window.activeDrawerProjectId = projectId;
+
+            const drawer = document.getElementById('project-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const contentBody = document.getElementById('drawer-content-body');
+
+            // 填充抽屉内容
+            let showcaseHtml = '';
+            project.showcase.forEach(media => {
+                if (media.type === 'video') {
+                    // 统一渲染结构，通过 data-controls-mode 属性让 JS 进行运行时适配 (支持 true/false/auto)
+                    const modeVal = media.hasControls !== undefined ? media.hasControls.toString() : 'auto';
+                    showcaseHtml += `
+                        <div class="media-module custom-player-wrapper protected-media" data-controls-mode="${modeVal}">
+                            <video src="${media.src}" loop muted playsinline></video>
+                            <div class="media-shield" onclick="toggleVideoPlay(this)"></div>
+                            <div class="custom-controls">
+                                <div class="progress-container" onclick="handleProgressClick(event, this)">
+                                    <div class="progress-bar">
+                                        <div class="progress-handle"></div>
+                                    </div>
+                                </div>
+                                <div class="controls-row">
+                                    <div class="controls-left">
+                                        <button class="player-btn" onclick="toggleVideoPlayBtn(this)">
+                                            <!-- Play Icon (Default) -->
+                                            <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                            <!-- Pause Icon (Hidden) -->
+                                            <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                        </button>
+                                        <span class="time-display">0:00 / 0:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    showcaseHtml += `
+                        <div class="media-module protected-media">
+                            <img src="${media.src}" alt="Showcase Image">
+                            <div class="media-shield"></div>
+                        </div>
+                    `;
+                }
+            });
+
+            const labels = {
+                client: lang === 'zh' ? '客户品牌' : 'CLIENT',
+                role: lang === 'zh' ? '团队角色' : 'ROLE',
+                software: lang === 'zh' ? '使用软件' : 'SOFTWARE',
+                status: lang === 'zh' ? '机密等级' : 'CLASSIFIED STATUS'
+            };
+
+            contentBody.innerHTML = `
+                <!-- Behance 风格顶部宽幅 Hero 横幅 -->
+                <div class="drawer-hero">
+                    <img src="${project.image}" alt="Hero Image">
+                    <div class="drawer-hero-overlay"></div>
+                </div>
+
+                <h2 class="drawer-p-title">${project.title[lang]}</h2>
+                <div class="drawer-p-cat">${project.category[lang]}</div>
+                
+                <div class="drawer-project-meta">
+                    <div class="drawer-meta-list">
+                        <div>
+                            <span class="drawer-meta-label">${labels.client}</span>
+                            <span class="drawer-meta-value">${project.meta.client[lang]}</span>
+                        </div>
+                        <div>
+                            <span class="drawer-meta-label">${labels.role}</span>
+                            <span class="drawer-meta-value">${project.meta.role[lang]}</span>
+                        </div>
+                        <div>
+                            <span class="drawer-meta-label">${labels.software}</span>
+                            <span class="drawer-meta-value">${project.meta.software}</span>
+                        </div>
+                        <div>
+                            <span class="drawer-meta-label">${labels.status}</span>
+                            <span class="drawer-meta-value warning">${project.meta.status[lang]}</span>
+                        </div>
+                    </div>
+                    <div class="drawer-description">
+                        <p>${project.description[lang]}</p>
+                    </div>
+                </div>
+
+                <div class="drawer-media-section">
+                    ${showcaseHtml}
+                </div>
+            `;
+
+            if (!isSilentReload) {
+                // 打开动画
+                overlay.classList.add('active');
+                drawer.classList.add('open');
+                document.body.style.overflow = 'hidden'; // 阻止底层背景滚动
+                window.addEventListener('keydown', handleEscKey);
+            }
+
+            // 获取访问者公网 IP 并渲染隐形视觉水印
+            fetchViewerIp().then(ip => {
+                renderWatermark(ip);
+            });
+
+            // 初始化自定义控制条事件
+            setTimeout(initCustomVideoPlayers, 100);
+        }
+
+        // 缓存访问者 IP
+        window.viewerIpAddress = '';
+
+        // 异步获取公网 IP
+        async function fetchViewerIp() {
+            if (window.viewerIpAddress) return window.viewerIpAddress;
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                window.viewerIpAddress = data.ip || 'Unknown IP';
+            } catch (e) {
+                console.warn('Failed to fetch visitor IP address', e);
+                window.viewerIpAddress = 'Unknown IP';
+            }
+            return window.viewerIpAddress;
+        }
+
+        // 渲染隐形网页视觉水印
+        function renderWatermark(ip) {
+            const container = document.getElementById('watermark-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const today = new Date().toISOString().slice(0, 10);
+            const inputField = document.getElementById('passcode-field');
+            const passcode = (inputField && inputField.value) ? inputField.value : 'studio2026';
+            const watermarkText = `${passcode} ${ip} ${today}`;
+
+            // 生成铺满效果的重复单元
+            for (let i = 0; i < 40; i++) {
+                const el = document.createElement('div');
+                el.className = 'watermark-item';
+                el.innerText = watermarkText;
+                container.appendChild(el);
+            }
+        }
+
+        // 保护下的视频点击播放/暂停切换
+        window.toggleVideoPlay = function(shield) {
+            const video = shield.previousElementSibling;
+            if (video && video.tagName === 'VIDEO') {
+                if (video.paused) {
+                    video.play().catch(e => console.log('Autoplay play error', e));
+                } else {
+                    video.pause();
+                }
+                // 同步更新可能存在的自定义控制按钮状态
+                const wrapper = shield.closest('.custom-player-wrapper');
+                if (wrapper) {
+                    const playBtn = wrapper.querySelector('.player-btn');
+                    if (playBtn) updatePlayerBtnState(playBtn, !video.paused);
+                }
+            }
+        };
+
+        // 自定义视频控制按钮事件
+        window.toggleVideoPlayBtn = function(btn) {
+            const wrapper = btn.closest('.custom-player-wrapper');
+            const video = wrapper ? wrapper.querySelector('video') : null;
+            if (video) {
+                if (video.paused) {
+                    video.play().catch(e => console.log('Play error', e));
+                    updatePlayerBtnState(btn, true);
+                } else {
+                    video.pause();
+                    updatePlayerBtnState(btn, false);
+                }
+            }
+        };
+
+        // 更新播放/暂停图标状态
+        function updatePlayerBtnState(btn, isPlaying) {
+            const playIcon = btn.querySelector('.play-icon');
+            const pauseIcon = btn.querySelector('.pause-icon');
+            if (isPlaying) {
+                if (playIcon) playIcon.style.display = 'none';
+                if (pauseIcon) pauseIcon.style.display = 'block';
+            } else {
+                if (playIcon) playIcon.style.display = 'block';
+                if (pauseIcon) pauseIcon.style.display = 'none';
+            }
+        }
+
+        // 格式化视频时间
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+        }
+
+        // 点击进度条跳转
+        window.handleProgressClick = function(e, progressContainer) {
+            const wrapper = progressContainer.closest('.custom-player-wrapper');
+            const video = wrapper ? wrapper.querySelector('video') : null;
+            if (video && video.duration) {
+                const rect = progressContainer.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                video.currentTime = pos * video.duration;
+            }
+        };
+
+        // 轮询与更新自定义播放器的时间与进度
+        function initCustomVideoPlayers() {
+            document.querySelectorAll('.custom-player-wrapper').forEach(wrapper => {
+                const video = wrapper.querySelector('video');
+                const progressBar = wrapper.querySelector('.progress-bar');
+                const timeDisplay = wrapper.querySelector('.time-display');
+                const playBtn = wrapper.querySelector('.player-btn');
+
+                if (!video) return;
+
+                const checkControlsMode = () => {
+                    const mode = wrapper.getAttribute('data-controls-mode');
+                    let showControls = false;
+
+                    if (mode === 'true') {
+                        showControls = true;
+                    } else if (mode === 'false') {
+                        showControls = false;
+                    } else {
+                        // 'auto' 模式：自适应时长规则（大于 5 秒的视频默认加载控制条）
+                        showControls = video.duration > 5;
+                    }
+
+                    if (showControls) {
+                        wrapper.classList.add('has-controls');
+                        if (timeDisplay && video.duration) {
+                            timeDisplay.innerText = `0:00 / ${formatTime(video.duration)}`;
+                        }
+                    } else {
+                        wrapper.classList.remove('has-controls');
+                        video.autoplay = true;
+                        video.loop = true;
+                        video.muted = true;
+                        video.play().catch(e => {});
+                    }
+                };
+
+                // 监听时间更新
+                video.ontimeupdate = () => {
+                    if (video.duration) {
+                        const pct = (video.currentTime / video.duration) * 100;
+                        if (progressBar) progressBar.style.width = `${pct}%`;
+                        if (timeDisplay) {
+                            timeDisplay.innerText = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+                        }
+                    }
+                };
+
+                // 视频加载元数据时自适应加载控制条
+                video.onloadedmetadata = () => {
+                    checkControlsMode();
+                };
+
+                // 处理视频已加载缓存的情况
+                if (video.readyState >= 1) {
+                    checkControlsMode();
+                }
+
+                // 监听播放/暂停状态同步（防外力干涉）
+                video.onplay = () => {
+                    if (playBtn) updatePlayerBtnState(playBtn, true);
+                };
+                video.onpause = () => {
+                    if (playBtn) updatePlayerBtnState(playBtn, false);
+                };
+            });
+        }
+
+        function closeDrawer() {
+            const drawer = document.getElementById('project-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+
+            window.activeDrawerProjectId = null;
+
+            // 暂停抽屉内所有视频
+            drawer.querySelectorAll('video').forEach(video => video.pause());
+
+            overlay.classList.remove('active');
+            drawer.classList.remove('open');
+            document.body.style.overflow = ''; // 恢复背景滚动
+
+            window.removeEventListener('keydown', handleEscKey);
+        }
+
+        function handleEscKey(e) {
+            if (e.key === 'Escape') {
+                closeDrawer();
+                if (window.isTermsValidationMode) {
+                    handleTermsDisagree();
+                } else {
+                    closeTermsModalDirect();
+                }
+            }
+        }
+
+        /* --- 5. 条款说明模态框操作逻辑 --- */
+        window.isTermsValidationMode = false;
+
+        function openTermsModal(isValidation = false) {
+            window.isTermsValidationMode = isValidation;
+            const modal = document.getElementById('terms-modal');
+            if (modal) {
+                const disagreeBtn = document.getElementById('terms-disagree-btn');
+                const agreeBtn = document.getElementById('terms-agree-btn');
+                const closeBtn = document.getElementById('terms-close-btn');
+
+                if (isValidation) {
+                    if (disagreeBtn) disagreeBtn.style.display = 'block';
+                    if (agreeBtn) agreeBtn.style.display = 'block';
+                    if (closeBtn) closeBtn.style.display = 'none';
+                } else {
+                    if (disagreeBtn) disagreeBtn.style.display = 'none';
+                    if (agreeBtn) agreeBtn.style.display = 'none';
+                    if (closeBtn) closeBtn.style.display = 'block';
+                }
+
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // 阻止底层背景滚动
+            }
+        }
+
+        function closeTermsModal(e) {
+            // 点击内容区以外的地方才关闭
+            if (e.target === document.getElementById('terms-modal')) {
+                if (window.isTermsValidationMode) {
+                    handleTermsDisagree();
+                } else {
+                    closeTermsModalDirect();
+                }
+            }
+        }
+
+        function closeTermsModalDirect() {
+            const modal = document.getElementById('terms-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                // 如果项目详情抽屉没打开，恢复背景滚动
+                if (!document.getElementById('project-drawer').classList.contains('open')) {
+                    document.body.style.overflow = '';
+                }
+            }
+        }
+
+        function handleTermsHeaderClose() {
+            if (window.isTermsValidationMode) {
+                handleTermsDisagree();
+            } else {
+                closeTermsModalDirect();
+            }
+        }
+
+        // 同意并进入页面的逻辑
+        function handleTermsAgree() {
+            sessionStorage.setItem('nda_authenticated', 'true');
+            closeTermsModalDirect();
+            animateGateTransition();
+        }
+
+        // 不同意条款，清空输入并关闭模态框
+        function handleTermsDisagree() {
+            const inputField = document.getElementById('passcode-field');
+            if (inputField) {
+                inputField.value = '';
+            }
+            closeTermsModalDirect();
+        }
+    </script>
+
+    <!-- 5. 条款说明模态框 (Terms Modal Overlay) -->
+    <div class="terms-modal-overlay" id="terms-modal" onclick="closeTermsModal(event)">
+        <div class="terms-modal-box">
+            <div class="terms-modal-header">
+                <h2 id="terms-title-text" data-i18n="terms_title">NDA & TERMS OF VIEWING</h2>
+                <button class="terms-close-icon" onclick="handleTermsHeaderClose()">×</button>
+            </div>
+            <div class="terms-modal-body" id="terms-content-body" data-i18n="terms_content">
+                <!-- 由 lang.js 自动填充 -->
+            </div>
+            <div class="terms-modal-footer">
+                <button class="terms-disagree-btn" id="terms-disagree-btn" onclick="handleTermsDisagree()" data-i18n="terms_disagree">DISAGREE</button>
+                <button class="terms-agree-btn" id="terms-agree-btn" onclick="handleTermsAgree()" data-i18n="terms_agree_enter">AGREE & ENTER</button>
+                <button class="terms-agree-btn" id="terms-close-btn" onclick="closeTermsModalDirect()" data-i18n="terms_close" style="display: none;">CLOSE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="lang.js"></script>
+</body>
+</html>

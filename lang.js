@@ -196,6 +196,46 @@ const translations = {
         'c2_title': 'Automotive CGI', 'c2_desc': 'A complete workflow for automotive rendering, from data prep to final compositing.', 'c2_link': 'View Details',
         'c3_title': 'Motion Systems', 'c3_desc': 'Create complex motion systems and simulations for commercial projects.', 'c3_link': 'View Details',
         
+        // NDA Work
+        'gate_work_title': 'Confidential Works',
+        'gate_work_subtitle': 'NDA PROTECTED / FOR REVIEW ONLY',
+        'gate_work_desc': 'The following projects are protected by NDA and not publicly disclosed. Please do not share or distribute.<br>Accessing constitutes agreement to <span class="terms-link" onclick="openTermsModal(false)">these terms</span>.',
+        'private_work_title': 'Confidential Works',
+        'private_work_subtitle': 'Confidential case studies. Sharing or distribution is strictly prohibited.',
+        'private_work_desc': '',
+        'passcode_prompt': 'Enter Passcode to Access Confidential Works',
+        'passcode_placeholder': 'Passcode...',
+        'passcode_error': 'Incorrect passcode. Please try again.',
+        'passcode_submit': 'SUBMIT',
+        'terms_title': 'NDA & TERMS OF VIEWING',
+        'terms_close': 'CLOSE',
+        'terms_agree_enter': 'AGREE & ENTER',
+        'terms_disagree': 'DISAGREE',
+        'terms_content': `<div class="terms-legal">
+    <p>These Terms of Viewing and Legal Liability Agreement ("Terms") are legally entered into by and between the viewer ("You") and <strong>Shanghai HaloPixel Digital Technology Co., Ltd.</strong> ("We", "Us", or "Our Company"). By entering the correct passcode, or accessing, viewing, or caching any content on this page on any device in any manner, you acknowledge that you have read, understood, and unconditionally agreed to be bound by all the covenants and legal liabilities set forth in these Terms. These Terms take effect immediately upon your entry into this page.</p>
+    
+    <h3>1. Scope of Confidential Information & Intellectual Property</h3>
+    <p>1.1 All project cases, motion graphics, 3D art assets, CGI videos, commercials (TVC), internal pipeline tools, source code, and derivative creative concepts displayed on this page (collectively, "Confidential Information") are the exclusive intellectual property, copyrighted works, and trade secrets of Our Company or our respective brand clients.</p>
+    <p>1.2 Your access to this page does not constitute any transfer, assignment, or licensing of any ownership, copyrights, distribution, reproduction, or adaptation rights. You are strictly prohibited from using any contents of this page for any commercial or non-commercial purposes.</p>
+    
+    <h3>2. Non-Disclosure & Use Restrictions</h3>
+    <p>You hereby covenant and guarantee to strictly adhere to the following non-disclosure obligations:</p>
+    <p>2.1 <strong>No Redistribution or Secondary Sharing</strong>: All Confidential Information and contents displayed herein are strictly and exclusively made available for your direct online browsing and viewing on this current page only, and shall not be used or extracted in any other manner; you shall not save, screenshot, screen record, download, photocopy, or clone any text, videos, images, or audio from this page. Secondary transmission via social media, cloud drives, messenger applications (such as WeChat, DingTalk, Discord), or any other media to any third party is strictly prohibited.</p>
+    <p>2.2 <strong>No Public Exhibition</strong>: You are prohibited from showcasing, quoting, or referencing any Confidential Information from this page in your personal portfolio, corporate presentations, keynotes, public web pages, or any other platforms without our prior explicit written consent.</p>
+    <p>2.3 <strong>Strict Access Limit</strong>: The contents are for your sole personal evaluation of our services. You shall keep the access passcode strictly confidential and shall not share, transfer, or disclose it to any third party.</p>
+    
+    <h3>3. Forensic Tracking & Forensic Authentication Notice</h3>
+    <p>Please note that for the protection of our clients and our proprietary interests:</p>
+    <p>3.1 We have embedded <strong>all feasible technical protection and tracing measures, including but not limited to</strong>, invisible digital watermarks (digital fingerprinting) and logging logs into all video streams, image assets, and server network routing. These carry identifiers <strong>including but not limited to</strong> your <strong>IP address, geographic location, access time, and terminal characteristics</strong>.</p>
+    <p>3.2 Any screen-captures, recordings, or cloned files will permanently carry these tracers <strong>and other potential tracking tags</strong>. In the event of leakage, we will deploy digital forensic analysis <strong>and other technical tracing methods, including but not limited to forensic watermarking, source recovery, and log auditing</strong>, to trace the source of the leak, and such data logs <strong>and all relevant digital records</strong> will be submitted directly to judicial and public security authorities as conclusive electronic evidence.</p>
+    
+    <h3>4. Breach of Agreement & Legal Indemnification</h3>
+    <p>In the event of any unauthorized disclosure, redistribution, secondary transmission, or breach of these Terms:</p>
+    <p>4.1 <strong>Punitive Liquidated Damages</strong>: You shall pay Our Company a penalty of no less than <strong>RMB 1,000,000 (One Million Yuan)</strong> within 3 business days of receiving written notice from Us.</p>
+    <p>4.2 <strong>Full Loss Recovery</strong>: If the liquidated damages fail to cover the full extent of financial losses, loss of business opportunities, or damages to reputation suffered by Us or our brand clients, you shall indemnify Us for the full extent of the difference, including all litigation fees, property preservation fees, notary and investigation costs, and reasonable attorney fees.</p>
+    <p>4.3 <strong>Legal Remedies</strong>: We reserve the right, without prior notice, to apply for temporary injunctions, seize property, and initiate criminal proceedings under applicable laws (including but not limited to the theft of commercial trade secrets).</p>
+</div>`,
+
         // Coming Soon
         'cs_status': 'Not available now',
         'cs_title': 'COMING<br>SOON',
@@ -397,6 +437,46 @@ const translations = {
         'c2_title': '汽车 CGI 全流程', 'c2_desc': '从数据准备、材质灯光到最终合成的完整汽车渲染商业工作流。', 'c2_link': '查看详情',
         'c3_title': '动态与物理系统', 'c3_desc': '为商业项目创建复杂的动态镜头设计、粒子与物理模拟。', 'c3_link': '查看详情',
         
+        // NDA Work
+        'gate_work_title': '未公开案例',
+        'gate_work_subtitle': '受非披露协议保护 / 仅用于业务审阅',
+        'gate_work_desc': '以下项目受保密协议（NDA）保护，非公开展示。请勿传播或分享。<br>进入代表您同意<span class="terms-link" onclick="openTermsModal(false)">此条款</span>。',
+        'private_work_title': '未公开案例',
+        'private_work_subtitle': '以下为非公开展示案例，请勿向第三方传播或分发。',
+        'private_work_desc': '',
+        'passcode_prompt': '请输入访问密码以查看未公开案例',
+        'passcode_placeholder': '访问密码...',
+        'passcode_error': '密码错误，请重新输入。',
+        'passcode_submit': '确认提交',
+        'terms_title': '非公开案例及机密信息阅览条款',
+        'terms_close': '关闭',
+        'terms_agree_enter': '同意并进入',
+        'terms_disagree': '不同意',
+        'terms_content': `<div class="terms-legal">
+    <p>本阅览条款与法律责任约定（“本条款”）由阅览人（或“您”）与<strong>上海光晕像素数字科技有限公司</strong>（以下简称“我方”）共同缔结。您一旦通过输入正确密码进入本页面，或以任何方式、在任何设备上查阅、浏览、缓存本页面之任何内容，即视为您已完全阅读、理解、接受并同意遵守本条款之全部约束与法律责任。本条款自您输入密码并访问本页面之刻起即时生效。</p>
+    
+    <h3>一、 保密信息范围与所有权归属</h3>
+    <p>1. 本页面所登载的全部项目案例、动态图形、3D 视觉美术资产、CGI 渲染视频、商业广告（TVC）物料、内部研发工具、代码或其衍生的创意概念（统称“保密信息”），其全部版权、专利权、商业秘密及其他形式的知识产权或合法权益，均无条件归属于我方或对应的品牌委托方所有。</p>
+    <p>2. 您对保密信息的阅览行为不以任何方式构成这些资产所有权、复制权、改编权、发行权、信息网络传播权或任何形式商业使用权的转让或许可。您无权将本页面的内容用于任何商业或非商业目的。</p>
+    
+    <h3>二、 披露限制与保密义务</h3>
+    <p>您在此无条件承诺并保证，将严格履行下述保密义务：</p>
+    <p>1. <strong>禁止传播与二次分发</strong>：本页面所展示的保密信息及任何内容，有且仅限在当前网页内供您直接在线浏览查看，不得以任何其他方式使用或提取；严禁将本页面内的任何文字、视频、图像、音频等通过截屏、录屏、直接下载、拍照等手段进行保存，严禁通过社交媒体、网络云盘、即时通讯工具（如微信、钉钉、Discord 等）或者其他媒介向任何第三方发送、复制或二次传播。</p>
+    <p>2. <strong>禁止公开展示</strong>：严禁在您的个人作品集、公司演示文稿（PPT）、行业演讲、公开网页或任何未经我方书面同意的场合展示、引用或提及本页面的保密信息。</p>
+    <p>3. <strong>知悉范围限制</strong>：仅限您本人作为业务审阅或采购评估之用。您应对访问密码严格保密，禁止将密码告知、移交或共享给任何第三方。</p>
+    
+    <h3>三、 隐形追踪技术与取证声明</h3>
+    <p>请知悉，为了保护品牌委托方及我方的核心权益：</p>
+    <p>1. 我方已在本页面的所有视频流、图片资产及网页访问链路中，全时段植入了<strong>包括但不限于</strong>包含访问者 <strong>IP 地址、地理位置、访问时间、唯一终端识别码</strong>等数字指纹的隐形电子水印（Digital Watermarking）与行为日志审计技术等<strong>一切可行之技术防护与追踪手段</strong>。</p>
+    <p>2. 任何截图、录屏或直接保存的文件均会永久携带上述电子水印及<strong>其他潜在之追踪标识</strong>。一经发现外泄，我方将通过<strong>包括但不限于数字取证、水印项目回溯、日志审计在内的一切技术追踪与取证手段</strong>精准回溯并定位泄露源头，并将相应的数字指纹、访问审计日志<strong>及一切相关电子数据证据</strong>作为直接且不可推翻的电子数据证据，提交给司法机关及公安部门。</p>
+    
+    <h3>四、 违约救济与严厉索赔条款</h3>
+    <p>一旦发生保密信息泄露、未经授权传播、二次分发或其他任何违反本条款的行为：</p>
+    <p>1. <strong>惩罚性赔偿</strong>：您必须在收到我方书面通知后 3 个工作日内，向我方支付<strong>不低于人民币 1,000,000 元（大写：壹佰万元整）</strong>的惩罚性损害违约金。</p>
+    <p>2. <strong>损失足额赔偿责任</strong>：若上述违约金不足以弥补因泄露导致我方或对应的品牌委托方所遭受的直接经济损失、预期利益损失、因品牌方违约起诉引发的商业损失或商誉商誉减损，您应全额赔偿全部差额损失，且赔偿范围包括我方为此支出的所有诉讼费、保全费、合理的公证调查费、评估取证费及律师诉讼代理费等。</p>
+    <p>3. <strong>法律追索手段</strong>：我方有权在未经进一步通知的情况下，立即向有管辖权的人民法院申请临时禁令、财产保全，并保留依法追究您刑事责任（如侵犯商业秘密罪等）的权利。</p>
+</div>`,
+
         // Coming Soon
         'cs_status': '当前暂不可用',
         'cs_title': '敬请<br>期待',
@@ -412,7 +492,7 @@ function applyLanguage(lang) {
     // 替换所有带有 data-i18n 属性的文本
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (translations[lang] && translations[lang][key]) {
+        if (translations[lang] && translations[lang][key] !== undefined) {
             el.innerHTML = translations[lang][key]; // 使用 innerHTML 支持 <br> 换行
         }
     });

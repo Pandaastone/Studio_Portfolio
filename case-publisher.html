@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex,nofollow,noarchive,noimageindex">
+    <meta name="googlebot" content="noindex,nofollow,noarchive,noimageindex">
+    <meta name="referrer" content="no-referrer">
+    <title>Case Publisher | Zachary Shee Studio</title>
+    <meta name="description" content="Internal Zachary Shee Studio case study publisher and layout editor.">
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="case-publisher.css?v=20260627">
+</head>
+<body>
+    <header class="publisher-topbar">
+        <a class="publisher-brand" href="index.html">ZACHARY SHEE</a>
+        <nav class="publisher-steps" aria-label="Publisher sections">
+            <button class="step-tab active" type="button" data-panel="content">Build</button>
+            <button class="step-tab" type="button" data-panel="settings">Settings</button>
+            <button class="step-tab" type="button" data-panel="export">Export</button>
+        </nav>
+        <div class="publisher-actions">
+            <button class="ghost-button" type="button" id="save-draft">Save Draft</button>
+            <button class="ghost-button" type="button" id="load-draft">Load Draft</button>
+            <button class="ghost-button" type="button" id="reset-draft">New Draft</button>
+            <button class="primary-button" type="button" id="go-export">Publish</button>
+        </div>
+    </header>
+
+    <main class="publisher-shell">
+        <section class="canvas-area" aria-label="Case page preview">
+            <div class="canvas-bar">
+                <div>
+                    <div class="bar-kicker">Project Canvas</div>
+                    <div class="bar-title" id="canvas-title">New Studio Case</div>
+                </div>
+                <div class="viewport-toggle" role="group" aria-label="Preview size">
+                    <button class="icon-control active" type="button" data-viewport="desktop" aria-label="Desktop preview" title="Desktop preview">D</button>
+                    <button class="icon-control" type="button" data-viewport="mobile" aria-label="Mobile preview" title="Mobile preview">M</button>
+                </div>
+            </div>
+            <div class="preview-frame desktop" id="preview-frame">
+                <div class="project-preview" id="project-preview"></div>
+            </div>
+        </section>
+
+        <aside class="publisher-sidebar" aria-label="Publisher controls">
+            <section class="side-panel active" data-panel-view="content">
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Add Content</span>
+                        <span id="block-count">0 Blocks</span>
+                    </div>
+                    <div class="tool-grid" aria-label="Content tools">
+                        <button type="button" class="tool-card" data-add-block="media">
+                            <span class="tool-mark">I</span>
+                            <span>Image</span>
+                        </button>
+                        <button type="button" class="tool-card" data-add-block="text">
+                            <span class="tool-mark">T</span>
+                            <span>Text</span>
+                        </button>
+                        <button type="button" class="tool-card" data-add-block="grid">
+                            <span class="tool-mark">G</span>
+                            <span>Photo Grid</span>
+                        </button>
+                        <button type="button" class="tool-card" data-add-block="video">
+                            <span class="tool-mark">P</span>
+                            <span>Video</span>
+                        </button>
+                        <button type="button" class="tool-card" data-add-block="textMedia">
+                            <span class="tool-mark">F</span>
+                            <span>Feature</span>
+                        </button>
+                        <button type="button" class="tool-card" data-add-block="embed">
+                            <span class="tool-mark">E</span>
+                            <span>Embed</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Attach Assets</span>
+                        <span id="asset-count">0 Files</span>
+                    </div>
+                    <label class="file-drop" for="asset-input">
+                        <span>Choose images or videos</span>
+                        <small>Paths export as images/[slug]/filename</small>
+                    </label>
+                    <input class="visually-hidden" id="asset-input" type="file" accept="image/*,video/*" multiple>
+                    <div class="asset-tray" id="asset-tray"></div>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Project Structure</span>
+                        <span>Drag order</span>
+                    </div>
+                    <div class="structure-list" id="structure-list"></div>
+                </div>
+
+                <div class="panel-block" id="block-inspector"></div>
+            </section>
+
+            <section class="side-panel" data-panel-view="settings">
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Edit Project</span>
+                        <span>Draft</span>
+                    </div>
+                    <div class="field-grid">
+                        <label class="field full">
+                            <span>Project Title</span>
+                            <input type="text" data-project-field="title">
+                        </label>
+                        <label class="field full">
+                            <span>Subtitle / Category</span>
+                            <input type="text" data-project-field="subtitle">
+                        </label>
+                        <label class="field">
+                            <span>Slug</span>
+                            <input type="text" data-project-field="slug">
+                        </label>
+                        <label class="field">
+                            <span>Asset Folder</span>
+                            <input type="text" data-project-field="assetFolder">
+                        </label>
+                        <label class="field">
+                            <span>Client</span>
+                            <input type="text" data-project-field="client">
+                        </label>
+                        <label class="field">
+                            <span>Year</span>
+                            <input type="text" data-project-field="year">
+                        </label>
+                        <label class="field full">
+                            <span>Role</span>
+                            <input type="text" data-project-field="role">
+                        </label>
+                        <label class="field full">
+                            <span>Software / Tools</span>
+                            <input type="text" data-project-field="software">
+                        </label>
+                        <label class="field full">
+                            <span>Description</span>
+                            <textarea rows="5" data-project-field="description"></textarea>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Cover</span>
+                        <span>Hero</span>
+                    </div>
+                    <div class="field-grid">
+                        <label class="field full">
+                            <span>Cover Type</span>
+                            <select data-project-field="coverKind">
+                                <option value="image">Image</option>
+                                <option value="video">Video</option>
+                            </select>
+                        </label>
+                        <label class="field full">
+                            <span>Cover Path</span>
+                            <input type="text" data-project-field="coverSrc">
+                        </label>
+                        <label class="inline-file full">
+                            <input type="file" id="cover-file" accept="image/*,video/*">
+                            <span>Choose cover file</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Publish Settings</span>
+                        <span>Behance Style</span>
+                    </div>
+                    <div class="field-grid">
+                        <label class="field full">
+                            <span>Project Tags</span>
+                            <input type="text" data-project-field="tags">
+                        </label>
+                        <label class="field full">
+                            <span>Creative Field</span>
+                            <select data-project-field="type">
+                                <option value="automotive">Automotive</option>
+                                <option value="tvc">TVC / Commercial</option>
+                                <option value="3c">3C Product</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>Category EN</span>
+                            <input type="text" data-project-field="categoryEn">
+                        </label>
+                        <label class="field">
+                            <span>Category ZH</span>
+                            <input type="text" data-project-field="categoryZh">
+                        </label>
+                        <label class="field full">
+                            <span>Visibility</span>
+                            <select data-project-field="visibility">
+                                <option value="public">Public</option>
+                                <option value="link">Link Only</option>
+                                <option value="private">Private Draft</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Styles</span>
+                        <span>Site Match</span>
+                    </div>
+                    <div class="field-grid">
+                        <label class="field">
+                            <span>Hero Height</span>
+                            <input type="number" min="45" max="100" data-project-field="heroHeight">
+                        </label>
+                        <label class="field">
+                            <span>Module Gap</span>
+                            <input type="number" min="0" max="80" data-project-field="moduleGap">
+                        </label>
+                        <label class="field full">
+                            <span>Content Max Width</span>
+                            <input type="number" min="960" max="2200" data-project-field="contentWidth">
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="side-panel" data-panel-view="export">
+                <div class="panel-block export-summary">
+                    <div class="panel-heading">
+                        <span>Ready To Publish</span>
+                        <span id="export-filename">project-new-studio-case.html</span>
+                    </div>
+                    <div class="export-actions">
+                        <button class="primary-button" type="button" id="copy-html">Copy Case HTML</button>
+                        <button class="ghost-button" type="button" id="download-html">Download HTML</button>
+                        <button class="ghost-button" type="button" id="copy-work-item">Copy Work Item</button>
+                    </div>
+                    <p class="status-line" id="status-line" role="status" aria-live="polite"></p>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Case HTML</span>
+                        <span>project page</span>
+                    </div>
+                    <textarea class="code-output" id="case-html-output" spellcheck="false"></textarea>
+                </div>
+
+                <div class="panel-block">
+                    <div class="panel-heading">
+                        <span>Work Grid Item</span>
+                        <span>work.html</span>
+                    </div>
+                    <textarea class="code-output small" id="work-item-output" spellcheck="false"></textarea>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <script src="case-publisher.js?v=20260627"></script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /coming-soon.html
+Disallow: /case-publisher.html
 Disallow: /project-template.html
 Disallow: /project-template%20copy.html
 Disallow: /project-template copy.html
