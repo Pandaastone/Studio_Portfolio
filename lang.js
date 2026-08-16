@@ -240,7 +240,14 @@ const translations = {
         'cs_status': 'Not available now',
         'cs_title': 'COMING<br>SOON',
         'cs_desc': 'We are currently crafting the visuals for this project.<br>Please check back later for the full case study.',
-        'cs_back': 'Back to Work'
+        'cs_back': 'Back to Work',
+
+        // 404 Page
+        '404_status': '404 ERROR',
+        '404_title': 'PAGE NOT<br>FOUND',
+        '404_desc': 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.',
+        '404_back_home': 'BACK TO HOME',
+        '404_view_works': 'EXPLORE WORKS'
     },
     'zh': {
         // 导航与页脚
@@ -481,7 +488,14 @@ const translations = {
         'cs_status': '当前暂不可用',
         'cs_title': '敬请<br>期待',
         'cs_desc': '我们正在为该项目精心打磨视觉效果。<br>请稍后回来查看完整的案例解析。',
-        'cs_back': '返回作品页'
+        'cs_back': '返回作品页',
+
+        // 404 Page
+        '404_status': '404 错误',
+        '404_title': '页面未<br>找到',
+        '404_desc': '您访问的页面可能已被移动、删除或暂时无法访问。',
+        '404_back_home': '返回首页',
+        '404_view_works': '浏览作品'
     }
 };
 
