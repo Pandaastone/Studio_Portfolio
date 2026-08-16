@@ -1,11 +1,11 @@
-// lang.js - 全局多语言控制脚本
+﻿// lang.js - 全局多语言控制脚本
 
 const translations = {
     'en': {
         // 导航与页脚
         'nav_home': 'HOME', 'nav_work': 'WORK', 'nav_solutions': 'SOLUTIONS', 'nav_about': 'ABOUT', 'nav_course': 'COURSE', 'nav_contact': 'CONTACT',
         'footer_desc': 'Creative Design Studio.<br>Based in Shanghai, available Worldwide.',
-        'footer_rights': '© 2024 Zachary Shee. All Rights Reserved.',
+        'footer_rights': '© 2026 Zachary Shee. All Rights Reserved.',
         'footer_sitemap': 'SITEMAP', 'footer_social': 'SOCIAL', 'footer_contact_title': 'CONTACT',
         
         // 首页 (Index)
@@ -243,8 +243,7 @@ const translations = {
         'cs_back': 'Back to Work',
 
         // 404 Page
-        '404_status': '404 ERROR',
-        '404_title': 'PAGE NOT<br>FOUND',
+        '404_title': 'PAGE NOT FOUND',
         '404_desc': 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.',
         '404_back_home': 'BACK TO HOME',
         '404_view_works': 'EXPLORE WORKS'
@@ -253,7 +252,7 @@ const translations = {
         // 导航与页脚
         'nav_home': '首页', 'nav_work': '作品', 'nav_solutions': '解决方案', 'nav_about': '关于', 'nav_course': '课程', 'nav_contact': '联系',
         'footer_desc': '创意设计工作室。<br>立足上海，服务全球。',
-        'footer_rights': '© 2024 Zachary Shee. 保留所有权利。',
+        'footer_rights': '© 2026 Zachary Shee. 保留所有权利。',
         'footer_sitemap': '网站导航', 'footer_social': '社交媒体', 'footer_contact_title': '联系我们',
         
         // 首页 (Index)
@@ -491,8 +490,7 @@ const translations = {
         'cs_back': '返回作品页',
 
         // 404 Page
-        '404_status': '404 错误',
-        '404_title': '页面未<br>找到',
+        '404_title': '页面未找到',
         '404_desc': '您访问的页面可能已被移动、删除或暂时无法访问。',
         '404_back_home': '返回首页',
         '404_view_works': '浏览作品'

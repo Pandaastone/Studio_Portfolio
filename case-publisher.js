@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
     "use strict";
 
     const storageKey = "zsCasePublisherDraft";
@@ -388,7 +388,7 @@
             <section class="content-container">${blocks}</section>
             <footer class="preview-footer">
                 <h3>ZACHARY SHEE</h3>
-                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+                <p>Creative Design Studio.<br>&copy; 2026 Zachary Shee.</p>
             </footer>
         `;
         renderExport();
@@ -979,7 +979,7 @@ ${generatedBlockHtml()}
         <div class="footer-content">
             <div class="footer-left">
                 <h3>ZACHARY SHEE</h3>
-                <p>Creative Design Studio.<br>&copy; 2024 Zachary Shee.</p>
+                <p>Creative Design Studio.<br>&copy; 2026 Zachary Shee.</p>
             </div>
         </div>
     </footer>
