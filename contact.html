@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -61,11 +61,15 @@
             top: 0; width: 100%;
             display: flex; justify-content: space-between; align-items: center;
             padding: 40px 60px;
-            z-index: 1000;
-            background: rgba(0,0,0,0.78);
-            backdrop-filter: blur(10px);
+            z-index: 3000;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: padding 0.3s ease, background 0.3s ease;
         }
         .logo a { color: white; text-decoration: none; font-weight: 600; letter-spacing: 2px; }
+        
+        .nav-right { display: flex; align-items: center; }
         .nav-links a {
             color: white; text-decoration: none; margin-left: 28px;
             font-size: 0.75rem; letter-spacing: 1.5px; opacity: 0.6;
@@ -78,6 +82,137 @@
         .lang-switch span:hover { opacity: 1; }
         .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--text-muted); }
         .lang-switch .divider { margin: 0 10px; cursor: default; opacity: 0.5; }
+
+        /* 移动端汉堡菜单按钮 (标准 3 道线，桌面端隐藏) */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: 16px;
+            z-index: 3100;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 22px;
+            height: 1.5px;
+            background-color: #ffffff;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            transform-origin: center;
+        }
+        /* 3道杠变 ✕ 动画 */
+        .menu-toggle.active span:nth-child(1) {
+            transform: translateY(6.5px) rotate(45deg);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: translateY(-6.5px) rotate(-45deg);
+        }
+
+        /* 菜单打开时隐藏左上角 Logo 及顶部语言切换，仅保留右上角叉号 */
+        body.menu-open nav {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+        body.menu-open nav .logo,
+        body.menu-open nav .lang-switch {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+
+        /* 移动端全屏折叠菜单 */
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            background: rgba(5, 5, 5, 0.98);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 120px 30px 50px;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .mobile-nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.85;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .mobile-nav-links a:hover, .mobile-nav-links a.active {
+            opacity: 1;
+            transform: translateX(6px);
+        }
+        .mobile-menu-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .mobile-lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+        .mobile-lang-switch span {
+            color: #888888;
+            cursor: pointer;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .mobile-lang-switch span.active {
+            color: #ffffff;
+            border-color: #ffffff;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .mobile-lang-switch .divider {
+            display: none;
+        }
+        .mobile-menu-footer a {
+            color: #888888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
 
         .contact-wrap {
             min-height: 100vh;
@@ -279,32 +414,37 @@
             }
         }
 
-        @media (max-width: 980px) {
-            nav { padding: 30px; }
-            .nav-links a { margin-left: 20px; }
-            .lang-switch { margin-left: 24px; }
-            .contact-wrap { padding: 150px 30px 90px; }
-            .contact-inner { grid-template-columns: 1fr; gap: 70px; }
-            .footer-content { flex-direction: column; }
-            .footer-links { flex-direction: column; gap: 30px; }
-        }
-        @media (max-width: 680px) {
-            .contact-title { font-size: 3rem; }
-            html[lang="zh-CN"] .contact-title {
-                font-size: 2.85rem;
-                line-height: 1.12;
-            }
-            .info-stack { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            nav { padding: 24px 20px; }
+            .nav-links { display: none; }
+            .lang-switch { display: none; }
+            .menu-toggle { display: flex; margin-left: 0; }
+
+            .contact-wrap { padding: 130px 24px 70px; min-height: auto; }
+            .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+            .eyebrow { margin-bottom: 16px; font-size: 0.75rem; }
+            .contact-title { font-size: clamp(2.4rem, 9vw, 3.8rem); margin-bottom: 20px; }
+            html[lang="zh-CN"] .contact-title { font-size: clamp(2.3rem, 8.5vw, 3.4rem); line-height: 1.15; }
+            .contact-copy { font-size: 0.95rem; line-height: 1.65; max-width: 100%; }
+
+            .contact-actions { flex-direction: column; gap: 14px; margin-top: 24px; }
+            .primary-link, .secondary-link { width: 100%; text-align: center; padding: 15px 24px; }
+
+            .info-stack { grid-template-columns: 1fr; gap: 16px; }
             .info-block.wide { grid-column: span 1; }
-            .qr-panel { grid-template-columns: 1fr; }
-            footer { padding: 60px 30px; }
+            .qr-panel { grid-template-columns: 1fr; gap: 16px; text-align: left; }
+            .qr-panel img { width: 100px; height: 100px; }
+
+            footer { padding: 60px 24px; }
+            .footer-content { flex-direction: column; gap: 40px; }
+            .footer-links { flex-direction: column; gap: 30px; width: 100%; }
         }
     </style>
 </head>
 <body>
     <nav>
         <div class="logo"><a href="index.html">ZACHARY SHEE</a></div>
-        <div style="display: flex; align-items: center;">
+        <div class="nav-right">
             <div class="nav-links">
                 <a href="work.html" data-i18n="nav_work">WORK</a>
                 <a href="solutions.html" data-i18n="nav_solutions">SOLUTIONS</a>
@@ -317,8 +457,34 @@
                 <span class="divider">/</span>
                 <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
             </div>
+            <!-- 移动端汉堡切换按钮 (3道线) -->
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation menu" type="button">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
+
+    <!-- 移动端沉浸式全屏菜单抽屉 -->
+    <div class="mobile-menu-overlay" id="mobile-menu">
+        <div class="mobile-nav-links">
+            <a href="work.html" data-i18n="nav_work">WORK</a>
+            <a href="solutions.html" data-i18n="nav_solutions">SOLUTIONS</a>
+            <a href="about.html" data-i18n="nav_about">ABOUT</a>
+            <a href="course.html" data-i18n="nav_course">COURSE</a>
+            <a href="contact.html" class="active" data-i18n="nav_contact">CONTACT</a>
+        </div>
+        <div class="mobile-menu-footer">
+            <div class="mobile-lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en-mob">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh-mob">中文</span>
+            </div>
+            <a href="mailto:hello@zacharyshee.com">hello@zacharyshee.com</a>
+            <span style="font-size: 0.75rem; color: #555555;">&copy; 2026 Zachary Shee. All Rights Reserved.</span>
+        </div>
+    </div>
 
     <main class="contact-wrap">
         <div class="bg-glow"></div>
@@ -406,6 +572,51 @@
         document.querySelectorAll('.info-block').forEach((el, index) => {
             el.style.transitionDelay = `${0.28 + index * 0.1}s`;
             contactObserver.observe(el);
+        });
+
+        // 移动端汉堡菜单交互
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (menuToggle && mobileMenu) {
+            menuToggle.addEventListener('click', () => {
+                const isActive = menuToggle.classList.toggle('active');
+                mobileMenu.classList.toggle('active', isActive);
+                document.body.classList.toggle('menu-open', isActive);
+                document.body.style.overflow = isActive ? 'hidden' : '';
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    menuToggle.classList.remove('active');
+                    mobileMenu.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                    document.body.style.overflow = '';
+                });
+            });
+        }
+
+        // 移动端语言按钮状态同步
+        function syncMobileLang(lang) {
+            const btnEnMob = document.getElementById('lang-en-mob');
+            const btnZhMob = document.getElementById('lang-zh-mob');
+            if (btnEnMob && btnZhMob) {
+                btnEnMob.className = (lang === 'en' ? 'active' : '');
+                btnZhMob.className = (lang === 'zh' ? 'active' : '');
+            }
+        }
+        
+        const origToggleLanguage = window.toggleLanguage;
+        window.toggleLanguage = function(lang) {
+            if (typeof origToggleLanguage === 'function') {
+                origToggleLanguage(lang);
+            }
+            syncMobileLang(lang);
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const curLang = localStorage.getItem('preferredLang') || (navigator.language.toLowerCase().includes('zh') ? 'zh' : 'en');
+            syncMobileLang(curLang);
         });
     </script>
     <script src="lang.js"></script>

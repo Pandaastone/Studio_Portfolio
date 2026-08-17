@@ -1,4 +1,4 @@
-﻿// lang.js - 全局多语言控制脚本
+// lang.js - 全局多语言控制脚本
 
 const translations = {
     'en': {
@@ -509,12 +509,18 @@ function applyLanguage(lang) {
         }
     });
 
-    // 切换按钮高亮状态
+    // 切换按钮高亮状态 (桌面端与移动端抽屉)
     const btnEn = document.getElementById('lang-en');
     const btnZh = document.getElementById('lang-zh');
     if(btnEn && btnZh) {
         btnEn.className = (lang === 'en' ? 'active' : '');
         btnZh.className = (lang === 'zh' ? 'active' : '');
+    }
+    const btnEnMob = document.getElementById('lang-en-mob');
+    const btnZhMob = document.getElementById('lang-zh-mob');
+    if(btnEnMob && btnZhMob) {
+        btnEnMob.className = (lang === 'en' ? 'active' : '');
+        btnZhMob.className = (lang === 'zh' ? 'active' : '');
     }
     
     // 给 html 标签加上 lang 属性，有助于 SEO
@@ -525,6 +531,9 @@ function applyLanguage(lang) {
 window.toggleLanguage = function(lang) {
     applyLanguage(lang);
     // 如果当前页面有动态渲染函数 (如 work.html)，重新触发渲染
+    if(typeof renderFilters === 'function') {
+        renderFilters();
+    }
     if(typeof renderGallery === 'function' && typeof currentFilterType !== 'undefined') {
         renderGallery(currentFilterType); 
     }
