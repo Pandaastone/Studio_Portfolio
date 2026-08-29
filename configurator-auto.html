@@ -1,0 +1,1529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denza Z Coupe 3D Interactive Configurator | Zachary Shee Studio</title>
+    <meta name="description" content="Experience the interactive 3D automotive configurator for Denza Z Coupe. Customize exterior paint, aero wheels, high-performance brake calipers, and camera angles in real time.">
+    <link rel="canonical" href="https://www.zacharyshee.com/configurator-denza-z.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Denza Z Coupe 3D Interactive Configurator | Zachary Shee Studio">
+    <meta property="og:description" content="Real-time automotive CGI configurator for Denza Z Coupe with multi-angle viewing, bespoke paints, wheels, and brake calipers.">
+    <meta property="og:url" content="https://www.zacharyshee.com/configurator-denza-z.html">
+    <meta property="og:image" content="https://www.zacharyshee.com/images/denza-z/web/DenzaZ_Coupe_silver_brake1_wheel1_front45.jpg">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Denza Z Coupe 3D Visual Configurator",
+        "url": "https://www.zacharyshee.com/configurator-denza-z.html",
+        "applicationCategory": "Interactive Automotive Configurator",
+        "operatingSystem": "Web",
+        "description": "An interactive CGI automotive visualizer and configurator for Denza Z Coupe by Zachary Shee Studio.",
+        "creator": {
+            "@type": "Organization",
+            "name": "Zachary Shee Studio",
+            "url": "https://www.zacharyshee.com/"
+        }
+    }
+    </script>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --stage-bg: #0d0e12;
+            --panel-bg: rgba(18, 18, 22, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-hover: rgba(255, 255, 255, 0.07);
+            --panel-border: rgba(255, 255, 255, 0.10);
+            --accent-color: #00e5cc;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --soft-border: rgba(255, 255, 255, 0.08);
+            --header-h: 72px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 顶部保时捷风格导航条 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-h);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 36px;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--soft-border);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            transition: color 0.25s;
+        }
+        .back-nav:hover { color: white; }
+        .nav-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--soft-border);
+        }
+        .car-badge-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .nav-center-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--soft-border);
+            color: #d0d0d0;
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s;
+            text-decoration: none;
+        }
+        .nav-action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .nav-action-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 22px;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            margin-left: 28px;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            color: white;
+            opacity: 0.6;
+        }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 8px; cursor: default; opacity: 0.4; }
+
+        /* 主工作区网格 */
+        .configurator-layout {
+            position: absolute;
+            top: var(--header-h);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: grid;
+            grid-template-columns: 1fr 440px;
+            overflow: hidden;
+        }
+
+        /* 左侧主显示区 (16:9 画框 + 底部缩略图条) */
+        .viewport-section {
+            padding: 24px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #060608;
+        }
+
+        .stage-wrapper {
+            width: 100%;
+            max-width: min(100%, calc((100vh - var(--header-h) - 130px) * (16 / 9)));
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        /* 1. 主舞台卡片画框 (严格 16:9，无黑边) */
+        .main-stage-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 14px;
+            background: #0d0e12;
+            border: 1px solid var(--panel-border);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        /* 图像叠化与平移缩放视口 */
+        .stage-viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: default;
+            user-select: none;
+            touch-action: none;
+        }
+        .stage-viewport.can-drag {
+            cursor: grab;
+        }
+        .stage-viewport.is-dragging {
+            cursor: grabbing !important;
+        }
+        .stage-panzoom-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .stage-panzoom-layer.dragging {
+            transition: none !important;
+        }
+        .stage-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            will-change: opacity;
+            opacity: 0;
+        }
+
+        /* 浮动缩放控制工具栏 */
+        .zoom-controls-overlay {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(12, 12, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            padding: 3px 8px;
+            border-radius: 20px;
+            z-index: 10;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            opacity: 0.82;
+            transition: all 0.25s;
+        }
+        .zoom-controls-overlay:hover {
+            opacity: 1;
+            background: rgba(16, 16, 22, 0.95);
+            border-color: rgba(255,255,255,0.25);
+        }
+        .zoom-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .zoom-btn:hover {
+            color: white;
+            background: rgba(255,255,255,0.12);
+        }
+        .zoom-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+        .zoom-level-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            color: #c0c0c0;
+            padding: 0 4px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 36px;
+            text-align: center;
+            user-select: none;
+        }
+        .zoom-level-badge:hover {
+            color: var(--accent-color);
+        }
+
+        .main-stage-card:fullscreen .zoom-controls-overlay,
+        .main-stage-card:-webkit-full-screen .zoom-controls-overlay {
+            bottom: 28px;
+            right: 28px;
+            padding: 4px 10px;
+        }
+
+        /* 加载中状态 */
+        .stage-spinner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 10, 14, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--soft-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .stage-spinner.loading { opacity: 1; }
+        .spin-dot {
+            width: 8px;
+            height: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 全屏切换按钮 (右上角) */
+        .stage-expand-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(15, 15, 18, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            z-index: 5;
+        }
+        .stage-expand-btn:hover {
+            color: white;
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .stage-expand-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        /* 主舞台全屏模式 (仅图片画框全屏展示) */
+        .main-stage-card:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            border: none;
+            background: #040405;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-stage-card:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            border: none;
+            background: #040405;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-stage-card:fullscreen .stage-image,
+        .main-stage-card:-webkit-full-screen .stage-image {
+            object-fit: contain;
+        }
+        .main-stage-card:fullscreen .stage-expand-btn,
+        .main-stage-card:-webkit-full-screen .stage-expand-btn {
+            top: 28px;
+            right: 28px;
+            width: 44px;
+            height: 44px;
+            background: rgba(20, 20, 26, 0.85);
+        }
+
+        /* 2. 底部多视角动态缩略图条 (纯净缩略图卡片，无文字) */
+        .thumbnails-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .thumbnails-container::-webkit-scrollbar { display: none; }
+
+        .thumb-card {
+            width: 112px;
+            aspect-ratio: 16 / 9;
+            background: #090a0d;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .thumb-card:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        .thumb-card.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 1px #ffffff, 0 6px 18px rgba(0,0,0,0.6);
+        }
+        .thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .thumb-card:hover .thumb-img {
+            transform: scale(1.05);
+        }
+
+        /* 右侧保时捷手风琴选配卡片面板 */
+        .options-sidebar {
+            width: 440px;
+            height: 100%;
+            background: var(--panel-bg);
+            border-left: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.15) transparent;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        /* 选配分类卡片 */
+        .option-section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--soft-border);
+            padding-bottom: 12px;
+        }
+        .section-main-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white;
+        }
+        .section-cur-value {
+            font-size: 0.78rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* 车漆子分类组 */
+        .paint-subgroup {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .subgroup-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* 保时捷圆角矩形色板网格 */
+        .paint-swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .swatch-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.22s;
+            text-align: center;
+        }
+        .swatch-tile:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .swatch-tile.active {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.2);
+        }
+        .swatch-rect {
+            width: 100%;
+            height: 32px;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.3), 0 3px 6px rgba(0,0,0,0.4);
+        }
+        .swatch-name {
+            font-size: 0.66rem;
+            color: #d0d0d0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* 轮毂卡片 */
+        .wheel-option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .wheel-option-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            gap: 14px;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.22s;
+        }
+        .wheel-option-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .wheel-option-card.active {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.15);
+        }
+        .wheel-option-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #111;
+        }
+        .wheel-option-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .wheel-option-info h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+        .wheel-option-info p {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* 制动卡钳卡片 */
+        .brake-swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .brake-option-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.22s;
+        }
+        .brake-option-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .brake-option-card.active {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.15);
+        }
+        .brake-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .brake-label {
+            font-size: 0.74rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* 车型技术参数 */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .spec-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+        .spec-box-label {
+            font-size: 0.62rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .spec-box-val {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Toast 提示 */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translate(-50%, 80px);
+            background: rgba(18, 18, 22, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--accent-color);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 0.76rem;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0, 229, 204, 0.2);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast-notify.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+
+        /* 隐藏的 Poster 生成 Canvas */
+        #poster-canvas { display: none; }
+
+        /* Dropzone Styles */
+        .dropzone-box {
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 16 / 9;
+            border: 2px dashed var(--soft-border);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.01);
+            padding: 40px;
+        }
+        .dropzone-box:hover, .dropzone-box.dragover {
+            border-color: var(--accent-color);
+            background: rgba(0, 229, 204, 0.05);
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 1080px) {
+            .configurator-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                overflow-y: auto;
+            }
+            .viewport-section {
+                padding: 16px 20px;
+            }
+            .stage-wrapper {
+                max-width: 100%;
+            }
+            .options-sidebar {
+                width: 100%;
+                height: auto;
+                border-left: none;
+                border-top: 1px solid var(--panel-border);
+            }
+        }
+
+        @media (max-width: 680px) {
+            nav { padding: 0 16px; }
+            .nav-links { display: none; }
+            .nav-center-actions { display: none; }
+            .thumb-card { width: 84px; }
+            .paint-swatch-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Nav -->
+    <nav>
+        <div class="nav-left">
+            <span class="car-badge-title">Auto Configurator Builder</span>
+        </div>
+        <div class="nav-center-actions">
+            <button class="nav-action-btn" onclick="resetApp()">
+                <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+                Load New Folder
+            </button>
+        </div>
+        <div class="nav-right">
+            <span style="color:var(--text-muted); font-size:0.75rem;">Zachary Shee Studio</span>
+        </div>
+    </nav>
+
+    <!-- App Container -->
+    <main class="configurator-layout" id="app-container">
+        
+        <!-- State 1: Dropzone -->
+        <div id="dropzone-section" style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; padding: 40px; height: 100%; width: 100%;">
+            <div class="dropzone-box" id="dropzone-box" onclick="document.getElementById('folder-input').click()">
+                <svg viewBox="0 0 24 24" style="width:64px; height:64px; stroke: var(--accent-color); fill:none; stroke-width: 1.5; margin-bottom: 20px;">
+                    <path d="M2 7v10C2 18.1046 2.89543 19 4 19H20C21.1046 19 22 18.1046 22 17V9C22 7.89543 21.1046 7 20 7H13.5L11.5 5H4C2.89543 5 2 5.89543 2 7Z"></path>
+                    <path d="M12 10V16M9 13H15"></path>
+                </svg>
+                <h2 style="font-size:1.4rem; margin-bottom: 10px;">Select or Drop Image Folder</h2>
+                <p style="color:var(--text-muted); font-size: 0.85rem; max-width: 400px; line-height:1.5;">
+                    Supported format: <br><code style="color:white; font-size: 0.9rem;">[Model]_[Color]_[Wheel]_[View].png</code><br><br>
+                    Images will be processed entirely locally in your browser.
+                </p>
+                <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;">
+            </div>
+        </div>
+
+        <!-- State 2: Configurator (Hidden initially) -->
+        <div id="configurator-section" style="display: none; width: 100%; height: 100%; grid-column: 1 / -1;">
+            <div class="configurator-layout" style="position: relative; top: 0; left: 0; right: 0; bottom: 0;">
+                <!-- Left Viewport -->
+                <section class="viewport-section" aria-label="3D Viewport">
+                    <div class="stage-wrapper">
+                        <!-- Main Stage -->
+                        <div class="main-stage-card" id="main-stage-card">
+                            <div class="stage-spinner" id="stage-spinner"><div class="spin-dot"></div><span style="font-size: 0.68rem; letter-spacing: 1.5px; color: var(--text-muted);">LOADING</span></div>
+                            <button class="stage-expand-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                                <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                            </button>
+                            <div class="stage-viewport" id="stage-viewport">
+                                <div class="stage-panzoom-layer" id="panzoom-layer">
+                                    <img id="stage-img-a" class="stage-image" alt="Stage View A" fetchpriority="high">
+                                    <img id="stage-img-b" class="stage-image" alt="Stage View B" fetchpriority="high">
+                                </div>
+                            </div>
+                            <div class="zoom-controls-overlay" id="zoom-toolbar">
+                                <button class="zoom-btn" onclick="handleZoomStep(0.3)" title="Zoom In"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                                <span class="zoom-level-badge" id="zoom-badge" onclick="resetZoom(true)" title="Reset">100%</span>
+                                <button class="zoom-btn" onclick="handleZoomStep(-0.3)" title="Zoom Out"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
+                            </div>
+                        </div>
+
+                        <!-- Thumbnails -->
+                        <div class="thumbnails-container" id="dynamic-thumbnails">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Sidebar -->
+                <aside class="options-sidebar">
+                    <div class="option-section-card">
+                        <div class="section-title-row">
+                            <span class="section-main-title">Exterior Paint</span>
+                            <span class="section-cur-value" id="lbl-color">Select Color</span>
+                        </div>
+                        <div class="paint-swatch-grid" id="dynamic-colors">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="option-section-card">
+                        <div class="section-title-row">
+                            <span class="section-main-title">Wheels</span>
+                            <span class="section-cur-value" id="lbl-wheel">Select Wheel</span>
+                        </div>
+                        <div class="wheel-option-list" id="dynamic-wheels">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <div class="toast-notify" id="toast-notify"><svg viewBox="0 0 24 24" width="16" height="16" style="fill:none;stroke:var(--accent-color);stroke-width:2;"><path d="M20 6L9 17l-5-5"></path></svg> <span id="toast-msg"></span></div>
+
+    <script>
+        const dropzoneBox = document.getElementById('dropzone-box');
+        const folderInput = document.getElementById('folder-input');
+        const dropzoneSection = document.getElementById('dropzone-section');
+        const configuratorSection = document.getElementById('configurator-section');
+        
+        let parsedFiles = []; 
+        let fileMap = {}; // mapping: [color]_[wheel]_[view] -> File object
+        let uniqueColors = [];
+        let uniqueWheels = [];
+        let uniqueViews = [];
+        let carModelName = 'Auto';
+        
+        let state = {
+            color: null,
+            wheel: null,
+            view: null,
+            activeBuffer: 'a',
+            transitionId: 0
+        };
+
+        const KNOWN_VIEWS = [
+            'front45', 'front34', 'front_45', 'front_34', 'f45', 'f34',
+            'rear45', 'rear34', 'rear_45', 'rear_34', 'r45', 'r34',
+            'side', 'front', 'rear', 'back', 'top', 'overhead',
+            'interior', 'int', 'detail', 'iso'
+        ];
+
+        const KNOWN_COLORS = [
+            'black', 'white', 'silver', 'grey', 'gray', 'red', 'blue', 'green', 
+            'yellow', 'pink', 'purple', 'orange', 'brown', 'gold', 'bronze', 
+            'beige', 'carbon', 'cyan', 'emerald', 'champagne', 'titanium', 
+            'nardo', 'chalk', 'ruby', 'violet', 'arctic', 'metallic', 'matte'
+        ];
+
+        const CATEGORY_TAGS = ['ext', 'int', 'exterior', 'interior', 'cam', 'render', 'studio', 'v01', 'v02', 'final', 'web'];
+
+        const COLOR_MAP = {
+            'black': '#111111', 'jet_black': '#0a0a0a', 'matte_black': '#222222',
+            'white': '#f5f5f7', 'pearl_white': '#f0efe9', 'chalk': '#d8d7d3',
+            'silver': '#c0c0c0', 'grey': '#73787e', 'gray': '#73787e', 'volcano_grey': '#4b4d52',
+            'nardo_grey': '#7a7e85', 'quicksilver': '#8c929a', 'titanium': '#878681',
+            'red': '#c4151c', 'carmine_red': '#961118', 'guards_red': '#d51b24', 'ultra_red': '#b81424',
+            'blue': '#104f9e', 'gentian_blue': '#162e5b', 'miami_blue': '#00a3cc', 'bay_blue': '#225588', 'frozen_blue': '#82a9be', 'deep_blue': '#0e2b4d',
+            'green': '#247345', 'python_green': '#46b23a', 'mamba_green': '#1f663c', 'emerald': '#046307',
+            'yellow': '#f5b800', 'racing_yellow': '#ffd000',
+            'pink': '#e57a9a', 'purple': '#6b2d82', 'orange': '#d9531e', 'brown': '#5c4033',
+            'gold': '#d4af37', 'bronze': '#9c6f3d', 'beige': '#d9cca3', 'cyan': '#00b4d8'
+        };
+
+        function getColorHex(name) {
+            if (!name) return '#666666';
+            const low = name.toLowerCase().replace(/\s+/g, '_');
+            if (COLOR_MAP[low]) return COLOR_MAP[low];
+            for (const key in COLOR_MAP) {
+                if (low.includes(key) || key.includes(low)) {
+                    return COLOR_MAP[key];
+                }
+            }
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+            return '#' + '00000'.substring(0, 6 - c.length) + c;
+        }
+
+        // ==========================================
+        // 核心：智能汽车文件名语义解析器 (Semantic Parser)
+        // 自动识别并拆解车型、分类(EXT/INT)、车漆、轮毂、卡钳、视角
+        // 无论包含多少个下划线段落 (如 FS_EXT_green_wheel1_front.png) 均能完美识别！
+        // ==========================================
+        function parseCarFilename(filename) {
+            const dotIdx = filename.lastIndexOf('.');
+            const baseName = dotIdx !== -1 ? filename.substring(0, dotIdx) : filename;
+            const rawTokens = baseName.split('_');
+            if (rawTokens.length < 2) return null;
+
+            let tokens = [...rawTokens];
+            let view = null;
+            let wheel = null;
+            let brake = null;
+            let color = null;
+            let category = null;
+
+            // 1. 识别视角 (View): 检查末尾 token 或倒数两个组合 (例如 front_45, rear_45)
+            const lastToken = rawTokens[rawTokens.length - 1];
+            const secondLastToken = rawTokens.length >= 2 ? rawTokens[rawTokens.length - 2] : '';
+
+            if (['45', '34'].includes(lastToken) && ['front', 'rear', 'f', 'r'].includes(secondLastToken.toLowerCase())) {
+                view = (secondLastToken.toLowerCase() + lastToken);
+                tokens.splice(tokens.length - 2, 2);
+            } else {
+                view = lastToken.toLowerCase();
+                tokens.pop();
+            }
+
+            // 2. 识别轮毂 (Wheel / Rim)
+            const wheelIdx = tokens.findIndex(t => /^wheel\d*$/i.test(t) || /^rim\d*$/i.test(t) || /^w\d+$/i.test(t));
+            if (wheelIdx !== -1) {
+                wheel = tokens[wheelIdx].toLowerCase();
+                tokens.splice(wheelIdx, 1);
+            }
+
+            // 3. 识别刹车卡钳 (Brake / Caliper)
+            const brakeIdx = tokens.findIndex(t => /^brake\d*$/i.test(t) || /^caliper\d*$/i.test(t) || /^b\d+$/i.test(t));
+            if (brakeIdx !== -1) {
+                brake = tokens[brakeIdx].toLowerCase();
+                tokens.splice(brakeIdx, 1);
+            }
+
+            // 4. 识别车漆颜色 (Color) - 优先命中已知颜色库
+            const colorIdx = tokens.findIndex(t => KNOWN_COLORS.includes(t.toLowerCase()));
+            if (colorIdx !== -1) {
+                color = tokens[colorIdx].toLowerCase();
+                tokens.splice(colorIdx, 1);
+            }
+
+            // 5. 识别外观/内饰等分类标记 (EXT / INT)
+            const catIdx = tokens.findIndex(t => CATEGORY_TAGS.includes(t.toLowerCase()));
+            if (catIdx !== -1) {
+                category = tokens[catIdx].toUpperCase();
+                tokens.splice(catIdx, 1);
+            }
+
+            // 6. 若未命中已知颜色，则取剩余段落的最后一个作为颜色
+            if (!color) {
+                if (tokens.length >= 2) {
+                    color = tokens.pop().toLowerCase();
+                } else if (tokens.length === 1) {
+                    color = tokens[0].toLowerCase();
+                    tokens = [];
+                }
+            }
+
+            // 7. 剩余所有 tokens 作为车型名称 (Model)
+            let model = tokens.length > 0 ? tokens.join(' ') : 'AUTO';
+            if (category && category === 'EXT') {
+                // 如果含有 EXT，保持简洁的车型名
+            }
+
+            if (!wheel) wheel = 'wheel1';
+            if (!color) color = 'default';
+            if (!view) view = 'front45';
+
+            return {
+                model,
+                category,
+                color,
+                wheel,
+                brake,
+                view,
+                key: `${color}_${wheel}_${view}`
+            };
+        }
+
+        function resetApp() {
+            dropzoneSection.style.display = 'flex';
+            configuratorSection.style.display = 'none';
+            parsedFiles = [];
+            fileMap = {};
+            if (folderInput) folderInput.value = '';
+        }
+
+        // ==========================================
+        // 拖拽与本地文件夹读取引擎 (支持浏览器文件夹递归解析)
+        // ==========================================
+        window.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+        window.addEventListener('drop', (e) => {
+            e.preventDefault();
+        });
+
+        if (dropzoneBox) {
+            dropzoneBox.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzoneBox.classList.add('dragover');
+            });
+            dropzoneBox.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                dropzoneBox.classList.remove('dragover');
+            });
+            dropzoneBox.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                dropzoneBox.classList.remove('dragover');
+                
+                const dt = e.dataTransfer;
+                if (!dt) return;
+
+                // 优先使用现代 FileSystemEntry 递归读取整个文件夹内所有文件
+                if (dt.items && dt.items.length > 0) {
+                    const files = await scanDataTransferItems(dt.items);
+                    if (files && files.length > 0) {
+                        handleFiles(files);
+                        return;
+                    }
+                }
+
+                // 降级使用普通 DataTransfer.files
+                if (dt.files && dt.files.length > 0) {
+                    handleFiles(dt.files);
+                }
+            });
+        }
+
+        if (folderInput) {
+            folderInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                    handleFiles(e.target.files);
+                }
+            });
+        }
+
+        // 递归扫描用户拖入的文件夹及子文件夹
+        async function scanDataTransferItems(items) {
+            const files = [];
+            const queue = [];
+
+            for (let i = 0; i < items.length; i++) {
+                const item = items[i];
+                if (typeof item.webkitGetAsEntry === 'function') {
+                    const entry = item.webkitGetAsEntry();
+                    if (entry) queue.push(entry);
+                } else if (typeof item.getAsFile === 'function') {
+                    const f = item.getAsFile();
+                    if (f) files.push(f);
+                }
+            }
+
+            while (queue.length > 0) {
+                const entry = queue.shift();
+                if (entry.isFile) {
+                    const f = await new Promise(resolve => entry.file(resolve, () => resolve(null)));
+                    if (f) files.push(f);
+                } else if (entry.isDirectory) {
+                    const dirReader = entry.createReader();
+                    const readEntries = async () => {
+                        const entries = await new Promise(resolve => dirReader.readEntries(resolve, () => resolve([])));
+                        if (entries && entries.length > 0) {
+                            for (const child of entries) queue.push(child);
+                            await readEntries(); // 持续读取直到读完所有分批（Chrome 每批上限100项）
+                        }
+                    };
+                    await readEntries();
+                }
+            }
+
+            return files;
+        }
+
+        function handleFiles(files) {
+            parsedFiles = [];
+            fileMap = {};
+            
+            const colorSet = new Set();
+            const wheelSet = new Set();
+            const viewSet = new Set();
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const path = file.webkitRelativePath || file.name;
+                const fileName = path.split(/[\/\\]/).pop();
+                
+                // 仅处理图像文件
+                if (!/\.(png|jpe?g|webp|bmp)$/i.test(fileName)) continue;
+
+                const parsed = parseCarFilename(fileName);
+                if (parsed) {
+                    carModelName = parsed.model;
+                    colorSet.add(parsed.color);
+                    wheelSet.add(parsed.wheel);
+                    viewSet.add(parsed.view);
+
+                    fileMap[parsed.key] = file;
+                    parsedFiles.push(file);
+                }
+            }
+
+            if (parsedFiles.length === 0) {
+                showToast("No valid car rendering files recognized in the selected folder.");
+                return;
+            }
+
+            // 智能排序：视角按经典汽车漫游顺序排列，轮毂按自然数字序排列
+            const VIEW_ORDER = ['front45', 'side', 'rear45', 'rear', 'front', 'top', 'interior'];
+            uniqueViews = Array.from(viewSet).sort((a, b) => {
+                const idxA = VIEW_ORDER.indexOf(a.toLowerCase());
+                const idxB = VIEW_ORDER.indexOf(b.toLowerCase());
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return a.localeCompare(b);
+            });
+
+            uniqueColors = Array.from(colorSet).sort();
+            uniqueWheels = Array.from(wheelSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+            // 初始状态
+            state.color = uniqueColors[0];
+            state.wheel = uniqueWheels[0];
+            state.view = uniqueViews.includes('front45') ? 'front45' : uniqueViews[0];
+
+            document.querySelector('.car-badge-title').innerText = carModelName.toUpperCase() + ' CONFIGURATOR';
+
+            buildUI();
+            
+            dropzoneSection.style.display = 'none';
+            configuratorSection.style.display = 'block';
+
+            updateStageRender(true);
+            initPanZoomEvents();
+        }
+
+        // ==========================================
+        // 核心：智能文件匹配与缺省降级引擎 (Fallback Engine)
+        // 完美解决正前/正后等视角不渲染其他轮毂时的自动 fallback 逻辑
+        // ==========================================
+        function getFileForState(color, wheel, view) {
+            if (!color || !view) return null;
+            
+            // 1. 完全精确匹配: color_wheel_view
+            if (wheel) {
+                const exactKey = `${color}_${wheel}_${view}`;
+                if (fileMap[exactKey]) return fileMap[exactKey];
+            }
+            
+            // 2. 智能轮毂降级：对于正前、正后等看不到轮毂的视角，自动降级为 wheel1 或第一款基础轮毂
+            if (uniqueWheels && uniqueWheels.length > 0) {
+                const wheel1Candidate = uniqueWheels.find(w => w.toLowerCase().includes('1')) || uniqueWheels[0];
+                const wheel1Key = `${color}_${wheel1Candidate}_${view}`;
+                if (fileMap[wheel1Key]) return fileMap[wheel1Key];
+
+                // 尝试当前颜色下该视角的任意可用轮毂
+                for (const w of uniqueWheels) {
+                    const wKey = `${color}_${w}_${view}`;
+                    if (fileMap[wKey]) return fileMap[wKey];
+                }
+            }
+            
+            // 3. 全局颜色与视角匹配容错
+            for (const key in fileMap) {
+                const parts = key.split('_');
+                if (parts[0] === color && parts[2] === view) {
+                    return fileMap[key];
+                }
+            }
+            
+            // 4. 最终视角容错
+            for (const key in fileMap) {
+                const parts = key.split('_');
+                if (parts[2] === view) {
+                    return fileMap[key];
+                }
+            }
+
+            return null;
+        }
+
+        // 专门为轮毂选项卡寻找最佳展示该轮毂特征的视角 (优先 side, front45, rear45)
+        function getWheelPreviewFile(wheel) {
+            const preferredViews = ['side', 'front45', 'rear45', uniqueViews[0]];
+            for (const v of preferredViews) {
+                const key = `${state.color}_${wheel}_${v}`;
+                if (fileMap[key]) return fileMap[key];
+            }
+            for (const key in fileMap) {
+                const parts = key.split('_');
+                if (parts[1] === wheel) {
+                    return fileMap[key];
+                }
+            }
+            return getFileForState(state.color, wheel, state.view);
+        }
+
+        // --- UI 构建 ---
+        function buildUI() {
+            // 1. 颜色色板
+            const colorContainer = document.getElementById('dynamic-colors');
+            colorContainer.innerHTML = '';
+            uniqueColors.forEach(color => {
+                const hex = getColorHex(color);
+                const isActive = color === state.color ? 'active' : '';
+                const tile = document.createElement('div');
+                tile.className = `swatch-tile ${isActive}`;
+                tile.dataset.color = color;
+                tile.onclick = () => setColor(color);
+                tile.innerHTML = `
+                    <div class="swatch-rect" style="background: ${hex};"></div>
+                    <span class="swatch-name">${color}</span>
+                `;
+                colorContainer.appendChild(tile);
+            });
+
+            // 2. 轮毂卡片
+            const wheelContainer = document.getElementById('dynamic-wheels');
+            wheelContainer.innerHTML = '';
+            uniqueWheels.forEach(wheel => {
+                const isActive = wheel === state.wheel ? 'active' : '';
+                const card = document.createElement('div');
+                card.className = `wheel-option-card ${isActive}`;
+                card.dataset.wheel = wheel;
+                card.onclick = () => setWheel(wheel);
+                
+                const previewFile = getWheelPreviewFile(wheel);
+                const previewUrl = previewFile ? URL.createObjectURL(previewFile) : '';
+
+                card.innerHTML = `
+                    <div class="wheel-option-thumb"><img src="${previewUrl}" alt="${wheel}"></div>
+                    <div class="wheel-option-info">
+                        <h4>${wheel.toUpperCase()}</h4>
+                        <p>Factory Equipment</p>
+                    </div>
+                `;
+                wheelContainer.appendChild(card);
+            });
+
+            buildThumbnails();
+            updateLabels();
+        }
+
+        function buildThumbnails() {
+            const thumbContainer = document.getElementById('dynamic-thumbnails');
+            thumbContainer.innerHTML = '';
+            uniqueViews.forEach(view => {
+                const isActive = view === state.view ? 'active' : '';
+                const card = document.createElement('div');
+                card.className = `thumb-card ${isActive}`;
+                card.dataset.view = view;
+                card.onclick = () => setView(view);
+                
+                const file = getFileForState(state.color, state.wheel, view);
+                const url = file ? URL.createObjectURL(file) : '';
+
+                card.innerHTML = `<img class="thumb-img" src="${url}" alt="${view}">`;
+                thumbContainer.appendChild(card);
+            });
+        }
+
+        function updateThumbnails() {
+            document.querySelectorAll('.thumb-card').forEach(card => {
+                const view = card.dataset.view;
+                const img = card.querySelector('.thumb-img');
+                const file = getFileForState(state.color, state.wheel, view);
+                if (file && img) {
+                    img.src = URL.createObjectURL(file);
+                }
+            });
+        }
+
+        function updateWheelThumbnails() {
+            document.querySelectorAll('.wheel-option-card').forEach(card => {
+                const wheel = card.dataset.wheel;
+                const img = card.querySelector('img');
+                const file = getWheelPreviewFile(wheel);
+                if (file && img) {
+                    img.src = URL.createObjectURL(file);
+                }
+            });
+        }
+
+        function updateLabels() {
+            document.getElementById('lbl-color').innerText = state.color.toUpperCase();
+            document.getElementById('lbl-wheel').innerText = state.wheel.toUpperCase();
+        }
+
+        // --- Setters ---
+        function setColor(color) {
+            if (state.color === color) return;
+            state.color = color;
+            document.querySelectorAll('.swatch-tile').forEach(el => {
+                el.classList.toggle('active', el.dataset.color === color);
+            });
+            updateLabels();
+            updateWheelThumbnails();
+            updateThumbnails();
+            updateStageRender();
+        }
+
+        function setWheel(wheel) {
+            if (state.wheel === wheel) return;
+            state.wheel = wheel;
+            document.querySelectorAll('.wheel-option-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.wheel === wheel);
+            });
+            updateLabels();
+            updateThumbnails();
+            updateStageRender();
+        }
+
+        function setView(view) {
+            if (state.view === view) return;
+            state.view = view;
+            document.querySelectorAll('.thumb-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.view === view);
+            });
+            updateStageRender();
+        }
+
+        // --- Render Engine ---
+        async function updateStageRender(isInitial = false) {
+            const currentTransitionId = ++state.transitionId;
+            const spinner = document.getElementById('stage-spinner');
+            
+            // 智能检索匹配的图片文件 (支持 wheel1 降级)
+            const file = getFileForState(state.color, state.wheel, state.view);
+            if (!file) {
+                showToast("Configuration view not found in folder.");
+                return;
+            }
+            const targetUrl = URL.createObjectURL(file);
+
+            const imgA = document.getElementById('stage-img-a');
+            const imgB = document.getElementById('stage-img-b');
+            
+            const currentVisibleImg = state.activeBuffer === 'a' ? imgA : imgB;
+            const incomingImg = state.activeBuffer === 'a' ? imgB : imgA;
+
+            if (isInitial) {
+                currentVisibleImg.src = targetUrl;
+                currentVisibleImg.style.zIndex = '2';
+                currentVisibleImg.style.opacity = '1';
+                incomingImg.style.zIndex = '1';
+                incomingImg.style.opacity = '0';
+                return;
+            }
+
+            if (spinner) spinner.classList.add('loading');
+            
+            const tempImg = new Image();
+            tempImg.src = targetUrl;
+            await new Promise((resolve) => {
+                tempImg.onload = resolve;
+                tempImg.onerror = resolve;
+            });
+            
+            if (spinner) spinner.classList.remove('loading');
+            if (currentTransitionId !== state.transitionId) return;
+
+            currentVisibleImg.style.transition = 'none';
+            currentVisibleImg.style.zIndex = '1';
+            currentVisibleImg.style.opacity = '1';
+
+            incomingImg.style.transition = 'none';
+            incomingImg.style.zIndex = '2';
+            incomingImg.style.opacity = '0';
+            incomingImg.src = targetUrl;
+
+            void incomingImg.offsetWidth;
+            incomingImg.style.transition = 'opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            incomingImg.style.opacity = '1';
+
+            state.activeBuffer = state.activeBuffer === 'a' ? 'b' : 'a';
+            
+            if (state.view !== viewWhenZoomed) {
+                resetZoom(false);
+            }
+            viewWhenZoomed = state.view;
+            
+            // Clean up old object URLs after transition
+            setTimeout(() => {
+                if (currentVisibleImg.src && currentVisibleImg.src.startsWith('blob:')) {
+                    URL.revokeObjectURL(currentVisibleImg.src);
+                }
+            }, 500);
+        }
+        let viewWhenZoomed = null;
+
+        // --- Pan & Zoom Engine ---
+        const panZoom = { scale: 1, minScale: 1, maxScale: 4.5, x: 0, y: 0, isDragging: false, startX: 0, startY: 0 };
+        function clampPanZoom() {
+            if (panZoom.scale <= 1) { panZoom.x = 0; panZoom.y = 0; return; }
+            const viewport = document.getElementById('stage-viewport');
+            if (!viewport) return;
+            const rect = viewport.getBoundingClientRect();
+            const maxX = (rect.width * (panZoom.scale - 1)) / 2;
+            const maxY = (rect.height * (panZoom.scale - 1)) / 2;
+            panZoom.x = Math.max(-maxX, Math.min(maxX, panZoom.x));
+            panZoom.y = Math.max(-maxY, Math.min(maxY, panZoom.y));
+        }
+        function applyPanZoom(isInstant = false) {
+            const layer = document.getElementById('panzoom-layer');
+            const viewport = document.getElementById('stage-viewport');
+            const badge = document.getElementById('zoom-badge');
+            if (isInstant) layer.classList.add('dragging');
+            else layer.classList.remove('dragging');
+            layer.style.transform = `translate3d(${panZoom.x}px, ${panZoom.y}px, 0) scale(${panZoom.scale})`;
+            viewport.classList.toggle('can-drag', panZoom.scale > 1.02);
+            if (badge) badge.innerText = Math.round(panZoom.scale * 100) + '%';
+        }
+        function resetZoom(animate = true) {
+            panZoom.scale = 1; panZoom.x = 0; panZoom.y = 0; panZoom.isDragging = false;
+            applyPanZoom(!animate);
+        }
+        window.handleZoomStep = function(delta) {
+            const targetScale = panZoom.scale + delta;
+            const newScale = Math.min(Math.max(targetScale, panZoom.minScale), panZoom.maxScale);
+            if (newScale <= 1.02) resetZoom(true);
+            else { panZoom.scale = newScale; clampPanZoom(); applyPanZoom(false); }
+        };
+        function initPanZoomEvents() {
+            const viewport = document.getElementById('stage-viewport');
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const rect = viewport.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left - rect.width / 2;
+                const mouseY = e.clientY - rect.top - rect.height / 2;
+                const zoomIntensity = 0.0018;
+                let newScale = panZoom.scale * (1 - e.deltaY * zoomIntensity);
+                newScale = Math.min(Math.max(newScale, panZoom.minScale), panZoom.maxScale);
+                if (newScale <= 1.02) { panZoom.scale = 1; panZoom.x = 0; panZoom.y = 0; }
+                else {
+                    const ratio = newScale / panZoom.scale;
+                    panZoom.x = mouseX - (mouseX - panZoom.x) * ratio;
+                    panZoom.y = mouseY - (mouseY - panZoom.y) * ratio;
+                    panZoom.scale = newScale;
+                    clampPanZoom();
+                }
+                applyPanZoom(false);
+            }, { passive: false });
+            viewport.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0 || panZoom.scale <= 1.02) return;
+                panZoom.isDragging = true; panZoom.startX = e.clientX - panZoom.x; panZoom.startY = e.clientY - panZoom.y;
+                viewport.classList.add('is-dragging'); viewport.setPointerCapture(e.pointerId);
+            });
+            viewport.addEventListener('pointermove', (e) => {
+                if (!panZoom.isDragging) return;
+                panZoom.x = e.clientX - panZoom.startX; panZoom.y = e.clientY - panZoom.startY;
+                clampPanZoom(); applyPanZoom(true);
+            });
+            const endDrag = (e) => {
+                if (panZoom.isDragging) {
+                    panZoom.isDragging = false; viewport.classList.remove('is-dragging'); applyPanZoom(false);
+                    try { viewport.releasePointerCapture(e.pointerId); } catch(err) {}
+                }
+            };
+            viewport.addEventListener('pointerup', endDrag);
+            viewport.addEventListener('pointercancel', endDrag);
+            viewport.addEventListener('dblclick', (e) => {
+                if (panZoom.scale > 1.2) resetZoom(true);
+                else {
+                    const rect = viewport.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left - rect.width / 2;
+                    const mouseY = e.clientY - rect.top - rect.height / 2;
+                    panZoom.scale = 2.2; panZoom.x = -mouseX * 0.7; panZoom.y = -mouseY * 0.7;
+                    clampPanZoom(); applyPanZoom(false);
+                }
+            });
+        }
+
+        // --- Fullscreen & Toast ---
+        window.toggleFullscreen = function() {
+            const stage = document.getElementById('main-stage-card');
+            if (!document.fullscreenElement) { if (stage.requestFullscreen) stage.requestFullscreen(); }
+            else { if (document.exitFullscreen) document.exitFullscreen(); }
+        };
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.querySelector('.stage-expand-btn');
+            if (!document.fullscreenElement) btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>`;
+            else btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>`;
+        });
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notify');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+</html>

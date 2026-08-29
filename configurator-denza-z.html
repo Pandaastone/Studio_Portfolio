@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Denza Z Coupe 3D Interactive Configurator | Zachary Shee Studio</title>
+    <meta name="description" content="Experience the interactive 3D automotive configurator for Denza Z Coupe. Customize exterior paint, aero wheels, high-performance brake calipers, and camera angles in real time.">
+    <link rel="canonical" href="https://www.zacharyshee.com/configurator-denza-z.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Denza Z Coupe 3D Interactive Configurator | Zachary Shee Studio">
+    <meta property="og:description" content="Real-time automotive CGI configurator for Denza Z Coupe with multi-angle viewing, bespoke paints, wheels, and brake calipers.">
+    <meta property="og:url" content="https://www.zacharyshee.com/configurator-denza-z.html">
+    <meta property="og:image" content="https://www.zacharyshee.com/images/denza-z/web/DenzaZ_Coupe_silver_brake1_wheel1_front45.jpg">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Denza Z Coupe 3D Visual Configurator",
+        "url": "https://www.zacharyshee.com/configurator-denza-z.html",
+        "applicationCategory": "Interactive Automotive Configurator",
+        "operatingSystem": "Web",
+        "description": "An interactive CGI automotive visualizer and configurator for Denza Z Coupe by Zachary Shee Studio.",
+        "creator": {
+            "@type": "Organization",
+            "name": "Zachary Shee Studio",
+            "url": "https://www.zacharyshee.com/"
+        }
+    }
+    </script>
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --stage-bg: #0d0e12;
+            --panel-bg: rgba(18, 18, 22, 0.95);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-hover: rgba(255, 255, 255, 0.07);
+            --panel-border: rgba(255, 255, 255, 0.10);
+            --accent-color: #00e5cc;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --soft-border: rgba(255, 255, 255, 0.08);
+            --header-h: 72px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 顶部保时捷风格导航条 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-h);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 36px;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--soft-border);
+        }
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            transition: color 0.25s;
+        }
+        .back-nav:hover { color: white; }
+        .nav-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--soft-border);
+        }
+        .car-badge-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .nav-center-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .nav-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--soft-border);
+            color: #d0d0d0;
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s;
+            text-decoration: none;
+        }
+        .nav-action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .nav-action-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 22px;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active { opacity: 1; }
+
+        .lang-switch {
+            display: flex;
+            align-items: center;
+            margin-left: 28px;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            color: white;
+            opacity: 0.6;
+        }
+        .lang-switch span { cursor: pointer; transition: 0.3s; }
+        .lang-switch span:hover { opacity: 1; }
+        .lang-switch span.active { font-weight: 800; opacity: 1; color: var(--accent-color); }
+        .lang-switch .divider { margin: 0 8px; cursor: default; opacity: 0.4; }
+
+        /* 主工作区网格 */
+        .configurator-layout {
+            position: absolute;
+            top: var(--header-h);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: grid;
+            grid-template-columns: 1fr 440px;
+            overflow: hidden;
+        }
+
+        /* 左侧主显示区 (16:9 画框 + 底部缩略图条) */
+        .viewport-section {
+            padding: 24px 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: #060608;
+        }
+
+        .stage-wrapper {
+            width: 100%;
+            max-width: min(100%, calc((100vh - var(--header-h) - 130px) * (16 / 9)));
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        /* 1. 主舞台卡片画框 (严格 16:9，无黑边) */
+        .main-stage-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 14px;
+            background: #0d0e12;
+            border: 1px solid var(--panel-border);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+        }
+
+        /* 图像叠化与平移缩放视口 */
+        .stage-viewport {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: default;
+            user-select: none;
+            touch-action: none;
+        }
+        .stage-viewport.can-drag {
+            cursor: grab;
+        }
+        .stage-viewport.is-dragging {
+            cursor: grabbing !important;
+        }
+        .stage-panzoom-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: center center;
+            will-change: transform;
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .stage-panzoom-layer.dragging {
+            transition: none !important;
+        }
+        .stage-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            will-change: opacity;
+            opacity: 0;
+        }
+
+        /* 浮动缩放控制工具栏 */
+        .zoom-controls-overlay {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(12, 12, 16, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            padding: 3px 8px;
+            border-radius: 20px;
+            z-index: 10;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            opacity: 0.82;
+            transition: all 0.25s;
+        }
+        .zoom-controls-overlay:hover {
+            opacity: 1;
+            background: rgba(16, 16, 22, 0.95);
+            border-color: rgba(255,255,255,0.25);
+        }
+        .zoom-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .zoom-btn:hover {
+            color: white;
+            background: rgba(255,255,255,0.12);
+        }
+        .zoom-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+        .zoom-level-badge {
+            font-size: 0.65rem;
+            letter-spacing: 0.5px;
+            color: #c0c0c0;
+            padding: 0 4px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 36px;
+            text-align: center;
+            user-select: none;
+        }
+        .zoom-level-badge:hover {
+            color: var(--accent-color);
+        }
+
+        .main-stage-card:fullscreen .zoom-controls-overlay,
+        .main-stage-card:-webkit-full-screen .zoom-controls-overlay {
+            bottom: 28px;
+            right: 28px;
+            padding: 4px 10px;
+        }
+
+        /* 加载中状态 */
+        .stage-spinner {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 10, 14, 0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--soft-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.68rem;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: opacity 0.25s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .stage-spinner.loading { opacity: 1; }
+        .spin-dot {
+            width: 8px;
+            height: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+            border-top-color: var(--accent-color);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 全屏切换按钮 (右上角) */
+        .stage-expand-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(15, 15, 18, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            z-index: 5;
+        }
+        .stage-expand-btn:hover {
+            color: white;
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.3);
+        }
+        .stage-expand-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2; fill: none; }
+
+        /* 主舞台全屏模式 (仅图片画框全屏展示) */
+        .main-stage-card:fullscreen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            border: none;
+            background: #040405;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-stage-card:-webkit-full-screen {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            border: none;
+            background: #040405;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .main-stage-card:fullscreen .stage-image,
+        .main-stage-card:-webkit-full-screen .stage-image {
+            object-fit: contain;
+        }
+        .main-stage-card:fullscreen .stage-expand-btn,
+        .main-stage-card:-webkit-full-screen .stage-expand-btn {
+            top: 28px;
+            right: 28px;
+            width: 44px;
+            height: 44px;
+            background: rgba(20, 20, 26, 0.85);
+        }
+
+        /* 2. 底部多视角动态缩略图条 (纯净缩略图卡片，无文字) */
+        .thumbnails-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .thumbnails-container::-webkit-scrollbar { display: none; }
+
+        .thumb-card {
+            width: 112px;
+            aspect-ratio: 16 / 9;
+            background: #090a0d;
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+            flex-shrink: 0;
+            position: relative;
+        }
+        .thumb-card:hover {
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        .thumb-card.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 1px #ffffff, 0 6px 18px rgba(0,0,0,0.6);
+        }
+        .thumb-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        .thumb-card:hover .thumb-img {
+            transform: scale(1.05);
+        }
+
+        /* 右侧保时捷手风琴选配卡片面板 */
+        .options-sidebar {
+            width: 440px;
+            height: 100%;
+            background: var(--panel-bg);
+            border-left: 1px solid var(--panel-border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.15) transparent;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        /* 选配分类卡片 */
+        .option-section-card {
+            background: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .section-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--soft-border);
+            padding-bottom: 12px;
+        }
+        .section-main-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white;
+        }
+        .section-cur-value {
+            font-size: 0.78rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        /* 车漆子分类组 */
+        .paint-subgroup {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .subgroup-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        /* 保时捷圆角矩形色板网格 */
+        .paint-swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .swatch-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 8px 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: all 0.22s;
+            text-align: center;
+        }
+        .swatch-tile:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .swatch-tile.active {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.2);
+        }
+        .swatch-rect {
+            width: 100%;
+            height: 32px;
+            border-radius: 5px;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.3), 0 3px 6px rgba(0,0,0,0.4);
+        }
+        .swatch-name {
+            font-size: 0.66rem;
+            color: #d0d0d0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* 轮毂卡片 */
+        .wheel-option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .wheel-option-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 64px 1fr;
+            gap: 14px;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.22s;
+        }
+        .wheel-option-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .wheel-option-card.active {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.15);
+        }
+        .wheel-option-thumb {
+            width: 64px;
+            height: 64px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #111;
+        }
+        .wheel-option-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .wheel-option-info h4 {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+        .wheel-option-info p {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            line-height: 1.3;
+        }
+
+        /* 制动卡钳卡片 */
+        .brake-swatch-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .brake-option-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.22s;
+        }
+        .brake-option-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .brake-option-card.active {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1.5px solid #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.15);
+        }
+        .brake-dot {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        .brake-label {
+            font-size: 0.74rem;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* 车型技术参数 */
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .spec-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 6px;
+            padding: 10px 12px;
+        }
+        .spec-box-label {
+            font-size: 0.62rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .spec-box-val {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        /* Toast 提示 */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translate(-50%, 80px);
+            background: rgba(18, 18, 22, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--accent-color);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 0.76rem;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0, 229, 204, 0.2);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast-notify.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+
+        /* 隐藏的 Poster 生成 Canvas */
+        #poster-canvas { display: none; }
+
+        /* 响应式适配 */
+        @media (max-width: 1080px) {
+            .configurator-layout {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                overflow-y: auto;
+            }
+            .viewport-section {
+                padding: 16px 20px;
+            }
+            .stage-wrapper {
+                max-width: 100%;
+            }
+            .options-sidebar {
+                width: 100%;
+                height: auto;
+                border-left: none;
+                border-top: 1px solid var(--panel-border);
+            }
+        }
+
+        @media (max-width: 680px) {
+            nav { padding: 0 16px; }
+            .nav-links { display: none; }
+            .nav-center-actions { display: none; }
+            .thumb-card { width: 84px; }
+            .paint-swatch-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部保时捷风格导航条 -->
+    <nav>
+        <div class="nav-left">
+            <a href="solutions.html" class="back-nav">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                <span data-i18n="cfg_nav_back">BACK TO SOLUTIONS</span>
+            </a>
+            <div class="nav-divider"></div>
+            <div class="car-badge-title" data-i18n="cfg_model_title">DENZA Z COUPE</div>
+        </div>
+
+        <div class="nav-center-actions">
+            <button class="nav-action-btn" onclick="savePoster()">
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span data-i18n="cfg_btn_save_poster">SAVE POSTER</span>
+            </button>
+            <button class="nav-action-btn" onclick="shareConfig()">
+                <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+                <span data-i18n="cfg_btn_share">SHARE</span>
+            </button>
+            <a href="#" id="link-download-8k" class="nav-action-btn" target="_blank" download>
+                <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span data-i18n="cfg_btn_download_8k">8K MASTER</span>
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="work.html" data-i18n="nav_work">WORK</a>
+                <a href="solutions.html" class="active" data-i18n="nav_solutions">SOLUTIONS</a>
+                <a href="about.html" data-i18n="nav_about">ABOUT</a>
+                <a href="course.html" data-i18n="nav_course">COURSE</a>
+                <a href="contact.html" data-i18n="nav_contact">CONTACT</a>
+            </div>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 配置器主工作区 -->
+    <main class="configurator-layout">
+        
+        <!-- 左侧视口展示区 (严格 16:9 画框 + 底部纯净缩略图条) -->
+        <section class="viewport-section" aria-label="3D Viewport">
+            
+            <div class="stage-wrapper">
+                <!-- 1. 主舞台画框卡片 (16:9 比例，完全贴合无黑边) -->
+                <div class="main-stage-card">
+                    <!-- 加载状态 -->
+                    <div class="stage-spinner" id="stage-spinner">
+                        <div class="spin-dot"></div>
+                        <span data-i18n="solutions_signals_label">LOADING</span>
+                    </div>
+
+                    <!-- 全屏切换按钮 (右上角) -->
+                    <button class="stage-expand-btn" onclick="toggleFullscreen()" title="Fullscreen">
+                        <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                    </button>
+
+                    <!-- 双缓冲真溶图叠化视口 (平移缩放层) -->
+                    <div class="stage-viewport" id="stage-viewport">
+                        <div class="stage-panzoom-layer" id="panzoom-layer">
+                            <img id="stage-img-a" class="stage-image" alt="Denza Z Coupe Stage View" fetchpriority="high">
+                            <img id="stage-img-b" class="stage-image" alt="Denza Z Coupe Stage View" fetchpriority="high">
+                        </div>
+                    </div>
+
+                    <!-- 浮动缩放控制工具栏 -->
+                    <div class="zoom-controls-overlay" id="zoom-toolbar">
+                        <button class="zoom-btn" onclick="handleZoomStep(0.3)" title="Zoom In">
+                            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        <span class="zoom-level-badge" id="zoom-badge" onclick="resetZoom(true)" title="Click to Reset">100%</span>
+                        <button class="zoom-btn" onclick="handleZoomStep(-0.3)" title="Zoom Out">
+                            <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. 底部多视角动态缩略图联动条 (纯净缩略图卡片，无文字) -->
+                <div class="thumbnails-container" role="group" aria-label="Perspective Thumbnails">
+                    <!-- 视角 1: 前 45° 视角 -->
+                    <div class="thumb-card active" data-view="front45" onclick="setView('front45')" title="Front 3/4">
+                        <img id="thumb-img-front45" class="thumb-img" alt="Front 3/4 View">
+                    </div>
+
+                    <!-- 视角 2: 正侧姿态 -->
+                    <div class="thumb-card" data-view="side" onclick="setView('side')" title="Side Profile">
+                        <img id="thumb-img-side" class="thumb-img" alt="Side Profile View">
+                    </div>
+
+                    <!-- 视角 3: 正前视角 -->
+                    <div class="thumb-card" data-view="front" onclick="setView('front')" title="Front View">
+                        <img id="thumb-img-front" class="thumb-img" alt="Front View">
+                    </div>
+
+                    <!-- 视角 4: 正后视角 -->
+                    <div class="thumb-card" data-view="rear" onclick="setView('rear')" title="Rear View">
+                        <img id="thumb-img-rear" class="thumb-img" alt="Rear View">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 右侧保时捷手风琴选配卡片面板 -->
+        <aside class="options-sidebar" aria-label="Customization Options">
+            
+            <!-- 1. 车身车漆卡片 -->
+            <div class="option-section-card">
+                <div class="section-title-row">
+                    <span class="section-main-title" data-i18n="cfg_tab_paint">EXTERIOR PAINT</span>
+                    <span class="section-cur-value" id="cur-val-color">Moonlit Silver</span>
+                </div>
+
+                <!-- 分组 1: 标准车漆 -->
+                <div class="paint-subgroup">
+                    <div class="subgroup-header">
+                        <span data-i18n="cfg_paint_standard">Standard Colors</span>
+                    </div>
+                    <div class="paint-swatch-grid" id="grid-paint-standard"></div>
+                </div>
+
+                <!-- 分组 2: 金属车漆 -->
+                <div class="paint-subgroup">
+                    <div class="subgroup-header">
+                        <span data-i18n="cfg_paint_metallic">Metallic Colors</span>
+                    </div>
+                    <div class="paint-swatch-grid" id="grid-paint-metallic"></div>
+                </div>
+
+                <!-- 分组 3: 传奇特殊定制车漆 -->
+                <div class="paint-subgroup">
+                    <div class="subgroup-header">
+                        <span data-i18n="cfg_paint_special">Special Legends Colors</span>
+                    </div>
+                    <div class="paint-swatch-grid" id="grid-paint-special"></div>
+                </div>
+            </div>
+
+            <!-- 2. 车轮与轮毂卡片 -->
+            <div class="option-section-card">
+                <div class="section-title-row">
+                    <span class="section-main-title" data-i18n="cfg_tab_wheels">WHEEL DESIGN</span>
+                    <span class="section-cur-value" id="cur-val-wheel">Two-Tone Cut</span>
+                </div>
+                <div class="wheel-option-list">
+                    <div class="wheel-option-card active" data-wheel="wheel1" onclick="setWheel('wheel1')">
+                        <div class="wheel-option-thumb">
+                            <img src="images/denza-z/wheel1_thumb.jpg" alt="20-inch Two-Tone Cut Sport Wheels" loading="lazy">
+                        </div>
+                        <div class="wheel-option-info">
+                            <h4 data-i18n="cfg_wheel_1_title">20" Two-Tone Cut Sport Wheels</h4>
+                            <p data-i18n="cfg_wheel_1_desc">Aerodynamic precision two-tone sports finish</p>
+                        </div>
+                    </div>
+                    <div class="wheel-option-card" data-wheel="wheel2" onclick="setWheel('wheel2')">
+                        <div class="wheel-option-thumb">
+                            <img src="images/denza-z/wheel2_thumb.jpg" alt="20-inch Matte Midnight Black Wheels" loading="lazy">
+                        </div>
+                        <div class="wheel-option-info">
+                            <h4 data-i18n="cfg_wheel_2_title">20" Matte Midnight Black Wheels</h4>
+                            <p data-i18n="cfg_wheel_2_desc">High-performance stealth matte black aesthetic</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 制动系统与卡钳卡片 -->
+            <div class="option-section-card">
+                <div class="section-title-row">
+                    <span class="section-main-title" data-i18n="cfg_tab_brakes">BRAKE CALIPERS</span>
+                    <span class="section-cur-value" id="cur-val-brake">Racing Red</span>
+                </div>
+                <div class="brake-swatch-grid">
+                    <div class="brake-option-card active" data-brake="brake1" onclick="setBrake('brake1')">
+                        <div class="brake-dot" style="background: #d81e1e;"></div>
+                        <span class="brake-label" data-i18n="cfg_brake_1">Racing Red</span>
+                    </div>
+                    <div class="brake-option-card" data-brake="brake2" onclick="setBrake('brake2')">
+                        <div class="brake-dot" style="background: #00e5cc;"></div>
+                        <span class="brake-label" data-i18n="cfg_brake_2">Electric Cyan</span>
+                    </div>
+                    <div class="brake-option-card" data-brake="brake3" onclick="setBrake('brake3')">
+                        <div class="brake-dot" style="background: #eab308;"></div>
+                        <span class="brake-label" data-i18n="cfg_brake_3">Performance Gold</span>
+                    </div>
+                    <div class="brake-option-card" data-brake="brake4" onclick="setBrake('brake4')">
+                        <div class="brake-dot" style="background: #ea580c;"></div>
+                        <span class="brake-label" data-i18n="cfg_brake_4">Racing Orange</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 车型技术规格卡片 -->
+            <div class="option-section-card">
+                <div class="section-title-row">
+                    <span class="section-main-title" data-i18n="cfg_tab_specs">SPECIFICATIONS</span>
+                    <span class="section-cur-value">e³ TECH</span>
+                </div>
+                <div class="specs-grid">
+                    <div class="spec-box">
+                        <span class="spec-box-label" data-i18n="cfg_spec_accel_label">0-100 KM/H</span>
+                        <span class="spec-box-val" data-i18n="cfg_spec_accel_val">3.0 s</span>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-box-label" data-i18n="cfg_spec_power_label">MAX POWER</span>
+                        <span class="spec-box-val" data-i18n="cfg_spec_power_val">710 kW (965 HP)</span>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-box-label" data-i18n="cfg_spec_range_label">CLTC RANGE</span>
+                        <span class="spec-box-val" data-i18n="cfg_spec_range_val">630 km</span>
+                    </div>
+                    <div class="spec-box">
+                        <span class="spec-box-label" data-i18n="cfg_spec_drive_label">PLATFORM</span>
+                        <span class="spec-box-val" data-i18n="cfg_spec_drive_val">e³ Tri-Motor</span>
+                    </div>
+                </div>
+            </div>
+
+        </aside>
+    </main>
+
+    <!-- Toast 提示 -->
+    <div class="toast-notify" id="toast-notify">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toast-msg">Configuration link copied!</span>
+    </div>
+
+    <!-- 离屏 Poster 生成 Canvas -->
+    <canvas id="poster-canvas" width="2560" height="1440"></canvas>
+
+    <!-- 全局多语言脚本 -->
+    <script src="lang.js"></script>
+
+    <!-- 配置器交互核心脚本 -->
+    <script>
+        // 车型色彩定义 (保时捷分级)
+        const COLOR_GROUPS = {
+            standard: [
+                { id: 'silver', hex: '#C2C6CD', nameKey: 'cfg_color_silver', defaultName: 'Moonlit Silver' },
+                { id: 'black',  hex: '#181818', nameKey: 'cfg_color_black',  defaultName: 'Obsidian Black' }
+            ],
+            metallic: [
+                { id: 'blue',   hex: '#1C4A86', nameKey: 'cfg_color_blue',   defaultName: 'Starry Sky Blue' },
+                { id: 'green',  hex: '#235341', nameKey: 'cfg_color_green',  defaultName: 'Emerald Forest' },
+                { id: 'purple', hex: '#563B78', nameKey: 'cfg_color_purple', defaultName: 'Aurora Purple' },
+                { id: 'red',    hex: '#B81B24', nameKey: 'cfg_color_red',    defaultName: 'Crimson Red' }
+            ],
+            special: [
+                { id: 'orange', hex: '#DD5B1B', nameKey: 'cfg_color_orange', defaultName: 'Sunset Orange' },
+                { id: 'pink',   hex: '#D48A97', nameKey: 'cfg_color_pink',   defaultName: 'Dawn Rose Pink' },
+                { id: 'yellow', hex: '#EAB308', nameKey: 'cfg_color_yellow', defaultName: 'Solar Yellow' }
+            ]
+        };
+
+        const ALL_COLORS = [...COLOR_GROUPS.standard, ...COLOR_GROUPS.metallic, ...COLOR_GROUPS.special];
+
+        const WHEEL_NAMES = {
+            'wheel1': { key: 'cfg_wheel_1_title', default: '20" Two-Tone Cut Sport Wheels' },
+            'wheel2': { key: 'cfg_wheel_2_title', default: '20" Matte Midnight Black Wheels' }
+        };
+
+        const BRAKE_NAMES = {
+            'brake1': { key: 'cfg_brake_1', default: 'Racing Red' },
+            'brake2': { key: 'cfg_brake_2', default: 'Electric Cyan' },
+            'brake3': { key: 'cfg_brake_3', default: 'Performance Gold' },
+            'brake4': { key: 'cfg_brake_4', default: 'Racing Orange' }
+        };
+
+        const VIEW_NAMES = {
+            'front45': { key: 'cfg_view_front45', default: 'Front 3/4' },
+            'side':    { key: 'cfg_view_side',    default: 'Side Profile' },
+            'front':   { key: 'cfg_view_front',   default: 'Front' },
+            'rear':    { key: 'cfg_view_rear',    default: 'Rear' }
+        };
+
+        // 当前配置状态
+        const state = {
+            color: 'silver',
+            wheel: 'wheel1',
+            brake: 'brake1',
+            view: 'front45',
+            activeBuffer: 'a', // 'a' 或 'b'
+            transitionId: 0
+        };
+
+        // 内存图片预加载缓存
+        const imageCache = new Map();
+
+        // 获取特定视角与配置的渲染图片 URL
+        function getImagePath(config, isMaster8K = false) {
+            const ext = isMaster8K ? '.png' : '.jpg';
+            const baseDir = isMaster8K ? 'images/denza-z/' : 'images/denza-z/web/';
+            
+            if (config.view === 'front' || config.view === 'rear') {
+                return `${baseDir}DenzaZ_Coupe_${config.color}_brake1_wheel1_${config.view}${ext}`;
+            }
+            return `${baseDir}DenzaZ_Coupe_${config.color}_${config.brake}_${config.wheel}_${config.view}${ext}`;
+        }
+
+        // 获取国际化文本
+        function getI18nText(key, defaultVal) {
+            const lang = localStorage.getItem('preferredLang') || 'zh';
+            if (typeof translations !== 'undefined' && translations[lang] && translations[lang][key]) {
+                return translations[lang][key];
+            }
+            return defaultVal;
+        }
+
+        // 初始化车漆色板网格
+        function renderPaintSwatches() {
+            const renderGroup = (groupId, containerId) => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                container.innerHTML = COLOR_GROUPS[groupId].map(c => `
+                    <div class="swatch-tile ${state.color === c.id ? 'active' : ''}" data-color="${c.id}" onclick="setColor('${c.id}')">
+                        <div class="swatch-rect" style="background: ${c.hex};"></div>
+                        <span class="swatch-name" data-i18n="${c.nameKey}">${getI18nText(c.nameKey, c.defaultName)}</span>
+                    </div>
+                `).join('');
+            };
+
+            renderGroup('standard', 'grid-paint-standard');
+            renderGroup('metallic', 'grid-paint-metallic');
+            renderGroup('special', 'grid-paint-special');
+        }
+
+        // 核心亮点：全视角缩略图实时联动更新 (Porsche Multi-Perspective Live Sync)
+        function updateThumbnailStrip() {
+            const views = ['front45', 'side', 'front', 'rear'];
+            views.forEach(v => {
+                const thumbImg = document.getElementById(`thumb-img-${v}`);
+                if (thumbImg) {
+                    const targetThumbUrl = getImagePath({
+                        color: state.color,
+                        wheel: state.wheel,
+                        brake: state.brake,
+                        view: v
+                    }, false);
+                    thumbImg.src = targetThumbUrl;
+                }
+            });
+
+            // 更新高亮缩略图卡片
+            document.querySelectorAll('.thumb-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.view === state.view);
+            });
+        }
+
+        // 更新 UI 标签与配置信息
+        function updateSummaryLabels() {
+            const colorDef = ALL_COLORS.find(c => c.id === state.color);
+            const colorName = colorDef ? getI18nText(colorDef.nameKey, colorDef.defaultName) : state.color;
+            const wheelName = getI18nText(WHEEL_NAMES[state.wheel].key, WHEEL_NAMES[state.wheel].default);
+            const brakeName = getI18nText(BRAKE_NAMES[state.brake].key, BRAKE_NAMES[state.brake].default);
+
+            const curColor = document.getElementById('cur-val-color');
+            const curWheel = document.getElementById('cur-val-wheel');
+            const curBrake = document.getElementById('cur-val-brake');
+
+            if (curColor) curColor.innerText = colorName;
+            if (curWheel) curWheel.innerText = wheelName;
+            if (curBrake) curBrake.innerText = brakeName;
+
+            // 8K 下载链接更新
+            const masterUrl = getImagePath(state, true);
+            const downloadBtn = document.getElementById('link-download-8k');
+            if (downloadBtn) {
+                downloadBtn.href = masterUrl;
+                downloadBtn.setAttribute('download', masterUrl.split('/').pop());
+            }
+
+            // 更新 URL Hash
+            updateUrlHash();
+        }
+
+        // 核心：无黑屏、无闪烁的真溶图叠化过渡 (Crossfade Dissolve)
+        async function updateStageRender(isInitial = false) {
+            const currentTransitionId = ++state.transitionId;
+            const spinner = document.getElementById('stage-spinner');
+            const targetUrl = getImagePath(state, false);
+
+            const imgA = document.getElementById('stage-img-a');
+            const imgB = document.getElementById('stage-img-b');
+            if (!imgA || !imgB) return;
+
+            const currentVisibleImg = state.activeBuffer === 'a' ? imgA : imgB;
+            const incomingImg = state.activeBuffer === 'a' ? imgB : imgA;
+
+            if (isInitial) {
+                currentVisibleImg.src = targetUrl;
+                currentVisibleImg.style.zIndex = '2';
+                currentVisibleImg.style.opacity = '1';
+                incomingImg.style.zIndex = '1';
+                incomingImg.style.opacity = '0';
+                triggerSmartPreload();
+                return;
+            }
+
+            // 预载图片，确保已解码入显存
+            let targetImgElement = imageCache.get(targetUrl);
+            if (!targetImgElement) {
+                if (spinner) spinner.classList.add('loading');
+                targetImgElement = new Image();
+                targetImgElement.src = targetUrl;
+                await new Promise((resolve) => {
+                    targetImgElement.onload = resolve;
+                    targetImgElement.onerror = resolve;
+                });
+                imageCache.set(targetUrl, targetImgElement);
+                if (spinner) spinner.classList.remove('loading');
+            }
+
+            if (currentTransitionId !== state.transitionId) {
+                return;
+            }
+
+            // 1. 底层：当前图片保持 100% 不透明，绝不退场，防止露出背景黑屏
+            currentVisibleImg.style.transition = 'none';
+            currentVisibleImg.style.zIndex = '1';
+            currentVisibleImg.style.opacity = '1';
+
+            // 2. 顶层：新图片置于 z-index 2，初始 opacity 0
+            incomingImg.style.transition = 'none';
+            incomingImg.style.zIndex = '2';
+            incomingImg.style.opacity = '0';
+            incomingImg.src = targetUrl;
+
+            // 强制重绘
+            void incomingImg.offsetWidth;
+
+            // 3. 顶层新图片平滑淡入 (0 -> 1)
+            incomingImg.style.transition = 'opacity 0.35s cubic-bezier(0.25, 1, 0.5, 1)';
+            incomingImg.style.opacity = '1';
+
+            // 切换缓冲区标记
+            state.activeBuffer = state.activeBuffer === 'a' ? 'b' : 'a';
+
+            // 4. 动画结束后重置底层图片
+            setTimeout(() => {
+                if (currentTransitionId === state.transitionId) {
+                    currentVisibleImg.style.transition = 'none';
+                    currentVisibleImg.style.opacity = '0';
+                    currentVisibleImg.style.zIndex = '0';
+                }
+            }, 380);
+
+            // 智能预加载
+            triggerSmartPreload();
+        }
+
+        // 智能预加载关联图层
+        function triggerSmartPreload() {
+            const views = ['front45', 'side', 'front', 'rear'];
+            views.forEach(v => {
+                const url = getImagePath({ ...state, view: v }, false);
+                if (!imageCache.has(url)) {
+                    const img = new Image();
+                    img.src = url;
+                    imageCache.set(url, img);
+                }
+            });
+        }
+
+        // 切换车身颜色
+        window.setColor = function(colorId) {
+            if (state.color === colorId) return;
+            state.color = colorId;
+            
+            document.querySelectorAll('.swatch-tile').forEach(el => {
+                el.classList.toggle('active', el.dataset.color === colorId);
+            });
+
+            updateThumbnailStrip();
+            updateSummaryLabels();
+            updateStageRender();
+        };
+
+        // 切换轮毂
+        window.setWheel = function(wheelId) {
+            if (state.wheel === wheelId) return;
+            state.wheel = wheelId;
+            
+            document.querySelectorAll('.wheel-option-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.wheel === wheelId);
+            });
+
+            updateThumbnailStrip();
+            updateSummaryLabels();
+            updateStageRender();
+        };
+
+        // 切换制动卡钳
+        window.setBrake = function(brakeId) {
+            if (state.brake === brakeId) return;
+            state.brake = brakeId;
+            
+            document.querySelectorAll('.brake-option-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.brake === brakeId);
+            });
+
+            updateThumbnailStrip();
+            updateSummaryLabels();
+            updateStageRender();
+        };
+
+        // 切换摄像机视角
+        window.setView = function(viewId) {
+            if (state.view === viewId) return;
+            state.view = viewId;
+            
+            document.querySelectorAll('.thumb-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.view === viewId);
+            });
+
+            updateSummaryLabels();
+            updateStageRender();
+        };
+
+        // ==========================================
+        // 核心交互：滚轮缩放与鼠标拖拽平移引擎 (Pan & Zoom Engine)
+        // ==========================================
+        const panZoom = {
+            scale: 1,
+            minScale: 1,
+            maxScale: 4.5,
+            x: 0,
+            y: 0,
+            isDragging: false,
+            startX: 0,
+            startY: 0
+        };
+
+        function clampPanZoom() {
+            if (panZoom.scale <= 1) {
+                panZoom.x = 0;
+                panZoom.y = 0;
+                return;
+            }
+            const viewport = document.getElementById('stage-viewport');
+            if (!viewport) return;
+            const rect = viewport.getBoundingClientRect();
+            const maxX = (rect.width * (panZoom.scale - 1)) / 2;
+            const maxY = (rect.height * (panZoom.scale - 1)) / 2;
+            panZoom.x = Math.max(-maxX, Math.min(maxX, panZoom.x));
+            panZoom.y = Math.max(-maxY, Math.min(maxY, panZoom.y));
+        }
+
+        function applyPanZoom(isInstant = false) {
+            const layer = document.getElementById('panzoom-layer');
+            const viewport = document.getElementById('stage-viewport');
+            const badge = document.getElementById('zoom-badge');
+            if (!layer || !viewport) return;
+
+            if (isInstant) {
+                layer.classList.add('dragging');
+            } else {
+                layer.classList.remove('dragging');
+            }
+
+            layer.style.transform = `translate3d(${panZoom.x}px, ${panZoom.y}px, 0) scale(${panZoom.scale})`;
+            viewport.classList.toggle('can-drag', panZoom.scale > 1.02);
+            if (badge) badge.innerText = Math.round(panZoom.scale * 100) + '%';
+        }
+
+        function resetZoom(animate = true) {
+            panZoom.scale = 1;
+            panZoom.x = 0;
+            panZoom.y = 0;
+            panZoom.isDragging = false;
+            applyPanZoom(!animate);
+        }
+
+        window.resetZoom = resetZoom;
+
+        window.handleZoomStep = function(delta) {
+            const targetScale = panZoom.scale + delta;
+            const newScale = Math.min(Math.max(targetScale, panZoom.minScale), panZoom.maxScale);
+            if (newScale <= 1.02) {
+                resetZoom(true);
+            } else {
+                panZoom.scale = newScale;
+                clampPanZoom();
+                applyPanZoom(false);
+            }
+        };
+
+        function initPanZoomEvents() {
+            const viewport = document.getElementById('stage-viewport');
+            if (!viewport) return;
+
+            // 1. 鼠标滚轮缩放 (以鼠标指针位置为锚点)
+            viewport.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const rect = viewport.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left - rect.width / 2;
+                const mouseY = e.clientY - rect.top - rect.height / 2;
+
+                const zoomIntensity = 0.0018;
+                const deltaScale = -e.deltaY * zoomIntensity;
+                let newScale = panZoom.scale * (1 + deltaScale);
+                newScale = Math.min(Math.max(newScale, panZoom.minScale), panZoom.maxScale);
+
+                if (newScale <= 1.02) {
+                    panZoom.scale = 1;
+                    panZoom.x = 0;
+                    panZoom.y = 0;
+                } else {
+                    const scaleRatio = newScale / panZoom.scale;
+                    panZoom.x = mouseX - (mouseX - panZoom.x) * scaleRatio;
+                    panZoom.y = mouseY - (mouseY - panZoom.y) * scaleRatio;
+                    panZoom.scale = newScale;
+                    clampPanZoom();
+                }
+
+                applyPanZoom(false);
+            }, { passive: false });
+
+            // 2. 指针按住拖拽平移
+            viewport.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0 || panZoom.scale <= 1.02) return;
+                panZoom.isDragging = true;
+                panZoom.startX = e.clientX - panZoom.x;
+                panZoom.startY = e.clientY - panZoom.y;
+                viewport.classList.add('is-dragging');
+                viewport.setPointerCapture(e.pointerId);
+            });
+
+            viewport.addEventListener('pointermove', (e) => {
+                if (!panZoom.isDragging) return;
+                panZoom.x = e.clientX - panZoom.startX;
+                panZoom.y = e.clientY - panZoom.startY;
+                clampPanZoom();
+                applyPanZoom(true);
+            });
+
+            const endDrag = (e) => {
+                if (panZoom.isDragging) {
+                    panZoom.isDragging = false;
+                    viewport.classList.remove('is-dragging');
+                    applyPanZoom(false);
+                    try { viewport.releasePointerCapture(e.pointerId); } catch(err) {}
+                }
+            };
+
+            viewport.addEventListener('pointerup', endDrag);
+            viewport.addEventListener('pointercancel', endDrag);
+
+            // 3. 双击放大 / 复位
+            viewport.addEventListener('dblclick', (e) => {
+                if (panZoom.scale > 1.2) {
+                    resetZoom(true);
+                } else {
+                    const rect = viewport.getBoundingClientRect();
+                    const mouseX = e.clientX - rect.left - rect.width / 2;
+                    const mouseY = e.clientY - rect.top - rect.height / 2;
+                    panZoom.scale = 2.2;
+                    panZoom.x = -mouseX * 0.7;
+                    panZoom.y = -mouseY * 0.7;
+                    clampPanZoom();
+                    applyPanZoom(false);
+                }
+            });
+        }
+
+        // 全屏模式切换 (仅将车辆主画框/图片全屏展示)
+        window.toggleFullscreen = function() {
+            const stage = document.querySelector('.main-stage-card');
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+                if (stage.requestFullscreen) {
+                    stage.requestFullscreen().catch(err => {
+                        console.log(`Fullscreen error: ${err.message}`);
+                    });
+                } else if (stage.webkitRequestFullscreen) {
+                    stage.webkitRequestFullscreen();
+                } else if (stage.msRequestFullscreen) {
+                    stage.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+        };
+
+        // 监听全屏状态变化以更新按钮图标
+        document.addEventListener('fullscreenchange', updateFullscreenIcon);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+
+        function updateFullscreenIcon() {
+            const btn = document.querySelector('.stage-expand-btn');
+            if (!btn) return;
+            const isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+            if (isFullscreen) {
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>`;
+                btn.setAttribute('title', 'Exit Fullscreen');
+            } else {
+                btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>`;
+                btn.setAttribute('title', 'Fullscreen');
+            }
+        }
+
+        // 分享配置 (复制深链接)
+        window.shareConfig = function() {
+            const url = window.location.href;
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast(getI18nText('cfg_toast_copied', 'Configuration link copied to clipboard!'));
+                });
+            } else {
+                showToast(getI18nText('cfg_toast_copied', 'Configuration link copied!'));
+            }
+        };
+
+        // 更新 URL Hash
+        function updateUrlHash() {
+            const hash = `color=${state.color}&wheel=${state.wheel}&brake=${state.brake}&view=${state.view}`;
+            history.replaceState(null, '', '#' + hash);
+        }
+
+        // 从 URL Hash 加载配置
+        function loadConfigFromHash() {
+            if (!window.location.hash) return;
+            const params = new URLSearchParams(window.location.hash.substring(1));
+            const c = params.get('color');
+            const w = params.get('wheel');
+            const b = params.get('brake');
+            const v = params.get('view');
+
+            if (c && ALL_COLORS.some(item => item.id === c)) state.color = c;
+            if (w && (w === 'wheel1' || w === 'wheel2')) state.wheel = w;
+            if (b && (b === 'brake1' || b === 'brake2' || b === 'brake3' || b === 'brake4')) state.brake = b;
+            if (v && (v === 'front45' || v === 'side' || v === 'front' || v === 'rear')) state.view = v;
+        }
+
+        // Toast 消息提示
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notify');
+            if (!toast) return;
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        // 生成并下载配置卡海报
+        window.savePoster = function() {
+            const canvas = document.getElementById('poster-canvas');
+            const ctx = canvas.getContext('2d');
+            const currentImg = state.activeBuffer === 'a' ? document.getElementById('stage-img-a') : document.getElementById('stage-img-b');
+
+            // 1. 背景
+            const bgGrad = ctx.createRadialGradient(1280, 720, 200, 1280, 720, 1400);
+            bgGrad.addColorStop(0, '#1a1b24');
+            bgGrad.addColorStop(0.6, '#090a0d');
+            bgGrad.addColorStop(1, '#040405');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, 2560, 1440);
+
+            // 2. 车辆主体
+            if (currentImg && currentImg.complete && currentImg.naturalWidth > 0) {
+                ctx.drawImage(currentImg, 0, 0, 2560, 1440);
+            }
+
+            // 3. 顶部品牌标识
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 32px Inter, sans-serif';
+            ctx.fillText('ZACHARY SHEE STUDIO', 100, 110);
+
+            ctx.fillStyle = '#888888';
+            ctx.font = '400 20px Inter, sans-serif';
+            ctx.fillText('CGI & AUTOMOTIVE VISUALIZATION', 100, 150);
+
+            // 4. 底部配置详情
+            const colorDef = ALL_COLORS.find(c => c.id === state.color);
+            const colorName = colorDef ? getI18nText(colorDef.nameKey, colorDef.defaultName) : state.color;
+            const wheelName = getI18nText(WHEEL_NAMES[state.wheel].key, WHEEL_NAMES[state.wheel].default);
+            const brakeName = getI18nText(BRAKE_NAMES[state.brake].key, BRAKE_NAMES[state.brake].default);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '800 64px Inter, sans-serif';
+            ctx.fillText('DENZA Z COUPE', 100, 1260);
+
+            ctx.fillStyle = '#00e5cc';
+            ctx.font = '600 22px Inter, sans-serif';
+            ctx.fillText('CUSTOM CONFIGURATION SPEC', 100, 1310);
+
+            ctx.fillStyle = '#cccccc';
+            ctx.font = '400 22px Inter, sans-serif';
+            ctx.fillText(`${colorName}  |  ${wheelName}  |  ${brakeName}`, 100, 1355);
+
+            // 5. 下载
+            const link = document.createElement('a');
+            link.download = `DenzaZ_${state.color}_${state.wheel}_${state.brake}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            showToast(getI18nText('cfg_btn_save_poster', 'Poster saved to downloads!'));
+        };
+
+        // 页面初始化
+        window.addEventListener('DOMContentLoaded', () => {
+            loadConfigFromHash();
+            renderPaintSwatches();
+            
+            // 初始化选配卡片高亮
+            document.querySelectorAll('.wheel-option-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.wheel === state.wheel);
+            });
+            document.querySelectorAll('.brake-option-card').forEach(el => {
+                el.classList.toggle('active', el.dataset.brake === state.brake);
+            });
+
+            updateThumbnailStrip();
+            updateSummaryLabels();
+            updateStageRender(true);
+            initPanZoomEvents();
+        });
+
+        // 语言切换监听
+        const origToggleLang = window.toggleLanguage;
+        window.toggleLanguage = function(lang) {
+            if (typeof origToggleLang === 'function') origToggleLang(lang);
+            renderPaintSwatches();
+            updateSummaryLabels();
+        };
+    </script>
+</body>
+</html>
