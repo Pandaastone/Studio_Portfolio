@@ -733,6 +733,300 @@
             background: rgba(0, 229, 204, 0.05);
         }
 
+        /* 顶部多车型切换胶囊栏 */
+        .model-tabs-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: 24px;
+            border: 1px solid var(--soft-border);
+            max-width: 35vw;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .model-tabs-bar::-webkit-scrollbar { display: none; }
+        
+        .model-tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.74rem;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .model-tab-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .model-tab-btn.active {
+            color: #050505;
+            background: #ffffff;
+            font-weight: 700;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 模式选择药丸栏 (单车 / 左右并排 / 帘幕对比) */
+        .view-mode-selector {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: 24px;
+            border: 1px solid var(--soft-border);
+        }
+        .mode-pill-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 18px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .mode-pill-btn svg { width: 13px; height: 13px; stroke: currentColor; stroke-width: 2; fill: none; }
+        .mode-pill-btn:hover { color: white; background: rgba(255, 255, 255, 0.08); }
+        .mode-pill-btn.active {
+            color: #050505;
+            background: var(--accent-color);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 229, 204, 0.3);
+        }
+
+        .ab-quick-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-add-btn {
+            background: rgba(0, 229, 204, 0.08);
+            border: 1px solid rgba(0, 229, 204, 0.3);
+            color: var(--accent-color);
+        }
+        .nav-add-btn:hover {
+            background: rgba(0, 229, 204, 0.22);
+            border-color: var(--accent-color);
+            color: #ffffff;
+        }
+
+        /* 左右并排双画框容器 */
+        .dual-stage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            width: 100%;
+            aspect-ratio: 32 / 9;
+        }
+        .dual-stage-card {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            background: #0d0e12;
+            border: 2px solid var(--panel-border);
+            overflow: hidden;
+            box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+        .dual-stage-card.active-slot {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 1px var(--accent-color), 0 14px 40px rgba(0, 229, 204, 0.2);
+        }
+
+        /* 帘幕顶层裁剪视口 */
+        .stage-viewport-wipe-b {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        /* 滑动帘幕分割线 */
+        .wipe-divider-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ffffff;
+            z-index: 8;
+            cursor: ew-resize;
+            box-shadow: 0 0 12px rgba(0,0,0,0.8), 0 0 8px var(--accent-color);
+            touch-action: none;
+        }
+        .wipe-handle-pill {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #050505;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+            border: 2px solid #000000;
+        }
+        .wipe-handle-pill svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+
+        /* 槽位徽章标签 */
+        .slot-badge-tag {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 0.68rem;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            backdrop-filter: blur(10px);
+            z-index: 6;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .slot-a-tag {
+            background: rgba(0, 229, 204, 0.85);
+            color: #050505;
+            border: 1px solid rgba(0, 229, 204, 0.4);
+        }
+        .slot-b-tag {
+            background: rgba(255, 102, 204, 0.85);
+            color: #050505;
+            border: 1px solid rgba(255, 102, 204, 0.4);
+        }
+
+        /* 侧边栏槽位切换卡片 */
+        .slot-select-card {
+            background: var(--card-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .slot-switcher-pills {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .slot-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--soft-border);
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 4px;
+            transition: all 0.22s;
+            text-align: left;
+        }
+        .slot-pill:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .slot-pill.active {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.15);
+        }
+        .slot-pill.active.slot-a-pill {
+            border-color: var(--accent-color);
+        }
+        .slot-pill.active.slot-b-pill {
+            border-color: #ff66cc;
+        }
+        .slot-pill-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .slot-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .dot-a { background: var(--accent-color); box-shadow: 0 0 6px var(--accent-color); }
+        .dot-b { background: #ff66cc; box-shadow: 0 0 6px #ff66cc; }
+        .slot-title {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .slot-desc {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* 车型微型选择药丸网格 */
+        .slot-model-pill-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .model-choice-pill {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--soft-border);
+            color: #d0d0d0;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .model-choice-pill:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .model-choice-pill.active {
+            color: #050505;
+            background: #ffffff;
+            font-weight: 700;
+            border-color: #ffffff;
+        }
+
         /* 响应式适配 */
         @media (max-width: 1080px) {
             .configurator-layout {
@@ -746,6 +1040,11 @@
             .stage-wrapper {
                 max-width: 100%;
             }
+            .dual-stage-grid {
+                aspect-ratio: 16 / 9;
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
             .options-sidebar {
                 width: 100%;
                 height: auto;
@@ -757,7 +1056,8 @@
         @media (max-width: 680px) {
             nav { padding: 0 16px; }
             .nav-links { display: none; }
-            .nav-center-actions { display: none; }
+            .model-tabs-bar { max-width: 120px; }
+            .view-mode-selector { max-width: 180px; }
             .thumb-card { width: 84px; }
             .paint-swatch-grid { grid-template-columns: repeat(3, 1fr); }
         }
@@ -767,12 +1067,53 @@
     <!-- Top Nav -->
     <nav>
         <div class="nav-left">
-            <span class="car-badge-title">Auto Configurator Builder</span>
+            <span class="car-badge-title" id="car-title">Auto Configurator</span>
         </div>
         <div class="nav-center-actions">
-            <button class="nav-action-btn" onclick="resetApp()">
+            <!-- 模式切换选择器 (单车 / 左右并排 / 帘幕对比) -->
+            <div class="view-mode-selector" id="view-mode-selector" style="display: none;">
+                <button class="mode-pill-btn active" id="btn-mode-single" onclick="setComparisonMode('single')" title="Single Vehicle Mode">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"></rect></svg>
+                    <span>Single</span>
+                </button>
+                <button class="mode-pill-btn" id="btn-mode-split" onclick="setComparisonMode('side-by-side')" title="Side-by-Side Comparison">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="9" height="18" rx="2"></rect><rect x="13" y="3" width="9" height="18" rx="2"></rect></svg>
+                    <span>Split View</span>
+                </button>
+                <button class="mode-pill-btn" id="btn-mode-wipe" onclick="setComparisonMode('wipe')" title="Curtain Wipe Comparison">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                    <span>Wipe</span>
+                </button>
+            </div>
+
+            <!-- 动态多车型切换标签栏 (仅单车模式下展示) -->
+            <div class="model-tabs-bar" id="model-tabs-bar" style="display: none;">
+                <!-- 动态注入车型切换标签 -->
+            </div>
+
+            <!-- 对照组 A/B 快速操作工具 (仅 A/B 模式下展示) -->
+            <div class="ab-quick-actions" id="ab-quick-actions" style="display: none;">
+                <button class="nav-action-btn" onclick="swapSlots()" title="Swap Vehicle A and Vehicle B">
+                    <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path></svg>
+                    <span>Swap A⇄B</span>
+                </button>
+                <button class="nav-action-btn" onclick="cloneSlotToOther()" title="Match Vehicle B to same model as Vehicle A">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                    <span>Match Model</span>
+                </button>
+            </div>
+
+            <!-- 追加导入新车型按钮 -->
+            <button class="nav-action-btn nav-add-btn" id="btn-add-model" style="display: none;" onclick="document.getElementById('append-folder-input').click()" title="Add another car model folder">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Model</span>
+            </button>
+            <input type="file" id="append-folder-input" webkitdirectory directory multiple style="display:none;">
+
+            <!-- 重置所有按钮 -->
+            <button class="nav-action-btn" onclick="resetApp()" title="Reset and load new folder">
                 <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-                Load New Folder
+                <span>Reset</span>
             </button>
         </div>
         <div class="nav-right">
@@ -804,19 +1145,44 @@
             <div class="configurator-layout" style="position: relative; top: 0; left: 0; right: 0; bottom: 0;">
                 <!-- Left Viewport -->
                 <section class="viewport-section" aria-label="3D Viewport">
-                    <div class="stage-wrapper">
-                        <!-- Main Stage -->
+                    <div class="stage-wrapper" id="stage-wrapper">
+                        
+                        <!-- 1. 单车模式 / 滑动帘幕对比容器 (Main Stage Card) -->
                         <div class="main-stage-card" id="main-stage-card">
                             <div class="stage-spinner" id="stage-spinner"><div class="spin-dot"></div><span style="font-size: 0.68rem; letter-spacing: 1.5px; color: var(--text-muted);">LOADING</span></div>
+                            
+                            <!-- 全屏按钮 -->
                             <button class="stage-expand-btn" onclick="toggleFullscreen()" title="Fullscreen">
                                 <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                             </button>
-                            <div class="stage-viewport" id="stage-viewport">
-                                <div class="stage-panzoom-layer" id="panzoom-layer">
-                                    <img id="stage-img-a" class="stage-image" alt="Stage View A" fetchpriority="high">
-                                    <img id="stage-img-b" class="stage-image" alt="Stage View B" fetchpriority="high">
+
+                            <!-- 视口 A (主层 / 帘幕底图) -->
+                            <div class="stage-viewport" id="stage-viewport-a">
+                                <div class="slot-badge-tag slot-a-tag" id="badge-tag-a" style="display: none;">SLOT A</div>
+                                <div class="stage-panzoom-layer" id="panzoom-layer-a">
+                                    <img id="stage-img-a1" class="stage-image" alt="Stage A1" fetchpriority="high">
+                                    <img id="stage-img-a2" class="stage-image" alt="Stage A2" fetchpriority="high">
                                 </div>
                             </div>
+
+                            <!-- 视口 B (帘幕顶层裁剪图，仅在 wipe 模式显示) -->
+                            <div class="stage-viewport stage-viewport-wipe-b" id="stage-viewport-wipe-b" style="display: none;">
+                                <div class="slot-badge-tag slot-b-tag" id="badge-tag-wipe-b">SLOT B</div>
+                                <div class="stage-panzoom-layer" id="panzoom-layer-wipe-b">
+                                    <img id="stage-img-b1" class="stage-image" alt="Stage B1" fetchpriority="high">
+                                    <img id="stage-img-b2" class="stage-image" alt="Stage B2" fetchpriority="high">
+                                </div>
+                            </div>
+
+                            <!-- 滑动帘幕分割线手柄 (仅在 wipe 模式显示) -->
+                            <div class="wipe-divider-line" id="wipe-divider" style="display: none;">
+                                <div class="wipe-handle-pill">
+                                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                                    <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                                </div>
+                            </div>
+
+                            <!-- 浮动缩放工具栏 -->
                             <div class="zoom-controls-overlay" id="zoom-toolbar">
                                 <button class="zoom-btn" onclick="handleZoomStep(0.3)" title="Zoom In"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></button>
                                 <span class="zoom-level-badge" id="zoom-badge" onclick="resetZoom(true)" title="Reset">100%</span>
@@ -824,7 +1190,31 @@
                             </div>
                         </div>
 
-                        <!-- Thumbnails -->
+                        <!-- 2. 左右并排双画框容器 (Side-by-Side Dual Cards，仅在 side-by-side 模式显示) -->
+                        <div class="dual-stage-grid" id="dual-stage-grid" style="display: none;">
+                            <!-- Card A -->
+                            <div class="dual-stage-card active-slot" id="dual-card-a" onclick="setActiveSlot('A')">
+                                <div class="slot-badge-tag slot-a-tag" id="badge-dual-a">SLOT A</div>
+                                <div class="stage-viewport">
+                                    <div class="stage-panzoom-layer" id="panzoom-layer-dual-a">
+                                        <img id="stage-img-dual-a1" class="stage-image" alt="Dual A1">
+                                        <img id="stage-img-dual-a2" class="stage-image" alt="Dual A2">
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Card B -->
+                            <div class="dual-stage-card" id="dual-card-b" onclick="setActiveSlot('B')">
+                                <div class="slot-badge-tag slot-b-tag" id="badge-dual-b">SLOT B</div>
+                                <div class="stage-viewport">
+                                    <div class="stage-panzoom-layer" id="panzoom-layer-dual-b">
+                                        <img id="stage-img-dual-b1" class="stage-image" alt="Dual B1">
+                                        <img id="stage-img-dual-b2" class="stage-image" alt="Dual B2">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. 底部视角动态缩略图联动条 (控制全部槽位视角同步) -->
                         <div class="thumbnails-container" id="dynamic-thumbnails">
                             <!-- Populated dynamically -->
                         </div>
@@ -833,6 +1223,38 @@
 
                 <!-- Right Sidebar -->
                 <aside class="options-sidebar">
+                    <!-- A/B 槽位切换卡片 (仅在 A/B 模式显示) -->
+                    <div class="slot-select-card" id="slot-select-card" style="display: none;">
+                        <div class="slot-switcher-pills">
+                            <button class="slot-pill active slot-a-pill" id="btn-slot-a" onclick="setActiveSlot('A')">
+                                <div class="slot-pill-header">
+                                    <span class="slot-dot dot-a"></span>
+                                    <span class="slot-title">SLOT A</span>
+                                </div>
+                                <span class="slot-desc" id="slot-desc-a">Model A</span>
+                            </button>
+                            <button class="slot-pill slot-b-pill" id="btn-slot-b" onclick="setActiveSlot('B')">
+                                <div class="slot-pill-header">
+                                    <span class="slot-dot dot-b"></span>
+                                    <span class="slot-title">SLOT B</span>
+                                </div>
+                                <span class="slot-desc" id="slot-desc-b">Model B</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 车型选择卡 (在 A/B 模式下允许单独为当前槽位切换车型) -->
+                    <div class="option-section-card" id="slot-model-card" style="display: none;">
+                        <div class="section-title-row">
+                            <span class="section-main-title" id="lbl-model-section-title">Model</span>
+                            <span class="section-cur-value" id="lbl-cur-slot-model">SGT</span>
+                        </div>
+                        <div class="slot-model-pill-grid" id="slot-model-pill-grid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- 车漆选配卡片 -->
                     <div class="option-section-card">
                         <div class="section-title-row">
                             <span class="section-main-title">Exterior Paint</span>
@@ -843,6 +1265,7 @@
                         </div>
                     </div>
 
+                    <!-- 轮毂选配卡片 -->
                     <div class="option-section-card">
                         <div class="section-title-row">
                             <span class="section-main-title">Wheels</span>
@@ -862,22 +1285,36 @@
     <script>
         const dropzoneBox = document.getElementById('dropzone-box');
         const folderInput = document.getElementById('folder-input');
+        const appendInput = document.getElementById('append-folder-input');
         const dropzoneSection = document.getElementById('dropzone-section');
         const configuratorSection = document.getElementById('configurator-section');
         
-        let parsedFiles = []; 
-        let fileMap = {}; // mapping: [color]_[wheel]_[view] -> File object
-        let uniqueColors = [];
-        let uniqueWheels = [];
-        let uniqueViews = [];
-        let carModelName = 'Auto';
-        
-        let state = {
-            color: null,
-            wheel: null,
-            view: null,
-            activeBuffer: 'a',
-            transitionId: 0
+        // ==========================================
+        // 全局数据仓库与对比状态 (Store & Comparison State)
+        // ==========================================
+        let models = {}; 
+        let activeModelKey = null;
+
+        const comparisonState = {
+            mode: 'single', // 'single' | 'side-by-side' | 'wipe'
+            activeSlot: 'A', // 'A' | 'B' (which slot the sidebar currently edits in A/B mode)
+            wipePercent: 50,
+            isDraggingWipe: false,
+            sharedView: 'front45',
+            slotA: {
+                modelKey: null,
+                color: null,
+                wheel: null,
+                activeBuffer: '1',
+                transitionId: 0
+            },
+            slotB: {
+                modelKey: null,
+                color: null,
+                wheel: null,
+                activeBuffer: '1',
+                transitionId: 0
+            }
         };
 
         const KNOWN_VIEWS = [
@@ -926,8 +1363,6 @@
 
         // ==========================================
         // 核心：智能汽车文件名语义解析器 (Semantic Parser)
-        // 自动识别并拆解车型、分类(EXT/INT)、车漆、轮毂、卡钳、视角
-        // 无论包含多少个下划线段落 (如 FS_EXT_green_wheel1_front.png) 均能完美识别！
         // ==========================================
         function parseCarFilename(filename) {
             const dotIdx = filename.lastIndexOf('.');
@@ -942,7 +1377,6 @@
             let color = null;
             let category = null;
 
-            // 1. 识别视角 (View): 检查末尾 token 或倒数两个组合 (例如 front_45, rear_45)
             const lastToken = rawTokens[rawTokens.length - 1];
             const secondLastToken = rawTokens.length >= 2 ? rawTokens[rawTokens.length - 2] : '';
 
@@ -954,35 +1388,30 @@
                 tokens.pop();
             }
 
-            // 2. 识别轮毂 (Wheel / Rim)
             const wheelIdx = tokens.findIndex(t => /^wheel\d*$/i.test(t) || /^rim\d*$/i.test(t) || /^w\d+$/i.test(t));
             if (wheelIdx !== -1) {
                 wheel = tokens[wheelIdx].toLowerCase();
                 tokens.splice(wheelIdx, 1);
             }
 
-            // 3. 识别刹车卡钳 (Brake / Caliper)
             const brakeIdx = tokens.findIndex(t => /^brake\d*$/i.test(t) || /^caliper\d*$/i.test(t) || /^b\d+$/i.test(t));
             if (brakeIdx !== -1) {
                 brake = tokens[brakeIdx].toLowerCase();
                 tokens.splice(brakeIdx, 1);
             }
 
-            // 4. 识别车漆颜色 (Color) - 优先命中已知颜色库
             const colorIdx = tokens.findIndex(t => KNOWN_COLORS.includes(t.toLowerCase()));
             if (colorIdx !== -1) {
                 color = tokens[colorIdx].toLowerCase();
                 tokens.splice(colorIdx, 1);
             }
 
-            // 5. 识别外观/内饰等分类标记 (EXT / INT)
             const catIdx = tokens.findIndex(t => CATEGORY_TAGS.includes(t.toLowerCase()));
             if (catIdx !== -1) {
                 category = tokens[catIdx].toUpperCase();
                 tokens.splice(catIdx, 1);
             }
 
-            // 6. 若未命中已知颜色，则取剩余段落的最后一个作为颜色
             if (!color) {
                 if (tokens.length >= 2) {
                     color = tokens.pop().toLowerCase();
@@ -992,11 +1421,7 @@
                 }
             }
 
-            // 7. 剩余所有 tokens 作为车型名称 (Model)
             let model = tokens.length > 0 ? tokens.join(' ') : 'AUTO';
-            if (category && category === 'EXT') {
-                // 如果含有 EXT，保持简洁的车型名
-            }
 
             if (!wheel) wheel = 'wheel1';
             if (!color) color = 'default';
@@ -1016,19 +1441,49 @@
         function resetApp() {
             dropzoneSection.style.display = 'flex';
             configuratorSection.style.display = 'none';
-            parsedFiles = [];
-            fileMap = {};
+            models = {};
+            activeModelKey = null;
+            comparisonState.mode = 'single';
+            comparisonState.activeSlot = 'A';
             if (folderInput) folderInput.value = '';
+            if (appendInput) appendInput.value = '';
+            const tabsBar = document.getElementById('model-tabs-bar');
+            if (tabsBar) {
+                tabsBar.innerHTML = '';
+                tabsBar.style.display = 'none';
+            }
+            const modeSelector = document.getElementById('view-mode-selector');
+            if (modeSelector) modeSelector.style.display = 'none';
+            const addBtn = document.getElementById('btn-add-model');
+            if (addBtn) addBtn.style.display = 'none';
+            const abActions = document.getElementById('ab-quick-actions');
+            if (abActions) abActions.style.display = 'none';
+            const titleEl = document.getElementById('car-title');
+            if (titleEl) titleEl.innerText = 'AUTO CONFIGURATOR';
         }
 
         // ==========================================
-        // 拖拽与本地文件夹读取引擎 (支持浏览器文件夹递归解析)
+        // 拖拽与本地文件夹读取引擎
         // ==========================================
         window.addEventListener('dragover', (e) => {
             e.preventDefault();
         });
-        window.addEventListener('drop', (e) => {
+        window.addEventListener('drop', async (e) => {
             e.preventDefault();
+            const dt = e.dataTransfer;
+            if (!dt) return;
+
+            const isAlreadyActive = configuratorSection.style.display !== 'none';
+            let files = [];
+            if (dt.items && dt.items.length > 0) {
+                files = await scanDataTransferItems(dt.items);
+            } else if (dt.files && dt.files.length > 0) {
+                files = dt.files;
+            }
+
+            if (files && files.length > 0) {
+                handleFiles(files, isAlreadyActive);
+            }
         });
 
         if (dropzoneBox) {
@@ -1040,38 +1495,29 @@
                 e.preventDefault();
                 dropzoneBox.classList.remove('dragover');
             });
-            dropzoneBox.addEventListener('drop', async (e) => {
-                e.preventDefault();
+            dropzoneBox.addEventListener('drop', (e) => {
                 dropzoneBox.classList.remove('dragover');
-                
-                const dt = e.dataTransfer;
-                if (!dt) return;
-
-                // 优先使用现代 FileSystemEntry 递归读取整个文件夹内所有文件
-                if (dt.items && dt.items.length > 0) {
-                    const files = await scanDataTransferItems(dt.items);
-                    if (files && files.length > 0) {
-                        handleFiles(files);
-                        return;
-                    }
-                }
-
-                // 降级使用普通 DataTransfer.files
-                if (dt.files && dt.files.length > 0) {
-                    handleFiles(dt.files);
-                }
             });
         }
 
         if (folderInput) {
             folderInput.addEventListener('change', (e) => {
                 if (e.target.files && e.target.files.length > 0) {
-                    handleFiles(e.target.files);
+                    handleFiles(e.target.files, false);
+                    e.target.value = '';
                 }
             });
         }
 
-        // 递归扫描用户拖入的文件夹及子文件夹
+        if (appendInput) {
+            appendInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                    handleFiles(e.target.files, true);
+                    e.target.value = '';
+                }
+            });
+        }
+
         async function scanDataTransferItems(items) {
             const files = [];
             const queue = [];
@@ -1098,7 +1544,7 @@
                         const entries = await new Promise(resolve => dirReader.readEntries(resolve, () => resolve([])));
                         if (entries && entries.length > 0) {
                             for (const child of entries) queue.push(child);
-                            await readEntries(); // 持续读取直到读完所有分批（Chrome 每批上限100项）
+                            await readEntries();
                         }
                     };
                     await readEntries();
@@ -1108,96 +1554,401 @@
             return files;
         }
 
-        function handleFiles(files) {
-            parsedFiles = [];
-            fileMap = {};
-            
-            const colorSet = new Set();
-            const wheelSet = new Set();
-            const viewSet = new Set();
+        // ==========================================
+        // 核心：多车型文件汇入与分组解析引擎 (Multi-Model Ingestion)
+        // ==========================================
+        function handleFiles(files, isAppend = false) {
+            if (!isAppend) {
+                models = {};
+                activeModelKey = null;
+            }
+
+            const newlyDiscoveredModels = new Set();
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const path = file.webkitRelativePath || file.name;
                 const fileName = path.split(/[\/\\]/).pop();
                 
-                // 仅处理图像文件
                 if (!/\.(png|jpe?g|webp|bmp)$/i.test(fileName)) continue;
 
                 const parsed = parseCarFilename(fileName);
-                if (parsed) {
-                    carModelName = parsed.model;
-                    colorSet.add(parsed.color);
-                    wheelSet.add(parsed.wheel);
-                    viewSet.add(parsed.view);
+                if (!parsed) continue;
 
-                    fileMap[parsed.key] = file;
-                    parsedFiles.push(file);
+                const mKey = parsed.model;
+                if (!models[mKey]) {
+                    models[mKey] = {
+                        modelKey: mKey,
+                        displayName: mKey.toUpperCase(),
+                        files: [],
+                        fileMap: {},
+                        colorSet: new Set(),
+                        wheelSet: new Set(),
+                        viewSet: new Set(),
+                        colors: [],
+                        wheels: [],
+                        views: []
+                    };
                 }
+
+                models[mKey].files.push(file);
+                models[mKey].fileMap[parsed.key] = file;
+                models[mKey].colorSet.add(parsed.color);
+                models[mKey].wheelSet.add(parsed.wheel);
+                models[mKey].viewSet.add(parsed.view);
+                newlyDiscoveredModels.add(mKey);
             }
 
-            if (parsedFiles.length === 0) {
-                showToast("No valid car rendering files recognized in the selected folder.");
+            const modelKeys = Object.keys(models);
+            if (modelKeys.length === 0) {
+                showToast("No valid car rendering files recognized.");
                 return;
             }
 
-            // 智能排序：视角按经典汽车漫游顺序排列，轮毂按自然数字序排列
             const VIEW_ORDER = ['front45', 'side', 'rear45', 'rear', 'front', 'top', 'interior'];
-            uniqueViews = Array.from(viewSet).sort((a, b) => {
-                const idxA = VIEW_ORDER.indexOf(a.toLowerCase());
-                const idxB = VIEW_ORDER.indexOf(b.toLowerCase());
-                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-                if (idxA !== -1) return -1;
-                if (idxB !== -1) return 1;
-                return a.localeCompare(b);
+            modelKeys.forEach(mKey => {
+                const m = models[mKey];
+                m.views = Array.from(m.viewSet).sort((a, b) => {
+                    const idxA = VIEW_ORDER.indexOf(a.toLowerCase());
+                    const idxB = VIEW_ORDER.indexOf(b.toLowerCase());
+                    if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                    if (idxA !== -1) return -1;
+                    if (idxB !== -1) return 1;
+                    return a.localeCompare(b);
+                });
+                m.colors = Array.from(m.colorSet).sort();
+                m.wheels = Array.from(m.wheelSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
             });
 
-            uniqueColors = Array.from(colorSet).sort();
-            uniqueWheels = Array.from(wheelSet).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+            // 初始化全局活跃车型与 A/B 对照组槽位
+            if (!activeModelKey || !models[activeModelKey]) {
+                activeModelKey = Array.from(newlyDiscoveredModels)[0] || modelKeys[0];
+            } else if (isAppend && newlyDiscoveredModels.size > 0) {
+                activeModelKey = Array.from(newlyDiscoveredModels)[0];
+            }
 
-            // 初始状态
-            state.color = uniqueColors[0];
-            state.wheel = uniqueWheels[0];
-            state.view = uniqueViews.includes('front45') ? 'front45' : uniqueViews[0];
+            // 初始化 Slot A 与 Slot B 默认配置
+            const mA = models[activeModelKey] || models[modelKeys[0]];
+            comparisonState.sharedView = mA.views.includes('front45') ? 'front45' : mA.views[0];
 
-            document.querySelector('.car-badge-title').innerText = carModelName.toUpperCase() + ' CONFIGURATOR';
+            if (!comparisonState.slotA.modelKey || !models[comparisonState.slotA.modelKey]) {
+                comparisonState.slotA.modelKey = mA.modelKey;
+                comparisonState.slotA.color = mA.colors[0];
+                comparisonState.slotA.wheel = mA.wheels[0];
+            }
 
-            buildUI();
-            
+            if (!comparisonState.slotB.modelKey || !models[comparisonState.slotB.modelKey]) {
+                const mBKey = modelKeys.length > 1 ? modelKeys[1] : modelKeys[0];
+                const mB = models[mBKey];
+                comparisonState.slotB.modelKey = mBKey;
+                comparisonState.slotB.color = (mBKey === comparisonState.slotA.modelKey && mB.colors.length > 1) ? mB.colors[1] : mB.colors[0];
+                comparisonState.slotB.wheel = (mBKey === comparisonState.slotA.modelKey && mB.wheels.length > 1) ? mB.wheels[1] : mB.wheels[0];
+            }
+
             dropzoneSection.style.display = 'none';
             configuratorSection.style.display = 'block';
 
-            updateStageRender(true);
+            // 显示模式选择器
+            const modeSelector = document.getElementById('view-mode-selector');
+            if (modeSelector) modeSelector.style.display = 'flex';
+
+            renderModelTabs();
+            setComparisonMode(comparisonState.mode, true);
+            initWipeDragEvents();
             initPanZoomEvents();
+
+            showToast(`Loaded ${modelKeys.length} model(s): ${modelKeys.join(', ')}`);
         }
 
         // ==========================================
-        // 核心：智能文件匹配与缺省降级引擎 (Fallback Engine)
-        // 完美解决正前/正后等视角不渲染其他轮毂时的自动 fallback 逻辑
+        // 核心：模式切换与对照组控制 (Comparison Modes)
         // ==========================================
-        function getFileForState(color, wheel, view) {
-            if (!color || !view) return null;
-            
-            // 1. 完全精确匹配: color_wheel_view
+        function setComparisonMode(mode, isInitial = false) {
+            comparisonState.mode = mode;
+
+            // 1. 更新顶部模式切换药丸按钮高亮
+            document.querySelectorAll('.mode-pill-btn').forEach(btn => {
+                btn.classList.toggle('active', 
+                    (mode === 'single' && btn.id === 'btn-mode-single') ||
+                    (mode === 'side-by-side' && btn.id === 'btn-mode-split') ||
+                    (mode === 'wipe' && btn.id === 'btn-mode-wipe')
+                );
+            });
+
+            const tabsBar = document.getElementById('model-tabs-bar');
+            const abActions = document.getElementById('ab-quick-actions');
+            const slotSelectCard = document.getElementById('slot-select-card');
+            const slotModelCard = document.getElementById('slot-model-card');
+            const mainStageCard = document.getElementById('main-stage-card');
+            const dualStageGrid = document.getElementById('dual-stage-grid');
+            const wipeViewportB = document.getElementById('stage-viewport-wipe-b');
+            const wipeDivider = document.getElementById('wipe-divider');
+            const badgeTagA = document.getElementById('badge-tag-a');
+
+            if (mode === 'single') {
+                if (tabsBar) tabsBar.style.display = 'flex';
+                if (abActions) abActions.style.display = 'none';
+                if (slotSelectCard) slotSelectCard.style.display = 'none';
+                if (slotModelCard) slotModelCard.style.display = 'none';
+
+                if (mainStageCard) mainStageCard.style.display = 'block';
+                if (dualStageGrid) dualStageGrid.style.display = 'none';
+                if (wipeViewportB) wipeViewportB.style.display = 'none';
+                if (wipeDivider) wipeDivider.style.display = 'none';
+                if (badgeTagA) badgeTagA.style.display = 'none';
+
+                comparisonState.slotA.modelKey = activeModelKey;
+                const curM = models[activeModelKey];
+                if (curM) {
+                    if (!curM.colors.includes(comparisonState.slotA.color)) comparisonState.slotA.color = curM.colors[0];
+                    if (!curM.wheels.includes(comparisonState.slotA.wheel)) comparisonState.slotA.wheel = curM.wheels[0];
+                }
+
+                buildUI();
+                updateSlotRender('A', isInitial);
+            } else if (mode === 'side-by-side') {
+                if (tabsBar) tabsBar.style.display = 'none';
+                if (abActions) abActions.style.display = 'flex';
+                if (slotSelectCard) slotSelectCard.style.display = 'flex';
+                if (slotModelCard) slotModelCard.style.display = 'block';
+
+                if (mainStageCard) mainStageCard.style.display = 'none';
+                if (dualStageGrid) dualStageGrid.style.display = 'grid';
+                if (wipeViewportB) wipeViewportB.style.display = 'none';
+                if (wipeDivider) wipeDivider.style.display = 'none';
+
+                updateSlotSwitcherUI();
+                buildUI();
+                updateSlotRender('A', isInitial);
+                updateSlotRender('B', isInitial);
+            } else if (mode === 'wipe') {
+                if (tabsBar) tabsBar.style.display = 'none';
+                if (abActions) abActions.style.display = 'flex';
+                if (slotSelectCard) slotSelectCard.style.display = 'flex';
+                if (slotModelCard) slotModelCard.style.display = 'block';
+
+                if (mainStageCard) mainStageCard.style.display = 'block';
+                if (dualStageGrid) dualStageGrid.style.display = 'none';
+                if (wipeViewportB) wipeViewportB.style.display = 'block';
+                if (wipeDivider) wipeDivider.style.display = 'block';
+                if (badgeTagA) badgeTagA.style.display = 'flex';
+
+                updateWipePosition();
+                updateSlotSwitcherUI();
+                buildUI();
+                updateSlotRender('A', isInitial);
+                updateSlotRender('B', isInitial);
+            }
+
+            buildThumbnails();
+        }
+        window.setComparisonMode = setComparisonMode;
+
+        // 切换当前侧边栏正在编辑的槽位 (A or B)
+        function setActiveSlot(slot) {
+            comparisonState.activeSlot = slot;
+            updateSlotSwitcherUI();
+            buildUI();
+        }
+        window.setActiveSlot = setActiveSlot;
+
+        function updateSlotSwitcherUI() {
+            const btnA = document.getElementById('btn-slot-a');
+            const btnB = document.getElementById('btn-slot-b');
+            const cardA = document.getElementById('dual-card-a');
+            const cardB = document.getElementById('dual-card-b');
+
+            if (btnA && btnB) {
+                btnA.classList.toggle('active', comparisonState.activeSlot === 'A');
+                btnB.classList.toggle('active', comparisonState.activeSlot === 'B');
+            }
+            if (cardA && cardB) {
+                cardA.classList.toggle('active-slot', comparisonState.activeSlot === 'A');
+                cardB.classList.toggle('active-slot', comparisonState.activeSlot === 'B');
+            }
+
+            const descA = document.getElementById('slot-desc-a');
+            const descB = document.getElementById('slot-desc-b');
+            const mA = models[comparisonState.slotA.modelKey];
+            const mB = models[comparisonState.slotB.modelKey];
+            if (descA && mA) descA.innerText = `${mA.displayName} · ${comparisonState.slotA.color}`;
+            if (descB && mB) descB.innerText = `${mB.displayName} · ${comparisonState.slotB.color}`;
+        }
+
+        // 互换 A/B 槽位
+        function swapSlots() {
+            const temp = { ...comparisonState.slotA };
+            comparisonState.slotA = { ...comparisonState.slotB };
+            comparisonState.slotB = temp;
+
+            updateSlotSwitcherUI();
+            buildUI();
+            updateSlotRender('A');
+            updateSlotRender('B');
+            showToast("Swapped Vehicle A ⇄ Vehicle B");
+        }
+        window.swapSlots = swapSlots;
+
+        // 一键将另一槽位设置为同款车型 (方便快速对比颜色/轮毂)
+        function cloneSlotToOther() {
+            const sourceSlot = comparisonState.activeSlot === 'A' ? comparisonState.slotA : comparisonState.slotB;
+            const targetSlot = comparisonState.activeSlot === 'A' ? comparisonState.slotB : comparisonState.slotA;
+            const targetSlotName = comparisonState.activeSlot === 'A' ? 'B' : 'A';
+            const m = models[sourceSlot.modelKey];
+            if (!m) return;
+
+            targetSlot.modelKey = sourceSlot.modelKey;
+            const otherColor = m.colors.find(c => c !== sourceSlot.color) || m.colors[0];
+            const otherWheel = m.wheels.find(w => w !== sourceSlot.wheel) || m.wheels[0];
+            targetSlot.color = otherColor;
+            targetSlot.wheel = otherWheel;
+
+            updateSlotSwitcherUI();
+            buildUI();
+            updateSlotRender(targetSlotName);
+            showToast(`Matched Slot ${targetSlotName} to ${m.displayName} (${otherColor.toUpperCase()})`);
+        }
+        window.cloneSlotToOther = cloneSlotToOther;
+
+        // 帘幕滑动条位置更新
+        function updateWipePosition() {
+            const p = comparisonState.wipePercent;
+            const wipeDivider = document.getElementById('wipe-divider');
+            const wipeViewportB = document.getElementById('stage-viewport-wipe-b');
+
+            if (wipeDivider) wipeDivider.style.left = `${p}%`;
+            if (wipeViewportB) {
+                wipeViewportB.style.clipPath = `polygon(${p}% 0, 100% 0, 100% 100%, ${p}% 100%)`;
+            }
+        }
+
+        function initWipeDragEvents() {
+            const mainStage = document.getElementById('main-stage-card');
+            const divider = document.getElementById('wipe-divider');
+            if (!mainStage || !divider) return;
+
+            const onPointerMove = (e) => {
+                if (!comparisonState.isDraggingWipe) return;
+                const rect = mainStage.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                let percent = (x / rect.width) * 100;
+                percent = Math.max(2, Math.min(98, percent));
+                comparisonState.wipePercent = percent;
+                updateWipePosition();
+            };
+
+            const onPointerUp = () => {
+                if (comparisonState.isDraggingWipe) {
+                    comparisonState.isDraggingWipe = false;
+                    document.body.style.userSelect = '';
+                }
+            };
+
+            divider.addEventListener('pointerdown', (e) => {
+                if (comparisonState.mode !== 'wipe') return;
+                comparisonState.isDraggingWipe = true;
+                document.body.style.userSelect = 'none';
+                e.stopPropagation();
+            });
+
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
+            window.addEventListener('pointercancel', onPointerUp);
+        }
+
+        // ==========================================
+        // 顶部单车模型标签栏 (Model Tabs)
+        // ==========================================
+        function renderModelTabs() {
+            const tabsBar = document.getElementById('model-tabs-bar');
+            const addBtn = document.getElementById('btn-add-model');
+            if (!tabsBar) return;
+
+            const modelKeys = Object.keys(models);
+            if (modelKeys.length > 0) {
+                tabsBar.style.display = comparisonState.mode === 'single' ? 'flex' : 'none';
+                if (addBtn) addBtn.style.display = 'inline-flex';
+            } else {
+                tabsBar.style.display = 'none';
+                if (addBtn) addBtn.style.display = 'none';
+                return;
+            }
+
+            tabsBar.innerHTML = '';
+            modelKeys.forEach(mKey => {
+                const m = models[mKey];
+                const btn = document.createElement('button');
+                btn.className = `model-tab-btn ${mKey === activeModelKey ? 'active' : ''}`;
+                btn.dataset.model = mKey;
+                btn.onclick = () => switchSingleModel(mKey);
+                btn.innerHTML = `<span>${m.displayName}</span>`;
+                tabsBar.appendChild(btn);
+            });
+        }
+
+        function switchSingleModel(mKey) {
+            if (!models[mKey] || mKey === activeModelKey) return;
+            activeModelKey = mKey;
+            comparisonState.slotA.modelKey = mKey;
+
+            const curM = models[mKey];
+            if (!curM.colors.includes(comparisonState.slotA.color)) comparisonState.slotA.color = curM.colors[0];
+            if (!curM.wheels.includes(comparisonState.slotA.wheel)) comparisonState.slotA.wheel = curM.wheels[0];
+
+            document.querySelectorAll('.model-tab-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.model === mKey);
+            });
+
+            const titleEl = document.getElementById('car-title');
+            if (titleEl) titleEl.innerText = models[mKey].displayName + ' CONFIGURATOR';
+
+            buildUI();
+            updateSlotRender('A');
+        }
+        window.switchSingleModel = switchSingleModel;
+
+        function getActiveSlotConfig() {
+            if (comparisonState.mode === 'single') {
+                return {
+                    slot: 'A',
+                    config: comparisonState.slotA,
+                    model: models[activeModelKey] || models[Object.keys(models)[0]]
+                };
+            }
+            const isSlotA = comparisonState.activeSlot === 'A';
+            const cfg = isSlotA ? comparisonState.slotA : comparisonState.slotB;
+            return {
+                slot: comparisonState.activeSlot,
+                config: cfg,
+                model: models[cfg.modelKey] || models[Object.keys(models)[0]]
+            };
+        }
+
+        // ==========================================
+        // 智能文件匹配与缺省降级引擎 (Fallback Engine)
+        // ==========================================
+        function getFileForState(modelKey, color, wheel, view) {
+            const m = models[modelKey];
+            if (!m || !color || !view) return null;
+            const fileMap = m.fileMap;
+            const uniqueWheels = m.wheels;
+
             if (wheel) {
                 const exactKey = `${color}_${wheel}_${view}`;
                 if (fileMap[exactKey]) return fileMap[exactKey];
             }
             
-            // 2. 智能轮毂降级：对于正前、正后等看不到轮毂的视角，自动降级为 wheel1 或第一款基础轮毂
             if (uniqueWheels && uniqueWheels.length > 0) {
                 const wheel1Candidate = uniqueWheels.find(w => w.toLowerCase().includes('1')) || uniqueWheels[0];
                 const wheel1Key = `${color}_${wheel1Candidate}_${view}`;
                 if (fileMap[wheel1Key]) return fileMap[wheel1Key];
 
-                // 尝试当前颜色下该视角的任意可用轮毂
                 for (const w of uniqueWheels) {
                     const wKey = `${color}_${w}_${view}`;
                     if (fileMap[wKey]) return fileMap[wKey];
                 }
             }
             
-            // 3. 全局颜色与视角匹配容错
             for (const key in fileMap) {
                 const parts = key.split('_');
                 if (parts[0] === color && parts[2] === view) {
@@ -1205,7 +1956,6 @@
                 }
             }
             
-            // 4. 最终视角容错
             for (const key in fileMap) {
                 const parts = key.split('_');
                 if (parts[2] === view) {
@@ -1216,11 +1966,13 @@
             return null;
         }
 
-        // 专门为轮毂选项卡寻找最佳展示该轮毂特征的视角 (优先 side, front45, rear45)
-        function getWheelPreviewFile(wheel) {
-            const preferredViews = ['side', 'front45', 'rear45', uniqueViews[0]];
+        function getWheelPreviewFile(modelKey, color, wheel) {
+            const m = models[modelKey];
+            if (!m) return null;
+            const fileMap = m.fileMap;
+            const preferredViews = ['side', 'front45', 'rear45', m.views[0]];
             for (const v of preferredViews) {
-                const key = `${state.color}_${wheel}_${v}`;
+                const key = `${color}_${wheel}_${v}`;
                 if (fileMap[key]) return fileMap[key];
             }
             for (const key in fileMap) {
@@ -1229,17 +1981,52 @@
                     return fileMap[key];
                 }
             }
-            return getFileForState(state.color, wheel, state.view);
+            return getFileForState(modelKey, color, wheel, comparisonState.sharedView);
         }
 
-        // --- UI 构建 ---
+        // ==========================================
+        // UI 动态构建与选配同步 (Dynamic UI Renderer)
+        // ==========================================
         function buildUI() {
-            // 1. 颜色色板
+            const { slot, config, model: m } = getActiveSlotConfig();
+            if (!m) return;
+
+            const titleEl = document.getElementById('car-title');
+            if (titleEl) {
+                if (comparisonState.mode === 'single') {
+                    titleEl.innerText = m.displayName + ' CONFIGURATOR';
+                } else {
+                    titleEl.innerText = `A/B COMPARISON · EDITING SLOT ${slot}`;
+                }
+            }
+
+            const modelCard = document.getElementById('slot-model-card');
+            const modelGrid = document.getElementById('slot-model-pill-grid');
+            const curModelLbl = document.getElementById('lbl-cur-slot-model');
+            const modelKeys = Object.keys(models);
+
+            if (modelCard && modelGrid && curModelLbl) {
+                if (comparisonState.mode !== 'single' && modelKeys.length > 1) {
+                    modelCard.style.display = 'block';
+                    curModelLbl.innerText = m.displayName;
+                    modelGrid.innerHTML = '';
+                    modelKeys.forEach(mKey => {
+                        const pill = document.createElement('button');
+                        pill.className = `model-choice-pill ${mKey === config.modelKey ? 'active' : ''}`;
+                        pill.innerText = models[mKey].displayName;
+                        pill.onclick = () => setSlotModel(slot, mKey);
+                        modelGrid.appendChild(pill);
+                    });
+                } else {
+                    modelCard.style.display = 'none';
+                }
+            }
+
             const colorContainer = document.getElementById('dynamic-colors');
             colorContainer.innerHTML = '';
-            uniqueColors.forEach(color => {
+            m.colors.forEach(color => {
                 const hex = getColorHex(color);
-                const isActive = color === state.color ? 'active' : '';
+                const isActive = color === config.color ? 'active' : '';
                 const tile = document.createElement('div');
                 tile.className = `swatch-tile ${isActive}`;
                 tile.dataset.color = color;
@@ -1251,17 +2038,16 @@
                 colorContainer.appendChild(tile);
             });
 
-            // 2. 轮毂卡片
             const wheelContainer = document.getElementById('dynamic-wheels');
             wheelContainer.innerHTML = '';
-            uniqueWheels.forEach(wheel => {
-                const isActive = wheel === state.wheel ? 'active' : '';
+            m.wheels.forEach(wheel => {
+                const isActive = wheel === config.wheel ? 'active' : '';
                 const card = document.createElement('div');
                 card.className = `wheel-option-card ${isActive}`;
                 card.dataset.wheel = wheel;
                 card.onclick = () => setWheel(wheel);
                 
-                const previewFile = getWheelPreviewFile(wheel);
+                const previewFile = getWheelPreviewFile(config.modelKey, config.color, wheel);
                 const previewUrl = previewFile ? URL.createObjectURL(previewFile) : '';
 
                 card.innerHTML = `
@@ -1278,17 +2064,45 @@
             updateLabels();
         }
 
+        function setSlotModel(slot, mKey) {
+            const cfg = slot === 'A' ? comparisonState.slotA : comparisonState.slotB;
+            if (!models[mKey] || cfg.modelKey === mKey) return;
+            cfg.modelKey = mKey;
+            const newM = models[mKey];
+            if (!newM.colors.includes(cfg.color)) cfg.color = newM.colors[0];
+            if (!newM.wheels.includes(cfg.wheel)) cfg.wheel = newM.wheels[0];
+
+            updateSlotSwitcherUI();
+            buildUI();
+            updateSlotRender(slot);
+        }
+
         function buildThumbnails() {
+            const { config, model: m } = getActiveSlotConfig();
+            if (!m) return;
+
+            const allViewsSet = new Set();
+            Object.values(models).forEach(mod => mod.views.forEach(v => allViewsSet.add(v)));
+            const VIEW_ORDER = ['front45', 'side', 'rear45', 'rear', 'front', 'top', 'interior'];
+            const allViews = Array.from(allViewsSet).sort((a, b) => {
+                const idxA = VIEW_ORDER.indexOf(a.toLowerCase());
+                const idxB = VIEW_ORDER.indexOf(b.toLowerCase());
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return a.localeCompare(b);
+            });
+
             const thumbContainer = document.getElementById('dynamic-thumbnails');
             thumbContainer.innerHTML = '';
-            uniqueViews.forEach(view => {
-                const isActive = view === state.view ? 'active' : '';
+            allViews.forEach(view => {
+                const isActive = view === comparisonState.sharedView ? 'active' : '';
                 const card = document.createElement('div');
                 card.className = `thumb-card ${isActive}`;
                 card.dataset.view = view;
                 card.onclick = () => setView(view);
                 
-                const file = getFileForState(state.color, state.wheel, view);
+                const file = getFileForState(config.modelKey, config.color, config.wheel, view);
                 const url = file ? URL.createObjectURL(file) : '';
 
                 card.innerHTML = `<img class="thumb-img" src="${url}" alt="${view}">`;
@@ -1297,10 +2111,11 @@
         }
 
         function updateThumbnails() {
+            const { config } = getActiveSlotConfig();
             document.querySelectorAll('.thumb-card').forEach(card => {
                 const view = card.dataset.view;
                 const img = card.querySelector('.thumb-img');
-                const file = getFileForState(state.color, state.wheel, view);
+                const file = getFileForState(config.modelKey, config.color, config.wheel, view);
                 if (file && img) {
                     img.src = URL.createObjectURL(file);
                 }
@@ -1308,10 +2123,11 @@
         }
 
         function updateWheelThumbnails() {
+            const { config } = getActiveSlotConfig();
             document.querySelectorAll('.wheel-option-card').forEach(card => {
                 const wheel = card.dataset.wheel;
                 const img = card.querySelector('img');
-                const file = getWheelPreviewFile(wheel);
+                const file = getWheelPreviewFile(config.modelKey, config.color, wheel);
                 if (file && img) {
                     img.src = URL.createObjectURL(file);
                 }
@@ -1319,61 +2135,104 @@
         }
 
         function updateLabels() {
-            document.getElementById('lbl-color').innerText = state.color.toUpperCase();
-            document.getElementById('lbl-wheel').innerText = state.wheel.toUpperCase();
+            const { config } = getActiveSlotConfig();
+            const colorLbl = document.getElementById('lbl-color');
+            const wheelLbl = document.getElementById('lbl-wheel');
+            if (colorLbl) colorLbl.innerText = config.color ? config.color.toUpperCase() : '';
+            if (wheelLbl) wheelLbl.innerText = config.wheel ? config.wheel.toUpperCase() : '';
         }
 
-        // --- Setters ---
         function setColor(color) {
-            if (state.color === color) return;
-            state.color = color;
+            const { slot, config } = getActiveSlotConfig();
+            if (config.color === color) return;
+            config.color = color;
+
             document.querySelectorAll('.swatch-tile').forEach(el => {
                 el.classList.toggle('active', el.dataset.color === color);
             });
+
+            updateSlotSwitcherUI();
             updateLabels();
             updateWheelThumbnails();
             updateThumbnails();
-            updateStageRender();
+            updateSlotRender(slot);
         }
 
         function setWheel(wheel) {
-            if (state.wheel === wheel) return;
-            state.wheel = wheel;
+            const { slot, config } = getActiveSlotConfig();
+            if (config.wheel === wheel) return;
+            config.wheel = wheel;
+
             document.querySelectorAll('.wheel-option-card').forEach(el => {
                 el.classList.toggle('active', el.dataset.wheel === wheel);
             });
+
+            updateSlotSwitcherUI();
             updateLabels();
             updateThumbnails();
-            updateStageRender();
+            updateSlotRender(slot);
         }
 
         function setView(view) {
-            if (state.view === view) return;
-            state.view = view;
+            if (comparisonState.sharedView === view) return;
+            comparisonState.sharedView = view;
+
             document.querySelectorAll('.thumb-card').forEach(el => {
                 el.classList.toggle('active', el.dataset.view === view);
             });
-            updateStageRender();
+
+            if (comparisonState.mode === 'single') {
+                updateSlotRender('A');
+            } else {
+                updateSlotRender('A');
+                updateSlotRender('B');
+            }
         }
 
-        // --- Render Engine ---
-        async function updateStageRender(isInitial = false) {
-            const currentTransitionId = ++state.transitionId;
+        // ==========================================
+        // 核心渲染引擎：槽位双缓冲无黑屏叠化
+        // ==========================================
+        async function updateSlotRender(slot, isInitial = false) {
+            const cfg = slot === 'A' ? comparisonState.slotA : comparisonState.slotB;
+            const currentTransitionId = ++cfg.transitionId;
             const spinner = document.getElementById('stage-spinner');
-            
-            // 智能检索匹配的图片文件 (支持 wheel1 降级)
-            const file = getFileForState(state.color, state.wheel, state.view);
-            if (!file) {
-                showToast("Configuration view not found in folder.");
-                return;
-            }
+
+            const file = getFileForState(cfg.modelKey, cfg.color, cfg.wheel, comparisonState.sharedView);
+            if (!file) return;
             const targetUrl = URL.createObjectURL(file);
 
-            const imgA = document.getElementById('stage-img-a');
-            const imgB = document.getElementById('stage-img-b');
+            const modelObj = models[cfg.modelKey];
+            const badgeText = `${slot === 'A' ? 'SLOT A' : 'SLOT B'}: ${modelObj ? modelObj.displayName : ''} · ${cfg.color.toUpperCase()}`;
             
-            const currentVisibleImg = state.activeBuffer === 'a' ? imgA : imgB;
-            const incomingImg = state.activeBuffer === 'a' ? imgB : imgA;
+            const badgeTagA = document.getElementById('badge-tag-a');
+            const badgeTagWipeB = document.getElementById('badge-tag-wipe-b');
+            const badgeDualA = document.getElementById('badge-dual-a');
+            const badgeDualB = document.getElementById('badge-dual-b');
+
+            if (slot === 'A') {
+                if (badgeTagA) badgeTagA.innerText = badgeText;
+                if (badgeDualA) badgeDualA.innerText = badgeText;
+            } else {
+                if (badgeTagWipeB) badgeTagWipeB.innerText = badgeText;
+                if (badgeDualB) badgeDualB.innerText = badgeText;
+            }
+
+            let img1, img2;
+            if (comparisonState.mode === 'side-by-side') {
+                img1 = document.getElementById(slot === 'A' ? 'stage-img-dual-a1' : 'stage-img-dual-b1');
+                img2 = document.getElementById(slot === 'A' ? 'stage-img-dual-a2' : 'stage-img-dual-b2');
+            } else if (comparisonState.mode === 'wipe') {
+                img1 = document.getElementById(slot === 'A' ? 'stage-img-a1' : 'stage-img-b1');
+                img2 = document.getElementById(slot === 'A' ? 'stage-img-a2' : 'stage-img-b2');
+            } else { // single
+                img1 = document.getElementById('stage-img-a1');
+                img2 = document.getElementById('stage-img-a2');
+            }
+
+            if (!img1 || !img2) return;
+
+            const currentVisibleImg = cfg.activeBuffer === '1' ? img1 : img2;
+            const incomingImg = cfg.activeBuffer === '1' ? img2 : img1;
 
             if (isInitial) {
                 currentVisibleImg.src = targetUrl;
@@ -1384,7 +2243,7 @@
                 return;
             }
 
-            if (spinner) spinner.classList.add('loading');
+            if (spinner && comparisonState.mode !== 'side-by-side') spinner.classList.add('loading');
             
             const tempImg = new Image();
             tempImg.src = targetUrl;
@@ -1394,7 +2253,7 @@
             });
             
             if (spinner) spinner.classList.remove('loading');
-            if (currentTransitionId !== state.transitionId) return;
+            if (currentTransitionId !== cfg.transitionId) return;
 
             currentVisibleImg.style.transition = 'none';
             currentVisibleImg.style.zIndex = '1';
@@ -1409,27 +2268,22 @@
             incomingImg.style.transition = 'opacity 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
             incomingImg.style.opacity = '1';
 
-            state.activeBuffer = state.activeBuffer === 'a' ? 'b' : 'a';
-            
-            if (state.view !== viewWhenZoomed) {
-                resetZoom(false);
-            }
-            viewWhenZoomed = state.view;
-            
-            // Clean up old object URLs after transition
+            cfg.activeBuffer = cfg.activeBuffer === '1' ? '2' : '1';
+
             setTimeout(() => {
                 if (currentVisibleImg.src && currentVisibleImg.src.startsWith('blob:')) {
                     URL.revokeObjectURL(currentVisibleImg.src);
                 }
             }, 500);
         }
-        let viewWhenZoomed = null;
 
-        // --- Pan & Zoom Engine ---
+        // ==========================================
+        // 核心交互：滚轮缩放与鼠标拖拽平移引擎
+        // ==========================================
         const panZoom = { scale: 1, minScale: 1, maxScale: 4.5, x: 0, y: 0, isDragging: false, startX: 0, startY: 0 };
         function clampPanZoom() {
             if (panZoom.scale <= 1) { panZoom.x = 0; panZoom.y = 0; return; }
-            const viewport = document.getElementById('stage-viewport');
+            const viewport = document.getElementById('stage-viewport-a');
             if (!viewport) return;
             const rect = viewport.getBoundingClientRect();
             const maxX = (rect.width * (panZoom.scale - 1)) / 2;
@@ -1438,13 +2292,23 @@
             panZoom.y = Math.max(-maxY, Math.min(maxY, panZoom.y));
         }
         function applyPanZoom(isInstant = false) {
-            const layer = document.getElementById('panzoom-layer');
-            const viewport = document.getElementById('stage-viewport');
+            const layers = [
+                document.getElementById('panzoom-layer-a'),
+                document.getElementById('panzoom-layer-wipe-b'),
+                document.getElementById('panzoom-layer-dual-a'),
+                document.getElementById('panzoom-layer-dual-b')
+            ];
+            const viewport = document.getElementById('stage-viewport-a');
             const badge = document.getElementById('zoom-badge');
-            if (isInstant) layer.classList.add('dragging');
-            else layer.classList.remove('dragging');
-            layer.style.transform = `translate3d(${panZoom.x}px, ${panZoom.y}px, 0) scale(${panZoom.scale})`;
-            viewport.classList.toggle('can-drag', panZoom.scale > 1.02);
+
+            layers.forEach(layer => {
+                if (!layer) return;
+                if (isInstant) layer.classList.add('dragging');
+                else layer.classList.remove('dragging');
+                layer.style.transform = `translate3d(${panZoom.x}px, ${panZoom.y}px, 0) scale(${panZoom.scale})`;
+            });
+
+            if (viewport) viewport.classList.toggle('can-drag', panZoom.scale > 1.02);
             if (badge) badge.innerText = Math.round(panZoom.scale * 100) + '%';
         }
         function resetZoom(animate = true) {
@@ -1458,71 +2322,89 @@
             else { panZoom.scale = newScale; clampPanZoom(); applyPanZoom(false); }
         };
         function initPanZoomEvents() {
-            const viewport = document.getElementById('stage-viewport');
-            viewport.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                const rect = viewport.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left - rect.width / 2;
-                const mouseY = e.clientY - rect.top - rect.height / 2;
-                const zoomIntensity = 0.0018;
-                let newScale = panZoom.scale * (1 - e.deltaY * zoomIntensity);
-                newScale = Math.min(Math.max(newScale, panZoom.minScale), panZoom.maxScale);
-                if (newScale <= 1.02) { panZoom.scale = 1; panZoom.x = 0; panZoom.y = 0; }
-                else {
-                    const ratio = newScale / panZoom.scale;
-                    panZoom.x = mouseX - (mouseX - panZoom.x) * ratio;
-                    panZoom.y = mouseY - (mouseY - panZoom.y) * ratio;
-                    panZoom.scale = newScale;
-                    clampPanZoom();
-                }
-                applyPanZoom(false);
-            }, { passive: false });
-            viewport.addEventListener('pointerdown', (e) => {
-                if (e.button !== 0 || panZoom.scale <= 1.02) return;
-                panZoom.isDragging = true; panZoom.startX = e.clientX - panZoom.x; panZoom.startY = e.clientY - panZoom.y;
-                viewport.classList.add('is-dragging'); viewport.setPointerCapture(e.pointerId);
-            });
-            viewport.addEventListener('pointermove', (e) => {
-                if (!panZoom.isDragging) return;
-                panZoom.x = e.clientX - panZoom.startX; panZoom.y = e.clientY - panZoom.startY;
-                clampPanZoom(); applyPanZoom(true);
-            });
-            const endDrag = (e) => {
-                if (panZoom.isDragging) {
-                    panZoom.isDragging = false; viewport.classList.remove('is-dragging'); applyPanZoom(false);
-                    try { viewport.releasePointerCapture(e.pointerId); } catch(err) {}
-                }
-            };
-            viewport.addEventListener('pointerup', endDrag);
-            viewport.addEventListener('pointercancel', endDrag);
-            viewport.addEventListener('dblclick', (e) => {
-                if (panZoom.scale > 1.2) resetZoom(true);
-                else {
+            const viewports = [
+                document.getElementById('stage-viewport-a'),
+                document.getElementById('dual-card-a'),
+                document.getElementById('dual-card-b')
+            ];
+
+            viewports.forEach(viewport => {
+                if (!viewport || viewport.dataset.panZoomInitialized) return;
+                viewport.dataset.panZoomInitialized = 'true';
+
+                viewport.addEventListener('wheel', (e) => {
+                    e.preventDefault();
                     const rect = viewport.getBoundingClientRect();
                     const mouseX = e.clientX - rect.left - rect.width / 2;
                     const mouseY = e.clientY - rect.top - rect.height / 2;
-                    panZoom.scale = 2.2; panZoom.x = -mouseX * 0.7; panZoom.y = -mouseY * 0.7;
-                    clampPanZoom(); applyPanZoom(false);
-                }
+                    const zoomIntensity = 0.0018;
+                    let newScale = panZoom.scale * (1 - e.deltaY * zoomIntensity);
+                    newScale = Math.min(Math.max(newScale, panZoom.minScale), panZoom.maxScale);
+                    if (newScale <= 1.02) { panZoom.scale = 1; panZoom.x = 0; panZoom.y = 0; }
+                    else {
+                        const ratio = newScale / panZoom.scale;
+                        panZoom.x = mouseX - (mouseX - panZoom.x) * ratio;
+                        panZoom.y = mouseY - (mouseY - panZoom.y) * ratio;
+                        panZoom.scale = newScale;
+                        clampPanZoom();
+                    }
+                    applyPanZoom(false);
+                }, { passive: false });
+
+                viewport.addEventListener('pointerdown', (e) => {
+                    if (e.button !== 0 || panZoom.scale <= 1.02) return;
+                    panZoom.isDragging = true; panZoom.startX = e.clientX - panZoom.x; panZoom.startY = e.clientY - panZoom.y;
+                    viewport.classList.add('is-dragging'); viewport.setPointerCapture(e.pointerId);
+                });
+
+                viewport.addEventListener('pointermove', (e) => {
+                    if (!panZoom.isDragging) return;
+                    panZoom.x = e.clientX - panZoom.startX; panZoom.y = e.clientY - panZoom.startY;
+                    clampPanZoom(); applyPanZoom(true);
+                });
+
+                const endDrag = (e) => {
+                    if (panZoom.isDragging) {
+                        panZoom.isDragging = false; viewport.classList.remove('is-dragging'); applyPanZoom(false);
+                        try { viewport.releasePointerCapture(e.pointerId); } catch(err) {}
+                    }
+                };
+
+                viewport.addEventListener('pointerup', endDrag);
+                viewport.addEventListener('pointercancel', endDrag);
+                viewport.addEventListener('dblclick', (e) => {
+                    if (panZoom.scale > 1.2) resetZoom(true);
+                    else {
+                        const rect = viewport.getBoundingClientRect();
+                        const mouseX = e.clientX - rect.left - rect.width / 2;
+                        const mouseY = e.clientY - rect.top - rect.height / 2;
+                        panZoom.scale = 2.2; panZoom.x = -mouseX * 0.7; panZoom.y = -mouseY * 0.7;
+                        clampPanZoom(); applyPanZoom(false);
+                    }
+                });
             });
         }
 
-        // --- Fullscreen & Toast ---
+        // --- 全屏与 Toast 提示 ---
         window.toggleFullscreen = function() {
-            const stage = document.getElementById('main-stage-card');
+            const stage = comparisonState.mode === 'side-by-side' ? document.getElementById('dual-stage-grid') : document.getElementById('main-stage-card');
             if (!document.fullscreenElement) { if (stage.requestFullscreen) stage.requestFullscreen(); }
             else { if (document.exitFullscreen) document.exitFullscreen(); }
         };
         document.addEventListener('fullscreenchange', () => {
             const btn = document.querySelector('.stage-expand-btn');
+            if (!btn) return;
             if (!document.fullscreenElement) btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>`;
             else btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>`;
         });
+
         function showToast(msg) {
             const toast = document.getElementById('toast-notify');
-            document.getElementById('toast-msg').innerText = msg;
+            const msgEl = document.getElementById('toast-msg');
+            if (!toast || !msgEl) return;
+            msgEl.innerText = msg;
             toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.remove('show'), 3200);
         }
     </script>
 </body>
