@@ -3,10 +3,66 @@
 const translations = {
     'en': {
         // 导航与页脚
-        'nav_home': 'HOME', 'nav_work': 'WORK', 'nav_solutions': 'SOLUTIONS', 'nav_about': 'ABOUT', 'nav_course': 'COURSE', 'nav_contact': 'CONTACT',
+        'nav_home': 'HOME', 'nav_work': 'WORK', 'nav_solutions': 'SOLUTIONS', 'nav_tools': 'TOOLS', 'nav_about': 'ABOUT', 'nav_course': 'COURSE', 'nav_contact': 'CONTACT',
         'footer_desc': 'Creative Design Studio.<br>Based in Shanghai, available Worldwide.',
         'footer_rights': '© 2026 Zachary Shee. All Rights Reserved.',
         'footer_sitemap': 'SITEMAP', 'footer_social': 'SOCIAL', 'footer_contact_title': 'CONTACT',
+        
+        // 工具页 (Tools)
+        'tools_eyebrow': 'STUDIO PRODUCTION TOOLS',
+        'tools_title': 'INTERNAL UTILITIES & WORKFLOWS',
+        'tools_subtitle': 'A dedicated suite of client-side web tools designed for automotive CGI visualization, real-time comparison, batch asset resizing, and internal project publishing.',
+        'tool_launch': 'LAUNCH TOOL',
+        'tool_cropper_badge': 'Client-Side Canvas',
+        'tool_cropper_title': 'Batch Image Cropper',
+        'tool_cropper_kicker': 'Center Aspect Ratio & Resampling Engine',
+        'tool_cropper_desc': 'Pure local browser-based batch cropping tool. Cut excess pixels from image center without distortion. Preset ratios (1:1, 4:3, 16:9, 9:16, 2.35:1) plus custom dimensions, multi-format compression, and ZIP batch download.',
+        'tool_configurator_badge': 'Interactive CGI Viewer',
+        'tool_configurator_title': 'Auto Configurator Viewer',
+        'tool_configurator_kicker': 'Local Folder Sync & A/B Comparison',
+        'tool_configurator_desc': 'Read and parse local render folders directly in browser. Switch automotive exterior paint, aero wheels, and brake calipers in real time. Features A/B curtain wipe comparison, side-by-side dual screen, and 4K precision pan & zoom.',
+        'tool_publisher_badge': 'Internal Studio CMS',
+        'tool_publisher_title': 'Case Publisher & Builder',
+        'tool_publisher_kicker': 'Visual Layout & Static Code Generator',
+        'tool_publisher_desc': 'Internal visual page builder for Zachary Shee Studio case studies. Assemble media modules, photo grids, responsive features, and export clean standalone HTML files ready for live deployment.',
+
+        // Batch Cropper
+        'bc_back_tools': 'TOOLS',
+        'bc_title': 'BATCH IMAGE CROPPER',
+        'bc_subtitle': 'CENTER CROP, LOCAL PROCESSING',
+        'bc_aspect_ratio': 'ASPECT RATIO',
+        'bc_custom': 'Custom',
+        'bc_output_format': 'OUTPUT FORMAT',
+        'bc_keep_original': 'Keep Original',
+        'bc_quality_compression': 'QUALITY / COMPRESSION',
+        'bc_btn_process': 'CROP & DOWNLOAD ZIP',
+        'bc_drop_text': 'DRAG & DROP IMAGES HERE',
+        'bc_drop_subtext': 'or click to browse files',
+        'bc_clear_all': 'CLEAR ALL',
+        'bc_processing': 'Processing',
+        'bc_of': 'of',
+        'bc_generating_zip': 'Generating ZIP archive...',
+        'bc_file_selected': 'files selected',
+
+        // Auto Configurator
+        'cfg_auto_back': 'TOOLS',
+        'cfg_auto_title': 'Auto Configurator',
+        'cfg_mode_single': 'Single',
+        'cfg_mode_split': 'Split View',
+        'cfg_mode_wipe': 'Wipe',
+        'cfg_btn_swap': 'Swap A⇄B',
+        'cfg_btn_match': 'Match Model',
+        'cfg_btn_add_model': 'Add Model',
+        'cfg_btn_reset_all': 'Reset',
+        'cfg_drop_title': 'Select or Drop Image Folder',
+        'cfg_drop_desc_1': 'Supported format:',
+        'cfg_drop_desc_2': 'Images will be processed entirely locally in your browser.',
+        'cfg_label_model': 'Model',
+        'cfg_label_paint': 'Exterior Paint',
+        'cfg_label_paint_select': 'Select Color',
+        'cfg_label_wheels': 'Wheels',
+        'cfg_label_wheels_select': 'Select Wheel',
+        'cfg_loading': 'LOADING',
         
         // 首页 (Index)
         'studio_p1': 'We are a design studio driven by creative services, and we believe our visual expertise can create greater value for our clients. We are committed to providing high-quality solutions for clients with varying budget ranges. Our team consists of designers, animators, 3D artists, and VFX artists.',
@@ -309,10 +365,66 @@ const translations = {
     },
     'zh': {
         // 导航与页脚
-        'nav_home': '首页', 'nav_work': '作品', 'nav_solutions': '解决方案', 'nav_about': '关于', 'nav_course': '课程', 'nav_contact': '联系',
+        'nav_home': '首页', 'nav_work': '作品', 'nav_solutions': '解决方案', 'nav_tools': '工具', 'nav_about': '关于', 'nav_course': '课程', 'nav_contact': '联系',
         'footer_desc': '创意设计工作室。<br>立足上海，服务全球。',
         'footer_rights': '© 2026 Zachary Shee. 保留所有权利。',
         'footer_sitemap': '网站导航', 'footer_social': '社交媒体', 'footer_contact_title': '联系我们',
+        
+        // 工具页 (Tools)
+        'tools_eyebrow': '工作室生产工具集',
+        'tools_title': '内部工作流与实用工具',
+        'tools_subtitle': '专为汽车 CGI 视觉化、实时对比、素材批量处理与案例排版发布打造的纯前端高效工具套件。',
+        'tool_launch': '启动工具',
+        'tool_cropper_badge': '本地 Canvas 引擎',
+        'tool_cropper_title': '批量图片中心裁切',
+        'tool_cropper_kicker': '中心画幅切除与多格式压缩',
+        'tool_cropper_desc': '纯浏览器本地运行的批量图片裁切工具。以中心像素对齐切除多余画面，杜绝拉伸变形。内置常用预设比例与自定义画幅，支持 JPG/PNG/WebP 格式与压缩质量调节，并一键导出 ZIP 压缩包。',
+        'tool_configurator_badge': '交互级渲染预览',
+        'tool_configurator_title': '汽车配置器本地预览器',
+        'tool_configurator_kicker': '本地文件夹读取与多车型对比',
+        'tool_configurator_desc': '直接读取本地汽车渲染分层文件夹。实时交互切换不同车漆、轮毂、卡钳配置及多机位视角。支持 A/B 帘幕对比与左右双画框并排对比，支持 4K 超清平移与无级缩放。',
+        'tool_publisher_badge': '案例工作流',
+        'tool_publisher_title': '案例排版与发布器',
+        'tool_publisher_kicker': '可视化排版与静态代码生成',
+        'tool_publisher_desc': '工作室内部案例排版生成器。支持拖拽式模块编排、多图网格、视频嵌入与响应式预览，一键导出用于全站发布的标准静态 HTML。',
+
+        // Batch Cropper
+        'bc_back_tools': '返回工具集',
+        'bc_title': '批量图片中心裁切',
+        'bc_subtitle': '中心画幅切除 · 纯本地运算',
+        'bc_aspect_ratio': '画幅比例',
+        'bc_custom': '自定义',
+        'bc_output_format': '导出格式',
+        'bc_keep_original': '保持原格式',
+        'bc_quality_compression': '导出画质 / 压缩率',
+        'bc_btn_process': '开始裁切并下载 ZIP',
+        'bc_drop_text': '拖拽图片到此处',
+        'bc_drop_subtext': '或点击选择本地图片',
+        'bc_clear_all': '清空列表',
+        'bc_processing': '正在处理第',
+        'bc_of': '张，共',
+        'bc_generating_zip': '正在打包生成 ZIP 文件...',
+        'bc_file_selected': '个文件已选',
+
+        // Auto Configurator
+        'cfg_auto_back': '返回工具集',
+        'cfg_auto_title': '汽车配置器本地预览器',
+        'cfg_mode_single': '单车视图',
+        'cfg_mode_split': '双车并排',
+        'cfg_mode_wipe': '帘幕对比',
+        'cfg_btn_swap': '交换 A⇄B',
+        'cfg_btn_match': '同款车型',
+        'cfg_btn_add_model': '追加车型',
+        'cfg_btn_reset_all': '重置',
+        'cfg_drop_title': '选择或拖入汽车素材文件夹',
+        'cfg_drop_desc_1': '命名规范格式：',
+        'cfg_drop_desc_2': '所有素材直接在浏览器本地解析，不上传任何服务器。',
+        'cfg_label_model': '车型选择',
+        'cfg_label_paint': '车身颜色',
+        'cfg_label_paint_select': '选择颜色',
+        'cfg_label_wheels': '轮毂样式',
+        'cfg_label_wheels_select': '选择轮毂',
+        'cfg_loading': '加载中',
         
         // 首页 (Index)
         'studio_p1': '我们是一家以创意服务为驱动的设计工作室，致力于通过视觉专业知识为客户创造更大价值。我们为不同预算范围的客户提供高质量的解决方案。我们的团队由设计师、动画师、三维艺术家和特效师组成。',
@@ -654,6 +766,9 @@ window.toggleLanguage = function(lang) {
     }
     if(typeof renderGallery === 'function' && typeof currentFilterType !== 'undefined') {
         renderGallery(currentFilterType); 
+    }
+    if(typeof onLanguageChange === 'function') {
+        onLanguageChange(lang);
     }
 };
 

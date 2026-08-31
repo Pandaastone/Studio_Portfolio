@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Production Tools & Utilities | Zachary Shee Studio</title>
+    <meta name="description" content="Internal browser-based production tools by Zachary Shee Studio for automotive CGI configurators and batch image processing.">
+    <link rel="canonical" href="https://www.zacharyshee.com/tools.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Production Tools & Utilities | Zachary Shee Studio">
+    <meta property="og:description" content="Interactive browser tools for automotive CGI and batch pixel cropping.">
+    <meta property="og:url" content="https://www.zacharyshee.com/tools.html">
+    <meta property="og:image" content="https://www.zacharyshee.com/images/favicon.jpg">
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --panel-bg: #0b0b0d;
+            --panel-soft: #121216;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --border-strong: rgba(255, 255, 255, 0.28);
+            --accent-blue: #2f6fff;
+            --accent-cyan: #00e5cc;
+            --radius: 12px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 60px 24px;
+            -webkit-font-smoothing: antialiased;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(47, 111, 255, 0.08) 0%, transparent 60%),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 48px 48px, 48px 48px;
+        }
+
+        /* 右上角轻量语言切换器 */
+        .top-lang-switch {
+            position: fixed;
+            top: 32px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            z-index: 100;
+            background: rgba(18, 18, 22, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+        }
+
+        .top-lang-switch span {
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .top-lang-switch span:hover {
+            color: #ffffff;
+        }
+
+        .top-lang-switch span.active {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .top-lang-switch .divider {
+            cursor: default;
+            opacity: 0.3;
+        }
+
+        /* 页面容器 */
+        .tools-wrapper {
+            max-width: 1100px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        /* 页面头部 */
+        .tools-header {
+            text-align: left;
+        }
+
+        .tools-eyebrow {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tools-eyebrow::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .tools-title {
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            line-height: 1.08;
+            margin-bottom: 16px;
+        }
+
+        .tools-subtitle {
+            font-size: 0.95rem;
+            font-weight: 300;
+            color: #b0b0b0;
+            max-width: 700px;
+            line-height: 1.7;
+        }
+
+        /* 工具卡片网格 (双列布局) */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 28px;
+            width: 100%;
+        }
+
+        .tool-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--border-strong);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        .tool-card-top {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .tool-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+        }
+
+        .tool-icon-wrapper svg {
+            width: 22px;
+            height: 22px;
+            stroke: currentColor;
+            stroke-width: 1.75;
+            fill: none;
+        }
+
+        .tool-card-body h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .tool-card-kicker {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .tool-card-desc {
+            font-size: 0.85rem;
+            color: #a5a5a5;
+            line-height: 1.65;
+            margin-bottom: 28px;
+            font-weight: 300;
+        }
+
+        .tool-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+
+        .tag-pill {
+            font-size: 0.64rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #909090;
+        }
+
+        .tool-card-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            transition: all 0.25s ease;
+        }
+
+        .tool-card-action svg {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            transition: transform 0.25s ease;
+        }
+
+        .tool-card:hover .tool-card-action {
+            background: var(--accent-blue);
+            border-color: rgba(47, 111, 255, 0.8);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(47, 111, 255, 0.4);
+        }
+
+        .tool-card:hover .tool-card-action svg {
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 860px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            .top-lang-switch {
+                top: 20px;
+                right: 20px;
+            }
+            body {
+                padding: 80px 20px 40px;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 右上角双语切换器 -->
+    <div class="top-lang-switch">
+        <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+        <span class="divider">/</span>
+        <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+    </div>
+
+    <!-- 核心工具主体 -->
+    <div class="tools-wrapper">
+        <header class="tools-header">
+            <div class="tools-eyebrow" data-i18n="tools_eyebrow">Studio Production Tools</div>
+            <h1 class="tools-title" data-i18n="tools_title">Internal Utilities & Workflows</h1>
+            <p class="tools-subtitle" data-i18n="tools_subtitle">
+                A dedicated suite of client-side web tools designed for automotive CGI visualization, real-time comparison, batch asset resizing, and internal project publishing.
+            </p>
+        </header>
+
+        <div class="tools-grid">
+            
+            <!-- Tool 1: Batch Image Cropper -->
+            <article class="tool-card">
+                <div>
+                    <div class="tool-card-top">
+                        <div class="tool-icon-wrapper">
+                            <svg viewBox="0 0 24 24"><path d="M6 2v14a2 2 0 0 0 2 2h14"></path><path d="M18 22V8a2 2 0 0 0-2-2H2"></path></svg>
+                        </div>
+                    </div>
+                    <div class="tool-card-body">
+                        <h2 data-i18n="tool_cropper_title">Batch Image Cropper</h2>
+                        <div class="tool-card-kicker" data-i18n="tool_cropper_kicker">Center Aspect Ratio & Resampling Engine</div>
+                        <p class="tool-card-desc" data-i18n="tool_cropper_desc">
+                            Pure local browser-based batch cropping tool. Cut excess pixels from image center without distortion. Preset ratios (1:1, 4:3, 16:9, 9:16, 2.35:1) plus custom dimensions, multi-format compression, and ZIP batch download.
+                        </p>
+                    </div>
+                    <div class="tool-tags">
+                        <span class="tag-pill">100% Local Processing</span>
+                        <span class="tag-pill">Preset Ratios</span>
+                        <span class="tag-pill">Custom Aspect Ratio</span>
+                        <span class="tag-pill">Quality Control</span>
+                        <span class="tag-pill">ZIP Export</span>
+                    </div>
+                </div>
+                <a href="batch-cropper.html" class="tool-card-action">
+                    <span data-i18n="tool_launch">Launch Tool</span>
+                    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </article>
+
+            <!-- Tool 2: Automotive Configurator Studio -->
+            <article class="tool-card">
+                <div>
+                    <div class="tool-card-top">
+                        <div class="tool-icon-wrapper">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line><path d="M8 9l-3 3 3 3"></path><path d="M16 9l3 3-3 3"></path></svg>
+                        </div>
+                    </div>
+                    <div class="tool-card-body">
+                        <h2 data-i18n="tool_configurator_title">Auto Configurator Viewer</h2>
+                        <div class="tool-card-kicker" data-i18n="tool_configurator_kicker">Local Folder Sync & A/B Comparison</div>
+                        <p class="tool-card-desc" data-i18n="tool_configurator_desc">
+                            Read and parse local render folders directly in browser. Switch automotive exterior paint, aero wheels, and brake calipers in real time. Features A/B curtain wipe comparison, side-by-side dual screen, and 4K precision pan & zoom.
+                        </p>
+                    </div>
+                    <div class="tool-tags">
+                        <span class="tag-pill">Local Folder Directory</span>
+                        <span class="tag-pill">A/B Split Curtain Wipe</span>
+                        <span class="tag-pill">Side-by-Side Dual Stage</span>
+                        <span class="tag-pill">4K Pan & Zoom</span>
+                    </div>
+                </div>
+                <a href="configurator-auto.html" class="tool-card-action">
+                    <span data-i18n="tool_launch">Launch Tool</span>
+                    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </article>
+
+        </div>
+    </div>
+
+    <!-- 语言包支持 -->
+    <script src="lang.js"></script>
+</body>
+</html>

@@ -1067,22 +1067,24 @@
     <!-- Top Nav -->
     <nav>
         <div class="nav-left">
-            <span class="car-badge-title" id="car-title">Auto Configurator</span>
+            <a href="tools.html" class="back-nav">&larr; <span data-i18n="cfg_auto_back">TOOLS</span></a>
+            <div class="nav-divider"></div>
+            <span class="car-badge-title" id="car-title" data-i18n="cfg_auto_title">Auto Configurator</span>
         </div>
         <div class="nav-center-actions">
             <!-- 模式切换选择器 (单车 / 左右并排 / 帘幕对比) -->
             <div class="view-mode-selector" id="view-mode-selector" style="display: none;">
                 <button class="mode-pill-btn active" id="btn-mode-single" onclick="setComparisonMode('single')" title="Single Vehicle Mode">
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"></rect></svg>
-                    <span>Single</span>
+                    <span data-i18n="cfg_mode_single">Single</span>
                 </button>
                 <button class="mode-pill-btn" id="btn-mode-split" onclick="setComparisonMode('side-by-side')" title="Side-by-Side Comparison">
                     <svg viewBox="0 0 24 24"><rect x="2" y="3" width="9" height="18" rx="2"></rect><rect x="13" y="3" width="9" height="18" rx="2"></rect></svg>
-                    <span>Split View</span>
+                    <span data-i18n="cfg_mode_split">Split View</span>
                 </button>
                 <button class="mode-pill-btn" id="btn-mode-wipe" onclick="setComparisonMode('wipe')" title="Curtain Wipe Comparison">
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
-                    <span>Wipe</span>
+                    <span data-i18n="cfg_mode_wipe">Wipe</span>
                 </button>
             </div>
 
@@ -1095,29 +1097,33 @@
             <div class="ab-quick-actions" id="ab-quick-actions" style="display: none;">
                 <button class="nav-action-btn" onclick="swapSlots()" title="Swap Vehicle A and Vehicle B">
                     <svg viewBox="0 0 24 24"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"></path></svg>
-                    <span>Swap A⇄B</span>
+                    <span data-i18n="cfg_btn_swap">Swap A⇄B</span>
                 </button>
                 <button class="nav-action-btn" onclick="cloneSlotToOther()" title="Match Vehicle B to same model as Vehicle A">
                     <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    <span>Match Model</span>
+                    <span data-i18n="cfg_btn_match">Match Model</span>
                 </button>
             </div>
 
             <!-- 追加导入新车型按钮 -->
             <button class="nav-action-btn nav-add-btn" id="btn-add-model" style="display: none;" onclick="document.getElementById('append-folder-input').click()" title="Add another car model folder">
                 <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                <span>Add Model</span>
+                <span data-i18n="cfg_btn_add_model">Add Model</span>
             </button>
             <input type="file" id="append-folder-input" webkitdirectory directory multiple style="display:none;">
 
             <!-- 重置所有按钮 -->
             <button class="nav-action-btn" onclick="resetApp()" title="Reset and load new folder">
                 <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
-                <span>Reset</span>
+                <span data-i18n="cfg_btn_reset_all">Reset</span>
             </button>
         </div>
         <div class="nav-right">
-            <span style="color:var(--text-muted); font-size:0.75rem;">Zachary Shee Studio</span>
+            <div class="lang-switch">
+                <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                <span class="divider">/</span>
+                <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+            </div>
         </div>
     </nav>
 
@@ -1131,10 +1137,10 @@
                     <path d="M2 7v10C2 18.1046 2.89543 19 4 19H20C21.1046 19 22 18.1046 22 17V9C22 7.89543 21.1046 7 20 7H13.5L11.5 5H4C2.89543 5 2 5.89543 2 7Z"></path>
                     <path d="M12 10V16M9 13H15"></path>
                 </svg>
-                <h2 style="font-size:1.4rem; margin-bottom: 10px;">Select or Drop Image Folder</h2>
-                <p style="color:var(--text-muted); font-size: 0.85rem; max-width: 400px; line-height:1.5;">
-                    Supported format: <br><code style="color:white; font-size: 0.9rem;">[Model]_[Color]_[Wheel]_[View].png</code><br><br>
-                    Images will be processed entirely locally in your browser.
+                <h2 style="font-size:1.4rem; margin-bottom: 10px;" data-i18n="cfg_drop_title">Select or Drop Image Folder</h2>
+                <p style="color:var(--text-muted); font-size: 0.85rem; max-width: 420px; line-height:1.5;">
+                    <span data-i18n="cfg_drop_desc_1">Supported format:</span> <br><code style="color:white; font-size: 0.9rem;">[Model]_[Color]_[Wheel]_[View].png</code><br><br>
+                    <span data-i18n="cfg_drop_desc_2">Images will be processed entirely locally in your browser.</span>
                 </p>
                 <input type="file" id="folder-input" webkitdirectory directory multiple style="display:none;">
             </div>
@@ -1149,7 +1155,7 @@
                         
                         <!-- 1. 单车模式 / 滑动帘幕对比容器 (Main Stage Card) -->
                         <div class="main-stage-card" id="main-stage-card">
-                            <div class="stage-spinner" id="stage-spinner"><div class="spin-dot"></div><span style="font-size: 0.68rem; letter-spacing: 1.5px; color: var(--text-muted);">LOADING</span></div>
+                            <div class="stage-spinner" id="stage-spinner"><div class="spin-dot"></div><span style="font-size: 0.68rem; letter-spacing: 1.5px; color: var(--text-muted);" data-i18n="cfg_loading">LOADING</span></div>
                             
                             <!-- 全屏按钮 -->
                             <button class="stage-expand-btn" onclick="toggleFullscreen()" title="Fullscreen">
@@ -1246,7 +1252,7 @@
                     <!-- 车型选择卡 (在 A/B 模式下允许单独为当前槽位切换车型) -->
                     <div class="option-section-card" id="slot-model-card" style="display: none;">
                         <div class="section-title-row">
-                            <span class="section-main-title" id="lbl-model-section-title">Model</span>
+                            <span class="section-main-title" id="lbl-model-section-title" data-i18n="cfg_label_model">Model</span>
                             <span class="section-cur-value" id="lbl-cur-slot-model">SGT</span>
                         </div>
                         <div class="slot-model-pill-grid" id="slot-model-pill-grid">
@@ -1257,8 +1263,8 @@
                     <!-- 车漆选配卡片 -->
                     <div class="option-section-card">
                         <div class="section-title-row">
-                            <span class="section-main-title">Exterior Paint</span>
-                            <span class="section-cur-value" id="lbl-color">Select Color</span>
+                            <span class="section-main-title" data-i18n="cfg_label_paint">Exterior Paint</span>
+                            <span class="section-cur-value" id="lbl-color" data-i18n="cfg_label_paint_select">Select Color</span>
                         </div>
                         <div class="paint-swatch-grid" id="dynamic-colors">
                             <!-- Populated dynamically -->
@@ -1268,8 +1274,8 @@
                     <!-- 轮毂选配卡片 -->
                     <div class="option-section-card">
                         <div class="section-title-row">
-                            <span class="section-main-title">Wheels</span>
-                            <span class="section-cur-value" id="lbl-wheel">Select Wheel</span>
+                            <span class="section-main-title" data-i18n="cfg_label_wheels">Wheels</span>
+                            <span class="section-cur-value" id="lbl-wheel" data-i18n="cfg_label_wheels_select">Select Wheel</span>
                         </div>
                         <div class="wheel-option-list" id="dynamic-wheels">
                             <!-- Populated dynamically -->
@@ -2407,5 +2413,6 @@
             setTimeout(() => toast.classList.remove('show'), 3200);
         }
     </script>
+    <script src="lang.js"></script>
 </body>
 </html>
