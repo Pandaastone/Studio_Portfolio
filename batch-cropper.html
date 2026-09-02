@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batch Image Cropper - Zachary Shee Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Using JSZip for bundling output files -->
+    <title>Batch Image Studio - Zachary Shee Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- JSZip and FileSaver for local batch bundling -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
             --bg-color: #050505;
-            --panel-bg: #0b0b0b;
-            --panel-soft: #121212;
-            --border-color: rgba(255, 255, 255, 0.13);
+            --panel-bg: #0b0b0d;
+            --panel-soft: #121216;
+            --border-color: rgba(255, 255, 255, 0.12);
             --border-strong: rgba(255, 255, 255, 0.28);
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.62);
             --primary: #2f6fff;
             --primary-hover: #437cff;
-            --radius: 6px;
+            --accent-cyan: #00e5cc;
+            --radius: 8px;
         }
 
         *, *::before, *::after {
@@ -30,8 +31,6 @@
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            margin: 0;
-            padding: 0;
             background: var(--bg-color);
             color: var(--text-main);
             height: 100vh;
@@ -40,20 +39,21 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* 侧边栏 */
         .sidebar {
-            width: 340px;
-            min-width: 340px;
-            max-width: 340px;
-            background: rgba(8, 8, 8, 0.92);
+            width: 400px;
+            min-width: 400px;
+            max-width: 400px;
+            background: rgba(10, 10, 12, 0.95);
             border-right: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            z-index: 10;
+            z-index: 20;
             overflow: hidden;
         }
 
         .sidebar-header {
-            padding: 24px 24px 16px;
+            padding: 20px 24px 16px;
             border-bottom: 1px solid var(--border-color);
             flex-shrink: 0;
         }
@@ -68,18 +68,15 @@
             font-weight: 700;
             letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             transition: color 0.2s ease;
         }
-
-        .back-link:hover {
-            color: #ffffff;
-        }
+        .back-link:hover { color: #ffffff; }
 
         .sidebar-header h1 {
-            font-size: 0.78rem;
+            font-size: 0.85rem;
             font-weight: 800;
-            letter-spacing: 2px;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             margin: 0;
         }
@@ -87,36 +84,161 @@
         .sidebar-header p {
             font-size: 0.64rem;
             color: var(--text-muted);
-            margin: 8px 0 0;
+            margin: 6px 0 0;
             letter-spacing: 1px;
             text-transform: uppercase;
         }
 
         .sidebar-content {
-            padding: 24px;
+            padding: 20px 24px;
             overflow-y: auto;
             overflow-x: hidden;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 15px;
+        /* 动作模块卡片 (Accordion Card) */
+        .action-card {
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            background: rgba(255, 255, 255, 0.035);
-            width: 100%;
+            background: rgba(255, 255, 255, 0.025);
+            overflow: hidden;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
         }
 
-        .form-group label {
-            font-size: 0.64rem;
+        .action-card.active {
+            border-color: rgba(47, 111, 255, 0.4);
+            background: rgba(255, 255, 255, 0.035);
+        }
+
+        .action-card-header {
+            padding: 14px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background: rgba(255, 255, 255, 0.015);
+        }
+
+        .action-card-header:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .action-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .action-icon {
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-card.active .action-icon {
+            color: var(--primary);
+        }
+
+        .action-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-main);
+        }
+
+        .action-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 开启/关闭 Toggle Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 32px;
+            height: 18px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: .3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-radius: 999px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(14px);
+        }
+
+        .arrow-icon {
+            width: 12px;
+            height: 12px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+            color: var(--text-muted);
+            transition: transform 0.25s ease;
+        }
+
+        .action-card.expanded .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .action-card-body {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .action-card.expanded .action-card-body {
+            display: flex;
+        }
+
+        .control-row {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-label {
+            font-size: 0.62rem;
             font-weight: 600;
-            letter-spacing: 2px;
+            letter-spacing: 1.2px;
             text-transform: uppercase;
             color: var(--text-muted);
             display: flex;
@@ -126,19 +248,19 @@
 
         .ratio-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
             width: 100%;
         }
 
         .ratio-btn {
-            padding: 10px 4px;
+            padding: 8px 2px;
             border: 1px solid var(--border-color);
             background: rgba(255, 255, 255, 0.04);
-            border-radius: var(--radius);
+            border-radius: 4px;
             cursor: pointer;
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 600;
             transition: all 0.2s ease;
             color: var(--text-muted);
@@ -150,145 +272,193 @@
         }
 
         .ratio-btn.active {
-            background: rgba(47, 111, 255, 0.13);
+            background: rgba(47, 111, 255, 0.16);
             color: #fff;
-            border-color: rgba(47, 111, 255, 0.7);
+            border-color: rgba(47, 111, 255, 0.8);
         }
 
         .custom-ratio {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             width: 100%;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
-        .custom-ratio input {
+        .custom-ratio input, .text-input, select {
             flex: 1 1 0;
             min-width: 0;
             width: 100%;
-            height: 38px;
+            height: 36px;
             padding: 0 10px;
             border: 1px solid rgba(255, 255, 255, 0.14);
             background: rgba(255, 255, 255, 0.055);
-            border-radius: var(--radius);
-            text-align: center;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #fff;
-            outline: none;
-            transition: border-color 0.2s ease;
-            -moz-appearance: textfield;
-        }
-        
-        .custom-ratio input::-webkit-outer-spin-button,
-        .custom-ratio input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        
-        .custom-ratio input:focus {
-            border-color: rgba(47, 111, 255, 0.72);
-            background: rgba(47, 111, 255, 0.08);
-        }
-
-        .custom-ratio span {
-            color: var(--text-muted);
-            font-weight: 700;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-
-        select {
-            height: 40px;
-            padding: 0 12px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.055);
-            border-radius: var(--radius);
-            width: 100%;
-            font-size: 0.75rem;
+            border-radius: 4px;
+            font-size: 0.76rem;
             font-family: inherit;
             color: #fff;
             outline: none;
-            cursor: pointer;
             transition: border-color 0.2s ease;
+            box-sizing: border-box;
         }
-        
-        select:focus {
-            border-color: rgba(47, 111, 255, 0.72);
+
+        .custom-ratio input {
+            text-align: center;
+            font-weight: 600;
+            -moz-appearance: textfield;
         }
-        
+        .custom-ratio input::-webkit-outer-spin-button,
+        .custom-ratio input::-webkit-inner-spin-button {
+            -webkit-appearance: none; margin: 0;
+        }
+
+        .text-input:focus, select:focus, .custom-ratio input:focus {
+            border-color: rgba(47, 111, 255, 0.8);
+            background: rgba(47, 111, 255, 0.08);
+        }
+
         select option {
             background: #111;
             color: #fff;
         }
 
+        /* 滑块样式 */
+        .slider-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         input[type="range"] {
             -webkit-appearance: none;
             appearance: none;
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.1);
+            flex: 1;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.12);
             border-radius: 3px;
             outline: none;
-            padding: 0;
-            margin: 6px 0;
-            border: none;
             cursor: pointer;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             border-radius: 50%;
             background: var(--primary);
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(47, 111, 255, 0.8);
-            transition: transform 0.15s ease, background-color 0.15s ease;
+            box-shadow: 0 0 8px rgba(47, 111, 255, 0.8);
+            transition: transform 0.15s ease;
         }
 
         input[type="range"]::-webkit-slider-thumb:hover {
-            transform: scale(1.15);
+            transform: scale(1.2);
             background: var(--primary-hover);
         }
 
-        input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border: none;
-            border-radius: 50%;
-            background: var(--primary);
-            cursor: pointer;
-            box-shadow: 0 0 10px rgba(47, 111, 255, 0.8);
+        .val-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-main);
+            min-width: 44px;
+            text-align: right;
         }
 
+        /* 9宫格定位器 */
+        .grid-pos-picker {
+            display: grid;
+            grid-template-columns: repeat(3, 32px);
+            grid-template-rows: repeat(3, 32px);
+            gap: 6px;
+            justify-content: center;
+            margin: 4px 0;
+        }
+
+        .grid-pos-btn {
+            border: 1px solid var(--border-color);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .grid-pos-btn:hover {
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .grid-pos-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(47, 111, 255, 0.6);
+        }
+
+        /* 标签快捷插入条 */
+        .chips-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .chip-btn {
+            font-size: 0.62rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip-btn:hover {
+            color: #fff;
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-name-badge {
+            font-size: 0.68rem;
+            color: var(--accent-cyan);
+            background: rgba(0, 229, 204, 0.06);
+            border: 1px solid rgba(0, 229, 204, 0.25);
+            padding: 6px 10px;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+
+        /* 侧边栏底部 */
         .sidebar-footer {
-            padding: 24px;
+            padding: 18px 24px;
             border-top: 1px solid var(--border-color);
             background: var(--panel-bg);
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .primary-btn {
             background: var(--primary);
             color: #fff;
-            border: 1px solid rgba(47, 111, 255, 0.72);
-            padding: 14px;
+            border: 1px solid rgba(47, 111, 255, 0.8);
+            padding: 13px;
             border-radius: 999px;
-            font-weight: 600;
-            font-size: 0.66rem;
+            font-weight: 700;
+            font-size: 0.68rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
             width: 100%;
         }
 
         .primary-btn:hover:not(:disabled) {
             background: var(--primary-hover);
-            border-color: rgba(120, 163, 255, 0.9);
+            box-shadow: 0 4px 20px rgba(47, 111, 255, 0.5);
         }
 
         .primary-btn:disabled {
@@ -298,18 +468,113 @@
             cursor: not-allowed;
         }
 
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.64rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: var(--border-strong);
+        }
+
+        /* 主工作区 */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             position: relative;
             background:
-                linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-                #111;
-            background-size: 44px 44px;
+                radial-gradient(circle at 50% 50%, rgba(47, 111, 255, 0.04) 0%, transparent 70%),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                #0a0a0c;
+            background-size: 100% 100%, 44px 44px, 44px 44px;
+            overflow: hidden;
         }
 
+        /* 顶部工具条 */
+        .main-header {
+            height: 60px;
+            padding: 0 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(8, 8, 10, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 10;
+        }
+
+        .main-header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .view-tabs {
+            display: flex;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+        }
+
+        .view-tab {
+            padding: 6px 14px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-tab.active {
+            background: rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+        }
+
+        .main-header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .top-lang-switch {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 5px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+        }
+
+        .top-lang-switch span { cursor: pointer; transition: color 0.2s; }
+        .top-lang-switch span:hover { color: #fff; }
+        .top-lang-switch span.active { font-weight: 700; color: #fff; }
+        .top-lang-switch .divider { opacity: 0.3; cursor: default; }
+
+        /* 拖拽区域 */
         .drop-zone {
             flex: 1;
             display: flex;
@@ -325,41 +590,42 @@
             content: '';
             position: absolute;
             top: 24px; right: 24px; bottom: 24px; left: 24px;
-            border: 1px dashed rgba(255, 255, 255, 0.24);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
             border-radius: 12px;
             pointer-events: none;
-            transition: border-color 0.2s, background-color 0.2s;
+            transition: all 0.2s;
         }
 
         .drop-zone.dragover::after {
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(47, 111, 255, 0.05);
         }
 
-        .drop-zone.has-files {
-            display: none;
-        }
+        .drop-zone.has-files { display: none; }
 
         .drop-icon {
-            font-size: 32px;
+            width: 56px;
+            height: 56px;
             margin-bottom: 16px;
-            opacity: 0.5;
+            color: var(--primary);
+            opacity: 0.85;
         }
 
         .drop-text {
-            font-size: 0.82rem;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: 800;
             color: #fff;
             margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
         .drop-subtext {
-            font-size: 0.68rem;
+            font-size: 0.72rem;
             color: var(--text-muted);
         }
 
+        /* 画廊模式 */
         .gallery-container {
             flex: 1;
             padding: 32px;
@@ -367,32 +633,11 @@
             display: none;
         }
 
-        .gallery-container.active {
-            display: block;
-        }
-        
-        .gallery-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            padding: 12px 24px;
-            background: rgba(5, 5, 5, 0.64);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: var(--radius);
-        }
-
-        #file-count {
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
+        .gallery-container.active { display: block; }
 
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 24px;
         }
 
@@ -400,47 +645,92 @@
             background: var(--panel-soft);
             border-radius: var(--radius);
             overflow: hidden;
-            box-shadow: 0 1px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
             position: relative;
-            border: 1px solid rgba(255, 255, 255, 0.09);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .image-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--border-strong);
+        }
+
+        .image-card.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 1px var(--primary), 0 8px 24px rgba(47, 111, 255, 0.3);
         }
 
         .image-card .thumb-wrapper {
             position: relative;
             padding-top: 100%;
-            background: #222;
+            background: #18181c;
             overflow: hidden;
         }
 
         .image-card img {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             object-fit: cover;
         }
 
         .image-card .info {
             padding: 12px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .image-card .name {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .image-card .dimensions {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+        }
+
+        .image-card .compare-hint {
+            position: absolute;
+            bottom: 44px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 999px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .image-card:hover .compare-hint {
+            opacity: 1;
         }
 
         .remove-btn {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: 8px; right: 8px;
             background: rgba(0,0,0,0.8);
             color: #fff;
             border: 1px solid rgba(255,255,255,0.2);
             border-radius: 4px;
-            width: 26px;
-            height: 26px;
+            width: 26px; height: 26px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -452,8 +742,143 @@
         }
         
         .remove-btn:hover {
-            background: #ff6767;
-            border-color: #ff6767;
+            background: #ff4757;
+            border-color: #ff4757;
+        }
+
+        /* 实时前后对比视窗 (Live Compare View) */
+        .compare-container {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            position: relative;
+            user-select: none;
+        }
+
+        .compare-container.active { display: flex; }
+
+        .compare-card-stage {
+            position: relative;
+            max-width: 100%;
+            max-height: calc(100vh - 180px);
+            aspect-ratio: 16 / 9;
+            width: 900px;
+            border-radius: 12px;
+            background: #000000;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            touch-action: none;
+        }
+
+        .stage-layer {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .stage-layer img, .stage-layer canvas {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .stage-layer-processed {
+            position: absolute;
+            top: 0; left: 0; height: 100%;
+            overflow: hidden;
+            border-right: 2px solid #ffffff;
+            box-shadow: 2px 0 16px rgba(0,0,0,0.6);
+            z-index: 5;
+        }
+
+        .stage-layer-processed .inner-wrap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stage-layer-processed canvas {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .wipe-handle {
+            position: absolute;
+            top: 50%;
+            right: -16px;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: ew-resize;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .wipe-handle svg {
+            width: 16px; height: 16px;
+            stroke: #000; stroke-width: 2.5; fill: none;
+        }
+
+        .badge-tag {
+            position: absolute;
+            top: 16px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            backdrop-filter: blur(8px);
+            z-index: 8;
+        }
+
+        .badge-before {
+            right: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .badge-after {
+            left: 16px;
+            background: rgba(47, 111, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: #fff;
+        }
+
+        /* 通用按钮与遮罩 */
+        .btn-text {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 0.64rem;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 999px;
+            transition: all 0.2s;
+        }
+        .btn-text:hover {
+            border-color: var(--border-strong);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .hidden { display: none !important; }
@@ -462,8 +887,8 @@
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(5, 5, 5, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 100;
+            backdrop-filter: blur(12px);
+            z-index: 1000;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -472,332 +897,1034 @@
         }
         
         #progress-text {
-            font-size: 0.78rem;
+            font-size: 0.82rem;
             letter-spacing: 2px;
             text-transform: uppercase;
             font-weight: 700;
         }
 
         progress {
-            width: 300px;
-            height: 4px;
-            border-radius: 2px;
+            width: 320px;
+            height: 6px;
+            border-radius: 3px;
             overflow: hidden;
             background-color: #222;
             border: none;
         }
         progress::-webkit-progress-bar { background-color: #222; }
         progress::-webkit-progress-value { background-color: var(--primary); }
-        
-        .btn-text {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            cursor: pointer;
-            font-size: 0.62rem;
-            letter-spacing: 1.4px;
-            text-transform: uppercase;
-            padding: 6px 12px;
-            border-radius: 999px;
-            transition: all 0.2s;
-        }
-        .btn-text:hover {
-            border-color: var(--border-strong);
-            background: rgba(255, 255, 255, 0.09);
-        }
-        .top-lang-switch {
-            position: fixed;
-            top: 24px;
-            right: 28px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.72rem;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-            z-index: 100;
-            background: rgba(18, 18, 22, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            padding: 6px 14px;
-            border-radius: 999px;
-            border: 1px solid var(--border-color);
-        }
-
-        .top-lang-switch span {
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .top-lang-switch span:hover {
-            color: #ffffff;
-        }
-
-        .top-lang-switch span.active {
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .top-lang-switch .divider {
-            cursor: default;
-            opacity: 0.3;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 右上角双语切换器 -->
-    <div class="top-lang-switch">
-        <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
-        <span class="divider">/</span>
-        <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
-    </div>
-
+    <!-- 左侧流水线控制面板 -->
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="tools.html" class="back-link">&larr; <span data-i18n="bc_back_tools">TOOLS</span></a>
-            <h1 data-i18n="bc_title">Batch Image Cropper</h1>
-            <p data-i18n="bc_subtitle">Center crop, local processing</p>
+            <h1 data-i18n="bc_title">BATCH IMAGE STUDIO</h1>
+            <p data-i18n="bc_subtitle">LOCAL PIPELINE & BATCH PROCESSING</p>
         </div>
         
         <div class="sidebar-content">
-            <div class="form-group">
-                <label data-i18n="bc_aspect_ratio">Aspect Ratio</label>
-                <div class="ratio-grid" id="ratio-preset">
-                    <button class="ratio-btn active" data-ratio="1">1:1</button>
-                    <button class="ratio-btn" data-ratio="1.333333">4:3</button>
-                    <button class="ratio-btn" data-ratio="0.75">3:4</button>
-                    <button class="ratio-btn" data-ratio="1.777777">16:9</button>
-                    <button class="ratio-btn" data-ratio="0.5625">9:16</button>
-                    <button class="ratio-btn" data-ratio="1.5">3:2</button>
-                    <button class="ratio-btn" data-ratio="0.666666">2:3</button>
-                    <button class="ratio-btn" data-ratio="2.35">2.35:1</button>
-                    <button class="ratio-btn" data-ratio="custom" data-i18n="bc_custom">Custom</button>
+            
+            <!-- Module 1: 尺寸与裁切 (Size & Crop) -->
+            <div class="action-card active expanded" id="card-crop">
+                <div class="action-card-header" onclick="toggleCard('card-crop')">
+                    <div class="action-title-group">
+                        <div class="action-icon">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M6 2v14a2 2 0 0 0 2 2h14"></path><path d="M18 22V8a2 2 0 0 0-2-2H2"></path></svg>
+                        </div>
+                        <span class="action-title" data-i18n="bc_mod_size_crop">SIZE & CROP</span>
+                    </div>
+                    <div class="action-controls">
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="toggle-crop" checked onchange="updatePipeline()">
+                            <span class="slider"></span>
+                        </label>
+                        <svg class="arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
                 </div>
-                <div class="custom-ratio hidden" id="custom-ratio-inputs">
-                    <input type="number" id="custom-w" value="16" min="1" placeholder="W">
-                    <span>:</span>
-                    <input type="number" id="custom-h" value="9" min="1" placeholder="H">
+                <div class="action-card-body">
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_tab_crop">Aspect Ratio</label>
+                        <div class="ratio-grid" id="ratio-preset">
+                            <button class="ratio-btn active" data-ratio="orig" data-i18n="bc_ratio_orig">Original</button>
+                            <button class="ratio-btn" data-ratio="1">1:1</button>
+                            <button class="ratio-btn" data-ratio="1.333333">4:3</button>
+                            <button class="ratio-btn" data-ratio="0.75">3:4</button>
+                            <button class="ratio-btn" data-ratio="1.777777">16:9</button>
+                            <button class="ratio-btn" data-ratio="0.5625">9:16</button>
+                            <button class="ratio-btn" data-ratio="1.5">3:2</button>
+                            <button class="ratio-btn" data-ratio="custom" data-i18n="bc_ratio_custom">Custom</button>
+                        </div>
+                        <div class="custom-ratio hidden" id="custom-ratio-inputs">
+                            <input type="number" id="custom-w" value="16" min="1" placeholder="W" oninput="updatePipeline()">
+                            <span>:</span>
+                            <input type="number" id="custom-h" value="9" min="1" placeholder="H" oninput="updatePipeline()">
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_resize_mode">Resize Mode</label>
+                        <select id="resize-mode" onchange="handleResizeModeChange()">
+                            <option value="none" data-i18n="bc_resize_none">No Resizing</option>
+                            <option value="long" selected data-i18n="bc_resize_long">Fit Max Long Edge</option>
+                            <option value="width" data-i18n="bc_resize_width">Fit Target Width</option>
+                            <option value="height" data-i18n="bc_resize_height">Fit Target Height</option>
+                            <option value="percent" data-i18n="bc_resize_percent">Scale Percentage</option>
+                        </select>
+                        <div id="resize-val-wrap" style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                            <input type="number" id="resize-dim" class="text-input" value="2000" min="10" placeholder="Pixels / %" oninput="updatePipeline()">
+                            <span id="resize-unit" style="font-size: 0.72rem; color: var(--text-muted);">px</span>
+                        </div>
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_padding_label">Border Padding (px)</span>
+                            <span id="padding-val-badge">0px</span>
+                        </label>
+                        <div class="slider-wrapper">
+                            <input type="range" id="canvas-padding" min="0" max="200" value="0" oninput="updatePaddingVal()">
+                        </div>
+                    </div>
+
+                    <div class="control-row" id="padding-bg-row" style="display: none;">
+                        <label class="control-label" data-i18n="bc_bg_color">Background Fill</label>
+                        <select id="padding-bg-mode" onchange="updatePipeline()">
+                            <option value="transparent" data-i18n="bc_bg_transparent">Transparent</option>
+                            <option value="#000000" data-i18n="bc_bg_black">Black</option>
+                            <option value="#ffffff" data-i18n="bc_bg_white">White</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label data-i18n="bc_output_format">Output Format</label>
-                <select id="output-format">
-                    <option value="original" data-i18n="bc_keep_original">Keep Original</option>
-                    <option value="image/jpeg">JPEG (.jpg)</option>
-                    <option value="image/png">PNG (.png)</option>
-                    <option value="image/webp">WebP (.webp)</option>
-                </select>
+            <!-- Module 2: 色彩与画质增强 (Color & Enhance) -->
+            <div class="action-card" id="card-color">
+                <div class="action-card-header" onclick="toggleCard('card-color')">
+                    <div class="action-title-group">
+                        <div class="action-icon">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 0 0 20z"></path></svg>
+                        </div>
+                        <span class="action-title" data-i18n="bc_mod_color">COLOR & ENHANCE</span>
+                    </div>
+                    <div class="action-controls">
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="toggle-color" onchange="updatePipeline()">
+                            <span class="slider"></span>
+                        </label>
+                        <svg class="arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+                <div class="action-card-body">
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_brightness">Brightness</span>
+                            <span id="val-brightness" class="val-badge">0%</span>
+                        </label>
+                        <input type="range" id="adj-brightness" min="-100" max="100" value="0" oninput="updateColorVal('brightness')">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_contrast">Contrast</span>
+                            <span id="val-contrast" class="val-badge">0%</span>
+                        </label>
+                        <input type="range" id="adj-contrast" min="-100" max="100" value="0" oninput="updateColorVal('contrast')">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_saturation">Saturation</span>
+                            <span id="val-saturation" class="val-badge">0%</span>
+                        </label>
+                        <input type="range" id="adj-saturation" min="-100" max="100" value="0" oninput="updateColorVal('saturation')">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_sharpen">USM Sharpen Compensation</span>
+                            <span id="val-sharpen" class="val-badge">25%</span>
+                        </label>
+                        <input type="range" id="adj-sharpen" min="0" max="100" value="25" oninput="updateColorVal('sharpen')">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_effect_filter">Color Filter</label>
+                        <select id="color-filter-mode" onchange="updatePipeline()">
+                            <option value="normal" data-i18n="bc_effect_normal">Normal</option>
+                            <option value="grayscale" data-i18n="bc_effect_grayscale">Grayscale</option>
+                            <option value="invert" data-i18n="bc_effect_invert">Invert</option>
+                            <option value="sepia" data-i18n="bc_effect_sepia">Sepia</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group" id="quality-group">
-                <label>
-                    <span data-i18n="bc_quality_compression">Quality/Compression</span>
-                    <span id="quality-val">95%</span>
-                </label>
-                <input type="range" id="output-quality" min="10" max="100" value="95">
+            <!-- Module 3: 水印标记 (Watermark) -->
+            <div class="action-card" id="card-watermark">
+                <div class="action-card-header" onclick="toggleCard('card-watermark')">
+                    <div class="action-title-group">
+                        <div class="action-icon">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                        </div>
+                        <span class="action-title" data-i18n="bc_mod_watermark">WATERMARK</span>
+                    </div>
+                    <div class="action-controls">
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="toggle-watermark" onchange="updatePipeline()">
+                            <span class="slider"></span>
+                        </label>
+                        <svg class="arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+                <div class="action-card-body">
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_wm_type">Watermark Type</label>
+                        <select id="wm-type" onchange="handleWmTypeChange()">
+                            <option value="text" data-i18n="bc_wm_text">Text Watermark</option>
+                            <option value="image" data-i18n="bc_wm_image">Image / Logo</option>
+                        </select>
+                    </div>
+
+                    <!-- Text Controls -->
+                    <div id="wm-text-group" class="control-row">
+                        <label class="control-label" data-i18n="bc_wm_text_input">Watermark Text</label>
+                        <input type="text" id="wm-text-val" class="text-input" value="© Zachary Shee Studio" oninput="updatePipeline()">
+                    </div>
+
+                    <!-- Image Controls -->
+                    <div id="wm-image-group" class="control-row hidden">
+                        <label class="control-label" data-i18n="bc_wm_upload">Upload Logo (PNG/SVG)</label>
+                        <input type="file" id="wm-file-input" accept="image/png,image/svg+xml,image/jpeg" onchange="handleWmLogoUpload(event)">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_wm_size">Size</span>
+                            <span id="val-wm-size" class="val-badge">32px</span>
+                        </label>
+                        <input type="range" id="wm-size" min="10" max="120" value="32" oninput="updateWmVal('size')">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label">
+                            <span data-i18n="bc_wm_opacity">Opacity</span>
+                            <span id="val-wm-opacity" class="val-badge">40%</span>
+                        </label>
+                        <input type="range" id="wm-opacity" min="5" max="100" value="40" oninput="updateWmVal('opacity')">
+                    </div>
+
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_wm_layout">Layout Mode</label>
+                        <select id="wm-layout-mode" onchange="handleWmLayoutChange()">
+                            <option value="grid" data-i18n="bc_wm_grid">9-Position Anchor</option>
+                            <option value="tile" data-i18n="bc_wm_tile">Tile Pattern</option>
+                        </select>
+                    </div>
+
+                    <div id="wm-grid-wrapper" class="control-row">
+                        <div class="grid-pos-picker">
+                            <button class="grid-pos-btn" data-pos="top-left"></button>
+                            <button class="grid-pos-btn" data-pos="top-center"></button>
+                            <button class="grid-pos-btn" data-pos="top-right"></button>
+                            <button class="grid-pos-btn" data-pos="center-left"></button>
+                            <button class="grid-pos-btn" data-pos="center"></button>
+                            <button class="grid-pos-btn" data-pos="center-right"></button>
+                            <button class="grid-pos-btn" data-pos="bottom-left"></button>
+                            <button class="grid-pos-btn" data-pos="bottom-center"></button>
+                            <button class="grid-pos-btn active" data-pos="bottom-right"></button>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <!-- Module 4: 批量重命名 (Batch Rename) -->
+            <div class="action-card active expanded" id="card-rename">
+                <div class="action-card-header" onclick="toggleCard('card-rename')">
+                    <div class="action-title-group">
+                        <div class="action-icon">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        </div>
+                        <span class="action-title" data-i18n="bc_mod_rename">BATCH RENAME</span>
+                    </div>
+                    <div class="action-controls">
+                        <label class="switch" onclick="event.stopPropagation()">
+                            <input type="checkbox" id="toggle-rename" checked onchange="updatePipeline()">
+                            <span class="slider"></span>
+                        </label>
+                        <svg class="arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+                <div class="action-card-body">
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_rename_pattern">Filename Pattern</label>
+                        <input type="text" id="rename-pattern" class="text-input" value="[name]_[w]x[h]" oninput="updateRenamePreview()">
+                        <div class="chips-row">
+                            <button class="chip-btn" onclick="insertRenameTag('[name]')">[name]</button>
+                            <button class="chip-btn" onclick="insertRenameTag('[w]')">[w]</button>
+                            <button class="chip-btn" onclick="insertRenameTag('[h]')">[h]</button>
+                            <button class="chip-btn" onclick="insertRenameTag('[index]')">[index]</button>
+                            <button class="chip-btn" onclick="insertRenameTag('[date]')">[date]</button>
+                        </div>
+                    </div>
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_rename_preview">Preview Output Name</label>
+                        <div class="preview-name-badge" id="rename-preview-text">example_1920x1080.jpg</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Module 5: 导出格式与压缩 (Format & Quality) -->
+            <div class="action-card active expanded" id="card-format">
+                <div class="action-card-header" onclick="toggleCard('card-format')">
+                    <div class="action-title-group">
+                        <div class="action-icon">
+                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        </div>
+                        <span class="action-title" data-i18n="bc_mod_format">FORMAT & QUALITY</span>
+                    </div>
+                    <div class="action-controls">
+                        <svg class="arrow-icon" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </div>
+                </div>
+                <div class="action-card-body">
+                    <div class="control-row">
+                        <label class="control-label" data-i18n="bc_output_format">Output Format</label>
+                        <select id="output-format" onchange="handleFormatChange()">
+                            <option value="original" data-i18n="bc_keep_original">Keep Original</option>
+                            <option value="image/jpeg">JPEG (.jpg)</option>
+                            <option value="image/png">PNG (.png)</option>
+                            <option value="image/webp" selected>WebP (.webp)</option>
+                        </select>
+                    </div>
+
+                    <div class="control-row" id="quality-group">
+                        <label class="control-label">
+                            <span data-i18n="bc_quality_compression">Compression Quality</span>
+                            <span id="quality-val" class="val-badge">92%</span>
+                        </label>
+                        <input type="range" id="output-quality" min="10" max="100" value="92" oninput="updateQualityVal()">
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="sidebar-footer">
-            <button class="primary-btn" id="btn-process" disabled data-i18n="bc_btn_process">Crop & Download ZIP</button>
+            <button class="primary-btn" id="btn-process" disabled onclick="processBatch()" data-i18n="bc_btn_process">PROCESS & DOWNLOAD ZIP</button>
+            <button class="secondary-btn hidden" id="btn-download-single" onclick="downloadCurrentPreview()" data-i18n="bc_btn_download_single">Download Single Image</button>
         </div>
     </div>
 
+    <!-- 右侧工作区 -->
     <div class="main-content">
+        
+        <!-- 顶部工具条 -->
+        <header class="main-header">
+            <div class="main-header-left">
+                <div class="view-tabs" id="view-tabs-bar" style="display: none;">
+                    <button class="view-tab active" id="tab-gallery" onclick="switchView('gallery')" data-i18n="bc_view_gallery">Gallery View</button>
+                    <button class="view-tab" id="tab-compare" onclick="switchView('compare')" data-i18n="bc_view_compare">Live Compare</button>
+                </div>
+                <span id="file-count" style="font-size: 0.72rem; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">0 files selected</span>
+            </div>
+            
+            <div class="main-header-right">
+                <button class="btn-text hidden" id="btn-add-more" onclick="document.getElementById('file-input').click()" data-i18n="bc_add_more">Add Images</button>
+                <button class="btn-text hidden" id="btn-clear" onclick="clearAllFiles()" data-i18n="bc_clear_all">Clear All</button>
+                <div class="top-lang-switch">
+                    <span onclick="toggleLanguage('en')" id="lang-en">EN</span>
+                    <span class="divider">/</span>
+                    <span onclick="toggleLanguage('zh')" id="lang-zh">中</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- 状态 1: 空状态拖拽区域 -->
         <div class="drop-zone" id="drop-zone">
-            <div class="drop-icon">🖼️</div>
+            <svg class="drop-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
             <div class="drop-text" data-i18n="bc_drop_text">Drag & drop images here</div>
-            <div class="drop-subtext" data-i18n="bc_drop_subtext">or click to browse files</div>
+            <div class="drop-subtext" data-i18n="bc_drop_subtext">or click to browse files (JPG, PNG, WebP, SVG)</div>
             <input type="file" id="file-input" multiple accept="image/*" class="hidden">
         </div>
         
+        <!-- 状态 2: 批量缩略图画廊 -->
         <div class="gallery-container" id="gallery-container">
-            <div class="gallery-header">
-                <span id="file-count" style="font-weight: 500;">0 files selected</span>
-                <button class="btn-text" id="btn-clear" data-i18n="bc_clear_all">Clear All</button>
-            </div>
             <div class="gallery" id="gallery"></div>
         </div>
+
+        <!-- 状态 3: 实时前后对比视窗 -->
+        <div class="compare-container" id="compare-container">
+            <div class="compare-card-stage" id="compare-stage">
+                <!-- 原图底图 -->
+                <div class="stage-layer">
+                    <img id="compare-img-before" alt="Before">
+                    <span class="badge-tag badge-before" data-i18n="bc_compare_original">Original</span>
+                </div>
+                <!-- 处理后实时顶层 (可滑动裁剪) -->
+                <div class="stage-layer-processed" id="compare-layer-after" style="width: 50%;">
+                    <div class="inner-wrap" id="compare-inner-wrap">
+                        <canvas id="compare-canvas-after"></canvas>
+                    </div>
+                    <div class="wipe-handle" id="wipe-handle">
+                        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </div>
+                    <span class="badge-tag badge-after" data-i18n="bc_compare_processed">Processed</span>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- 进度弹层 -->
     <div id="progress-overlay" class="hidden">
         <h3 id="progress-text">Processing...</h3>
         <progress id="progress-bar" value="0" max="100"></progress>
     </div>
 
+    <!-- 核心图像处理流水线 JS -->
     <script>
+        // DOM Elements
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
-        const gallery = document.getElementById('gallery');
         const galleryContainer = document.getElementById('gallery-container');
+        const compareContainer = document.getElementById('compare-container');
+        const gallery = document.getElementById('gallery');
         const btnProcess = document.getElementById('btn-process');
         const btnClear = document.getElementById('btn-clear');
+        const btnAddMore = document.getElementById('btn-add-more');
+        const btnDownloadSingle = document.getElementById('btn-download-single');
+        const viewTabsBar = document.getElementById('view-tabs-bar');
+        const tabGallery = document.getElementById('tab-gallery');
+        const tabCompare = document.getElementById('tab-compare');
         const fileCountEl = document.getElementById('file-count');
-        
-        let files = [];
-        let currentRatio = 1;
 
-        // UI Listeners
+        // State
+        let files = [];
+        let selectedIndex = 0;
+        let currentView = 'gallery'; // 'gallery' | 'compare'
+        let currentRatio = 'orig'; // 'orig' | 1 | 1.333333 | etc.
+        let watermarkLogoImg = null;
+        let wipePercent = 50;
+        let isDraggingWipe = false;
+
+        // UI Event Listeners
         dropZone.addEventListener('click', () => fileInput.click());
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
-        
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
-        
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
         dropZone.addEventListener('drop', (e) => {
             e.preventDefault();
             dropZone.classList.remove('dragover');
             handleFiles(e.dataTransfer.files);
         });
-        
         fileInput.addEventListener('change', (e) => {
             handleFiles(e.target.files);
-            fileInput.value = ''; // Reset input
+            fileInput.value = '';
         });
 
-        btnClear.addEventListener('click', () => {
-            files = [];
-            updateGallery();
-        });
+        // Accordion Card Toggle
+        function toggleCard(cardId) {
+            const card = document.getElementById(cardId);
+            card.classList.toggle('expanded');
+        }
 
-        // Ratio Selection
+        // Ratio Presets
         const ratioBtns = document.querySelectorAll('.ratio-btn');
         const customInputs = document.getElementById('custom-ratio-inputs');
         const customW = document.getElementById('custom-w');
         const customH = document.getElementById('custom-h');
 
         ratioBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 ratioBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 
                 const val = btn.dataset.ratio;
                 if (val === 'custom') {
                     customInputs.classList.remove('hidden');
-                    updateCustomRatio();
+                    const w = parseFloat(customW.value) || 16;
+                    const h = parseFloat(customH.value) || 9;
+                    currentRatio = w / h;
+                } else if (val === 'orig') {
+                    customInputs.classList.add('hidden');
+                    currentRatio = 'orig';
                 } else {
                     customInputs.classList.add('hidden');
                     currentRatio = parseFloat(val);
-                    updateThumbnailsRatio();
                 }
+                updatePipeline();
             });
         });
 
-        function updateCustomRatio() {
-            const w = parseFloat(customW.value) || 1;
-            const h = parseFloat(customH.value) || 1;
-            currentRatio = w / h;
-            updateThumbnailsRatio();
+        // Resize mode
+        function handleResizeModeChange() {
+            const mode = document.getElementById('resize-mode').value;
+            const dimInput = document.getElementById('resize-dim');
+            const unit = document.getElementById('resize-unit');
+            const wrap = document.getElementById('resize-val-wrap');
+
+            if (mode === 'none') {
+                wrap.style.display = 'none';
+            } else {
+                wrap.style.display = 'flex';
+                if (mode === 'percent') {
+                    unit.textContent = '%';
+                    dimInput.value = '50';
+                } else {
+                    unit.textContent = 'px';
+                    if (dimInput.value < 100) dimInput.value = '2000';
+                }
+            }
+            updatePipeline();
         }
 
-        customW.addEventListener('input', updateCustomRatio);
-        customH.addEventListener('input', updateCustomRatio);
+        // Padding & Background
+        function updatePaddingVal() {
+            const val = document.getElementById('canvas-padding').value;
+            document.getElementById('padding-val-badge').textContent = `${val}px`;
+            document.getElementById('padding-bg-row').style.display = val > 0 ? 'flex' : 'none';
+            updatePipeline();
+        }
 
-        // Format and Quality Settings
-        const formatSelect = document.getElementById('output-format');
-        const qualityGroup = document.getElementById('quality-group');
-        const qualityInput = document.getElementById('output-quality');
-        const qualityVal = document.getElementById('quality-val');
+        // Color & Enhance Adjustments
+        function updateColorVal(type) {
+            const val = document.getElementById(`adj-${type}`).value;
+            const badge = document.getElementById(`val-${type}`);
+            if (type === 'sharpen') badge.textContent = `${val}%`;
+            else badge.textContent = `${val > 0 ? '+' : ''}${val}%`;
+            updatePipeline();
+        }
 
-        formatSelect.addEventListener('change', () => {
-            const fmt = formatSelect.value;
-            // PNG is lossless, disable quality slider
+        // Watermark Controls
+        function handleWmTypeChange() {
+            const type = document.getElementById('wm-type').value;
+            document.getElementById('wm-text-group').classList.toggle('hidden', type !== 'text');
+            document.getElementById('wm-image-group').classList.toggle('hidden', type !== 'image');
+            updatePipeline();
+        }
+
+        function handleWmLayoutChange() {
+            const mode = document.getElementById('wm-layout-mode').value;
+            document.getElementById('wm-grid-wrapper').classList.toggle('hidden', mode !== 'grid');
+            updatePipeline();
+        }
+
+        function updateWmVal(type) {
+            const val = document.getElementById(`wm-${type}`).value;
+            const badge = document.getElementById(`val-wm-${type}`);
+            if (type === 'size') badge.textContent = `${val}px`;
+            else if (type === 'opacity') badge.textContent = `${val}%`;
+            updatePipeline();
+        }
+
+        // 9-Grid Position Picker
+        let currentWmPos = 'bottom-right';
+        const gridPosBtns = document.querySelectorAll('.grid-pos-btn');
+        gridPosBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                gridPosBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentWmPos = btn.dataset.pos;
+                updatePipeline();
+            });
+        });
+
+        function handleWmLogoUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    watermarkLogoImg = img;
+                    updatePipeline();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Rename Chips
+        function insertRenameTag(tag) {
+            const input = document.getElementById('rename-pattern');
+            input.value += tag;
+            updateRenamePreview();
+        }
+
+        function updateRenamePreview() {
+            const pattern = document.getElementById('rename-pattern').value;
+            const fmt = document.getElementById('output-format').value;
+            let ext = 'jpg';
+            if (fmt === 'image/png') ext = 'png';
+            else if (fmt === 'image/webp') ext = 'webp';
+            
+            const dummy = generateFilename('example.jpg', 1920, 1080, 1, pattern, ext);
+            document.getElementById('rename-preview-text').textContent = dummy;
+        }
+
+        function handleFormatChange() {
+            const fmt = document.getElementById('output-format').value;
+            const qGroup = document.getElementById('quality-group');
             if (fmt === 'image/png') {
-                qualityGroup.style.opacity = '0.5';
-                qualityInput.disabled = true;
+                qGroup.style.opacity = '0.4';
+                document.getElementById('output-quality').disabled = true;
             } else {
-                qualityGroup.style.opacity = '1';
-                qualityInput.disabled = false;
+                qGroup.style.opacity = '1';
+                document.getElementById('output-quality').disabled = false;
             }
-        });
+            updateRenamePreview();
+            updatePipeline();
+        }
 
-        qualityInput.addEventListener('input', () => {
-            qualityVal.textContent = `${qualityInput.value}%`;
-        });
+        function updateQualityVal() {
+            const val = document.getElementById('output-quality').value;
+            document.getElementById('quality-val').textContent = `${val}%`;
+            updatePipeline();
+        }
 
-        // File Handling
+        // File Management
         function handleFiles(newFiles) {
             for (let i = 0; i < newFiles.length; i++) {
                 if (newFiles[i].type.startsWith('image/')) {
                     files.push(newFiles[i]);
                 }
             }
-            updateGallery();
+            updateUIState();
         }
 
         function removeFile(index) {
             files.splice(index, 1);
-            updateGallery();
+            if (selectedIndex >= files.length) selectedIndex = Math.max(0, files.length - 1);
+            updateUIState();
         }
-        
-        // Expose removeFile to global so onclick works
         window.removeFile = removeFile;
+
+        function clearAllFiles() {
+            files = [];
+            selectedIndex = 0;
+            updateUIState();
+        }
 
         function getFileCountString(count) {
             const lang = localStorage.getItem('preferredLang') || (navigator.language.toLowerCase().includes('zh') ? 'zh' : 'en');
-            if (lang === 'zh') {
-                return `${count} 个文件已选`;
-            }
+            if (lang === 'zh') return `${count} 个文件已选`;
             return `${count} file${count > 1 ? 's' : ''} selected`;
         }
 
         window.onLanguageChange = function(lang) {
-            if (files.length > 0) {
-                fileCountEl.textContent = getFileCountString(files.length);
-            }
+            fileCountEl.textContent = getFileCountString(files.length);
         };
 
-        function updateGallery() {
-            gallery.innerHTML = '';
-            
+        function updateUIState() {
             if (files.length > 0) {
                 dropZone.classList.add('has-files');
-                galleryContainer.classList.add('active');
                 btnProcess.disabled = false;
+                btnClear.classList.remove('hidden');
+                btnAddMore.classList.remove('hidden');
+                viewTabsBar.style.display = 'flex';
+                btnDownloadSingle.classList.toggle('hidden', currentView !== 'compare');
                 fileCountEl.textContent = getFileCountString(files.length);
+                renderGallery();
+                if (currentView === 'compare') renderLiveCompare();
             } else {
                 dropZone.classList.remove('has-files');
                 galleryContainer.classList.remove('active');
+                compareContainer.classList.remove('active');
                 btnProcess.disabled = true;
+                btnClear.classList.add('hidden');
+                btnAddMore.classList.add('hidden');
+                viewTabsBar.style.display = 'none';
+                btnDownloadSingle.classList.add('hidden');
+                fileCountEl.textContent = getFileCountString(0);
             }
+        }
+
+        function switchView(view) {
+            currentView = view;
+            tabGallery.classList.toggle('active', view === 'gallery');
+            tabCompare.classList.toggle('active', view === 'compare');
+            galleryContainer.classList.toggle('active', view === 'gallery');
+            compareContainer.classList.toggle('active', view === 'compare');
+            btnDownloadSingle.classList.toggle('hidden', view !== 'compare');
+
+            if (view === 'compare') {
+                renderLiveCompare();
+            }
+        }
+
+        function selectForCompare(index) {
+            selectedIndex = index;
+            switchView('compare');
+        }
+
+        function renderGallery() {
+            gallery.innerHTML = '';
+            if (currentView === 'gallery') galleryContainer.classList.add('active');
 
             files.forEach((file, index) => {
                 const url = URL.createObjectURL(file);
-                
                 const card = document.createElement('div');
-                card.className = 'image-card';
-                
-                // Using padding-top trick for aspect ratio on the wrapper
-                let padTop = (1 / currentRatio) * 100;
-                
+                card.className = `image-card ${index === selectedIndex ? 'selected' : ''}`;
+                card.onclick = () => selectForCompare(index);
+
                 card.innerHTML = `
-                    <button class="remove-btn" onclick="removeFile(${index})">&times;</button>
-                    <div class="thumb-wrapper" style="padding-top: ${padTop}%">
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeFile(${index})">&times;</button>
+                    <div class="thumb-wrapper">
                         <img src="${url}" alt="${file.name}">
+                        <div class="compare-hint" data-i18n="bc_badge_compare">Click to Compare</div>
                     </div>
-                    <div class="info">${file.name}</div>
+                    <div class="info">
+                        <div class="name">${file.name}</div>
+                        <div class="dimensions">${(file.size / (1024 * 1024)).toFixed(2)} MB</div>
+                    </div>
                 `;
                 gallery.appendChild(card);
             });
         }
 
-        function updateThumbnailsRatio() {
-            const wrappers = document.querySelectorAll('.thumb-wrapper');
-            let padTop = (1 / currentRatio) * 100;
-            wrappers.forEach(w => {
-                w.style.paddingTop = `${padTop}%`;
+        // ==========================================
+        // 核心流水线图像处理引擎 (Pipeline Engine)
+        // ==========================================
+        async function runPipelineOnImage(imageSource) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const origW = img.width;
+                    const origH = img.height;
+
+                    // 1. 尺寸与裁切 (Size & Crop)
+                    let isCropEnabled = document.getElementById('toggle-crop').checked;
+                    let targetRatio = isCropEnabled ? currentRatio : 'orig';
+                    
+                    let sWidth = origW;
+                    let sHeight = origH;
+
+                    if (targetRatio !== 'orig') {
+                        const imgRatio = origW / origH;
+                        if (Math.abs(imgRatio - targetRatio) > 0.001) {
+                            if (imgRatio > targetRatio) {
+                                sWidth = Math.round(origH * targetRatio);
+                            } else {
+                                sHeight = Math.round(origW / targetRatio);
+                            }
+                        }
+                    }
+
+                    const sx = Math.round((origW - sWidth) / 2);
+                    const sy = Math.round((origH - sHeight) / 2);
+
+                    // 计算缩放 (Resize)
+                    let dWidth = sWidth;
+                    let dHeight = sHeight;
+
+                    if (isCropEnabled) {
+                        const resizeMode = document.getElementById('resize-mode').value;
+                        const resizeDim = parseFloat(document.getElementById('resize-dim').value) || 2000;
+
+                        if (resizeMode === 'long') {
+                            if (Math.max(sWidth, sHeight) > resizeDim) {
+                                const scale = resizeDim / Math.max(sWidth, sHeight);
+                                dWidth = Math.round(sWidth * scale);
+                                dHeight = Math.round(sHeight * scale);
+                            }
+                        } else if (resizeMode === 'width') {
+                            const scale = resizeDim / sWidth;
+                            dWidth = Math.round(resizeDim);
+                            dHeight = Math.round(sHeight * scale);
+                        } else if (resizeMode === 'height') {
+                            const scale = resizeDim / sHeight;
+                            dHeight = Math.round(resizeDim);
+                            dWidth = Math.round(sWidth * scale);
+                        } else if (resizeMode === 'percent') {
+                            const scale = resizeDim / 100;
+                            dWidth = Math.round(sWidth * scale);
+                            dHeight = Math.round(sHeight * scale);
+                        }
+                    }
+
+                    // 留白 (Padding)
+                    let padding = isCropEnabled ? parseInt(document.getElementById('canvas-padding').value) || 0 : 0;
+                    let canvasW = dWidth + padding * 2;
+                    let canvasH = dHeight + padding * 2;
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = canvasW;
+                    canvas.height = canvasH;
+                    const ctx = canvas.getContext('2d');
+
+                    // 填充背景
+                    if (padding > 0) {
+                        const bgMode = document.getElementById('padding-bg-mode').value;
+                        if (bgMode !== 'transparent') {
+                            ctx.fillStyle = bgMode;
+                            ctx.fillRect(0, 0, canvasW, canvasH);
+                        }
+                    }
+
+                    // 2. 绘制基础图像并应用滤镜
+                    let isColorEnabled = document.getElementById('toggle-color').checked;
+                    if (isColorEnabled) {
+                        const b = 100 + parseInt(document.getElementById('adj-brightness').value);
+                        const c = 100 + parseInt(document.getElementById('adj-contrast').value);
+                        const s = 100 + parseInt(document.getElementById('adj-saturation').value);
+                        const filterMode = document.getElementById('color-filter-mode').value;
+
+                        let filterStr = `brightness(${b}%) contrast(${c}%) saturate(${s}%)`;
+                        if (filterMode === 'grayscale') filterStr += ' grayscale(100%)';
+                        else if (filterMode === 'invert') filterStr += ' invert(100%)';
+                        else if (filterMode === 'sepia') filterStr += ' sepia(100%)';
+
+                        ctx.filter = filterStr;
+                    }
+
+                    ctx.drawImage(img, sx, sy, sWidth, sHeight, padding, padding, dWidth, dHeight);
+                    ctx.filter = 'none'; // 重置 filter
+
+                    // 3. USM 锐化 (Sharpening)
+                    if (isColorEnabled) {
+                        const sharpenVal = parseInt(document.getElementById('adj-sharpen').value);
+                        if (sharpenVal > 0) {
+                            applyUSMSharpen(ctx, padding, padding, dWidth, dHeight, sharpenVal / 100);
+                        }
+                    }
+
+                    // 4. 水印绘制 (Watermark)
+                    let isWatermarkEnabled = document.getElementById('toggle-watermark').checked;
+                    if (isWatermarkEnabled) {
+                        applyWatermark(ctx, canvasW, canvasH);
+                    }
+
+                    resolve({ canvas, width: canvasW, height: canvasH });
+                };
+                img.src = typeof imageSource === 'string' ? imageSource : URL.createObjectURL(imageSource);
             });
         }
 
-        // Processing Logic
-        btnProcess.addEventListener('click', async () => {
+        // USM 卷积锐化算法
+        function applyUSMSharpen(ctx, x, y, w, h, strength) {
+            try {
+                const imgData = ctx.getImageData(x, y, w, h);
+                const src = imgData.data;
+                const output = ctx.createImageData(w, h);
+                const dst = output.data;
+
+                // 3x3 锐化卷积核权重
+                const amount = strength * 1.5;
+                const center = 1 + 4 * amount;
+                const edge = -amount;
+
+                for (let row = 1; row < h - 1; row++) {
+                    for (let col = 1; col < w - 1; col++) {
+                        const idx = (row * w + col) * 4;
+                        for (let c = 0; c < 3; c++) {
+                            const val = center * src[idx + c] +
+                                edge * (src[idx - 4 + c] + src[idx + 4 + c] + src[idx - w * 4 + c] + src[idx + w * 4 + c]);
+                            dst[idx + c] = Math.min(255, Math.max(0, val));
+                        }
+                        dst[idx + 3] = src[idx + 3];
+                    }
+                }
+                ctx.putImageData(output, x, y);
+            } catch (e) {
+                console.warn("Sharpening skipped due to CORS/Security:", e);
+            }
+        }
+
+        // 水印渲染
+        function applyWatermark(ctx, w, h) {
+            const type = document.getElementById('wm-type').value;
+            const opacity = parseInt(document.getElementById('wm-opacity').value) / 100;
+            const size = parseInt(document.getElementById('wm-size').value);
+            const layout = document.getElementById('wm-layout-mode').value;
+
+            ctx.save();
+            ctx.globalAlpha = opacity;
+
+            if (type === 'text') {
+                const text = document.getElementById('wm-text-val').value || '© Studio';
+                ctx.font = `600 ${size}px 'Inter', sans-serif`;
+                ctx.fillStyle = '#ffffff';
+                ctx.textBaseline = 'middle';
+                const textMetrics = ctx.measureText(text);
+                const textW = textMetrics.width;
+                const textH = size;
+
+                if (layout === 'tile') {
+                    // 全图平铺
+                    ctx.rotate(-25 * Math.PI / 180);
+                    const stepX = textW + 100;
+                    const stepY = textH + 80;
+                    for (let x = -w; x < w * 2; x += stepX) {
+                        for (let y = -h; y < h * 2; y += stepY) {
+                            ctx.fillText(text, x, y);
+                        }
+                    }
+                } else {
+                    // 9宫格定位
+                    const margin = 32;
+                    let posX = margin;
+                    let posY = margin + textH / 2;
+
+                    if (currentWmPos.includes('right')) posX = w - textW - margin;
+                    else if (currentWmPos.includes('center')) posX = (w - textW) / 2;
+
+                    if (currentWmPos.includes('bottom')) posY = h - margin - textH / 2;
+                    else if (currentWmPos.includes('top')) posY = margin + textH / 2;
+                    else if (currentWmPos === 'center') posY = h / 2;
+
+                    // 阴影提高可读性
+                    ctx.shadowColor = 'rgba(0,0,0,0.7)';
+                    ctx.shadowBlur = 6;
+                    ctx.fillText(text, posX, posY);
+                }
+            } else if (type === 'image' && watermarkLogoImg) {
+                const logoW = (size / 100) * w;
+                const logoH = logoW * (watermarkLogoImg.height / watermarkLogoImg.width);
+
+                if (layout === 'tile') {
+                    const stepX = logoW + 80;
+                    const stepY = logoH + 80;
+                    for (let x = 0; x < w; x += stepX) {
+                        for (let y = 0; y < h; y += stepY) {
+                            ctx.drawImage(watermarkLogoImg, x, y, logoW, logoH);
+                        }
+                    }
+                } else {
+                    const margin = 32;
+                    let posX = margin;
+                    let posY = margin;
+
+                    if (currentWmPos.includes('right')) posX = w - logoW - margin;
+                    else if (currentWmPos.includes('center')) posX = (w - logoW) / 2;
+
+                    if (currentWmPos.includes('bottom')) posY = h - logoH - margin;
+                    else if (currentWmPos.includes('top')) posY = margin;
+                    else if (currentWmPos === 'center') posY = (h - logoH) / 2;
+
+                    ctx.drawImage(watermarkLogoImg, posX, posY, logoW, logoH);
+                }
+            }
+
+            ctx.restore();
+        }
+
+        // 文件名生成
+        function generateFilename(origName, w, h, index, pattern, outExt) {
+            const baseName = origName.substring(0, origName.lastIndexOf('.')) || origName;
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+            const idxStr = String(index).padStart(2, '0');
+
+            let result = pattern
+                .replace(/\[name\]/g, baseName)
+                .replace(/\[w\]/g, w)
+                .replace(/\[h\]/g, h)
+                .replace(/\[index\]/g, idxStr)
+                .replace(/\[date\]/g, dateStr);
+
+            if (!result) result = baseName;
+            return `${result}.${outExt}`;
+        }
+
+        // 实时对比视窗更新
+        let debounceTimer = null;
+        function updatePipeline() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                updateRenamePreview();
+                if (currentView === 'compare' && files.length > 0) {
+                    renderLiveCompare();
+                }
+            }, 50);
+        }
+
+        async function renderLiveCompare() {
+            if (files.length === 0) return;
+            const file = files[selectedIndex];
+            const url = URL.createObjectURL(file);
+            document.getElementById('compare-img-before').src = url;
+
+            const res = await runPipelineOnImage(file);
+            const canvasAfter = document.getElementById('compare-canvas-after');
+            canvasAfter.width = res.width;
+            canvasAfter.height = res.height;
+            const ctx = canvasAfter.getContext('2d');
+            ctx.drawImage(res.canvas, 0, 0);
+
+            syncWipeDivider();
+        }
+
+        // 帘幕拖拽对比控制
+        const wipeHandle = document.getElementById('wipe-handle');
+        const compareStage = document.getElementById('compare-stage');
+        const compareLayerAfter = document.getElementById('compare-layer-after');
+        const compareInnerWrap = document.getElementById('compare-inner-wrap');
+
+        function syncWipeDivider() {
+            const stageW = compareStage.clientWidth;
+            compareLayerAfter.style.width = `${wipePercent}%`;
+            compareInnerWrap.style.width = `${stageW}px`;
+        }
+
+        window.addEventListener('resize', syncWipeDivider);
+
+        function handleWipeMove(e) {
+            if (!isDraggingWipe) return;
+            const rect = compareStage.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let percent = ((clientX - rect.left) / rect.width) * 100;
+            wipePercent = Math.max(0, Math.min(100, percent));
+            syncWipeDivider();
+        }
+
+        function endWipeDrag() {
+            isDraggingWipe = false;
+            window.removeEventListener('mousemove', handleWipeMove);
+            window.removeEventListener('mouseup', endWipeDrag);
+            window.removeEventListener('touchmove', handleWipeMove);
+            window.removeEventListener('touchend', endWipeDrag);
+        }
+
+        wipeHandle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isDraggingWipe = true;
+            window.addEventListener('mousemove', handleWipeMove);
+            window.addEventListener('mouseup', endWipeDrag);
+        });
+
+        wipeHandle.addEventListener('touchstart', (e) => {
+            isDraggingWipe = true;
+            window.addEventListener('touchmove', handleWipeMove);
+            window.addEventListener('touchend', endWipeDrag);
+        });
+
+        // 单图直接下载
+        async function downloadCurrentPreview() {
+            if (files.length === 0) return;
+            const file = files[selectedIndex];
+            const res = await runPipelineOnImage(file);
+            
+            const fmt = document.getElementById('output-format').value;
+            const quality = parseInt(document.getElementById('output-quality').value) / 100;
+            let mime = fmt === 'original' ? file.type : fmt;
+            let ext = 'jpg';
+            if (mime === 'image/png') ext = 'png';
+            else if (mime === 'image/webp') ext = 'webp';
+
+            const pattern = document.getElementById('rename-pattern').value;
+            const outName = generateFilename(file.name, res.width, res.height, selectedIndex + 1, pattern, ext);
+
+            res.canvas.toBlob((blob) => {
+                saveAs(blob, outName);
+            }, mime, quality);
+        }
+
+        // 批量导出 ZIP
+        async function processBatch() {
             if (files.length === 0) return;
             
             const overlay = document.getElementById('progress-overlay');
@@ -810,31 +1937,25 @@
             progressBar.value = 0;
             
             const zip = new JSZip();
-            const format = formatSelect.value;
-            const quality = parseInt(qualityInput.value) / 100;
+            const format = document.getElementById('output-format').value;
+            const quality = parseInt(document.getElementById('output-quality').value) / 100;
+            const pattern = document.getElementById('rename-pattern').value;
 
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if (curLang === 'zh') {
-                    progressText.textContent = `正在处理第 ${i + 1} / ${files.length} 张图片...`;
-                } else {
-                    progressText.textContent = `Processing ${i + 1} of ${files.length}...`;
-                }
+                if (curLang === 'zh') progressText.textContent = `正在处理第 ${i + 1} / ${files.length} 张图片...`;
+                else progressText.textContent = `Processing ${i + 1} of ${files.length}...`;
                 
                 try {
-                    const blob = await processImage(file, currentRatio, format, quality);
-                    
-                    // Determine new extension
-                    let ext = file.name.split('.').pop();
+                    const res = await runPipelineOnImage(file);
                     let mime = format === 'original' ? file.type : format;
-                    
-                    if (mime === 'image/jpeg') ext = 'jpg';
-                    else if (mime === 'image/png') ext = 'png';
+                    let ext = 'jpg';
+                    if (mime === 'image/png') ext = 'png';
                     else if (mime === 'image/webp') ext = 'webp';
+
+                    const newName = generateFilename(file.name, res.width, res.height, i + 1, pattern, ext);
                     
-                    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-                    const newName = `${baseName}_crop.${ext}`;
-                    
+                    const blob = await new Promise(r => res.canvas.toBlob(r, mime, quality));
                     zip.file(newName, blob);
                 } catch (e) {
                     console.error("Error processing " + file.name, e);
@@ -846,52 +1967,8 @@
             progressText.textContent = curLang === 'zh' ? "正在打包生成 ZIP 文件..." : "Generating ZIP archive...";
             
             zip.generateAsync({ type: "blob" }).then(function(content) {
-                saveAs(content, "cropped_images.zip");
+                saveAs(content, "processed_images.zip");
                 overlay.classList.add('hidden');
-            });
-        });
-
-        function processImage(file, targetRatio, format, quality) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => {
-                    const imgW = img.width;
-                    const imgH = img.height;
-                    const imgRatio = imgW / imgH;
-                    
-                    let sWidth = imgW;
-                    let sHeight = imgH;
-
-                    // Calculate crop dimensions
-                    if (Math.abs(imgRatio - targetRatio) > 0.001) {
-                        if (imgRatio > targetRatio) {
-                            sWidth = imgH * targetRatio;
-                        } else {
-                            sHeight = imgW / targetRatio;
-                        }
-                    }
-                    
-                    sWidth = Math.round(sWidth);
-                    sHeight = Math.round(sHeight);
-                    const sx = Math.round((imgW - sWidth) / 2);
-                    const sy = Math.round((imgH - sHeight) / 2);
-
-                    const canvas = document.createElement('canvas');
-                    canvas.width = sWidth;
-                    canvas.height = sHeight;
-                    const ctx = canvas.getContext('2d');
-                    
-                    ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, sWidth, sHeight);
-                    
-                    let outMime = format === 'original' ? file.type : format;
-                    
-                    canvas.toBlob((blob) => {
-                        resolve(blob);
-                        URL.revokeObjectURL(img.src);
-                    }, outMime, quality);
-                };
-                img.onerror = reject;
-                img.src = URL.createObjectURL(file);
             });
         }
     </script>

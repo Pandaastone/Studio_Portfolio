@@ -1330,6 +1330,12 @@
             'interior', 'int', 'detail', 'iso'
         ];
 
+        const IGNORED_TAGS = [
+            'result', 'final', 'render', 'output', 'export', 'comp', 'composite',
+            'autocomposite', 'pipeline', 'preview', 'thumb', 'thumbnail', 'v01', 'v02',
+            'v1', 'v2', 'v3', 'web', 'hd', '4k', '2k', '8k', 'clean'
+        ];
+
         const KNOWN_COLORS = [
             'black', 'white', 'silver', 'grey', 'gray', 'red', 'blue', 'green', 
             'yellow', 'pink', 'purple', 'orange', 'brown', 'gold', 'bronze', 
@@ -1337,7 +1343,7 @@
             'nardo', 'chalk', 'ruby', 'violet', 'arctic', 'metallic', 'matte'
         ];
 
-        const CATEGORY_TAGS = ['ext', 'int', 'exterior', 'interior', 'cam', 'render', 'studio', 'v01', 'v02', 'final', 'web'];
+        const CATEGORY_TAGS = ['ext', 'exterior', 'interior', 'studio', 'cam'];
 
         const COLOR_MAP = {
             'black': '#111111', 'jet_black': '#0a0a0a', 'matte_black': '#222222',
@@ -1368,7 +1374,7 @@
         }
 
         // ==========================================
-        // 核心：智能汽车文件名语义解析器 (Semantic Parser)
+        // 核心：智能汽车文件名语义解析器 (Robust Semantic Parser)
         // ==========================================
         function parseCarFilename(filename) {
             const dotIdx = filename.lastIndexOf('.');
@@ -1383,41 +1389,57 @@
             let color = null;
             let category = null;
 
-            const lastToken = rawTokens[rawTokens.length - 1];
-            const secondLastToken = rawTokens.length >= 2 ? rawTokens[rawTokens.length - 2] : '';
+            // 1. 优先过滤掉无意义的后缀/通用标签 (如 result, final, render, output, web 等)
+            tokens = tokens.filter(t => !IGNORED_TAGS.includes(t.toLowerCase()));
 
-            if (['45', '34'].includes(lastToken) && ['front', 'rear', 'f', 'r'].includes(secondLastToken.toLowerCase())) {
-                view = (secondLastToken.toLowerCase() + lastToken);
-                tokens.splice(tokens.length - 2, 2);
-            } else {
-                view = lastToken.toLowerCase();
-                tokens.pop();
+            // 2. 识别视角 (View) —— 支持双词组合视角 (如 front_45, rear_34) 与单词视角 (front45, side, rear...)
+            for (let i = 0; i < tokens.length - 1; i++) {
+                const t1 = tokens[i].toLowerCase();
+                const t2 = tokens[i + 1].toLowerCase();
+                if (['front', 'rear', 'f', 'r'].includes(t1) && ['45', '34'].includes(t2)) {
+                    view = t1 + t2;
+                    tokens.splice(i, 2);
+                    break;
+                }
             }
 
+            if (!view) {
+                const viewIdx = tokens.findIndex(t => KNOWN_VIEWS.includes(t.toLowerCase()));
+                if (viewIdx !== -1) {
+                    view = tokens[viewIdx].toLowerCase();
+                    tokens.splice(viewIdx, 1);
+                }
+            }
+
+            // 3. 识别轮毂 (Wheel / Rim)
             const wheelIdx = tokens.findIndex(t => /^wheel\d*$/i.test(t) || /^rim\d*$/i.test(t) || /^w\d+$/i.test(t));
             if (wheelIdx !== -1) {
                 wheel = tokens[wheelIdx].toLowerCase();
                 tokens.splice(wheelIdx, 1);
             }
 
+            // 4. 识别刹车卡钳 (Brake / Caliper)
             const brakeIdx = tokens.findIndex(t => /^brake\d*$/i.test(t) || /^caliper\d*$/i.test(t) || /^b\d+$/i.test(t));
             if (brakeIdx !== -1) {
                 brake = tokens[brakeIdx].toLowerCase();
                 tokens.splice(brakeIdx, 1);
             }
 
+            // 5. 识别车漆颜色 (Color)
             const colorIdx = tokens.findIndex(t => KNOWN_COLORS.includes(t.toLowerCase()));
             if (colorIdx !== -1) {
                 color = tokens[colorIdx].toLowerCase();
                 tokens.splice(colorIdx, 1);
             }
 
+            // 6. 识别分类标签 (EXT / INT)
             const catIdx = tokens.findIndex(t => CATEGORY_TAGS.includes(t.toLowerCase()));
             if (catIdx !== -1) {
                 category = tokens[catIdx].toUpperCase();
                 tokens.splice(catIdx, 1);
             }
 
+            // 7. 若未匹配已知颜色词库，取最后一个剩余词作为颜色容错
             if (!color) {
                 if (tokens.length >= 2) {
                     color = tokens.pop().toLowerCase();
@@ -1427,6 +1449,7 @@
                 }
             }
 
+            // 8. 剩余全部词段合并为车型名称 (Model)
             let model = tokens.length > 0 ? tokens.join(' ') : 'AUTO';
 
             if (!wheel) wheel = 'wheel1';

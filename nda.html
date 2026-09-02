@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <!-- Google tag (gtag.js) -->
@@ -16,6 +16,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" type="image/png" href="images/favicon.jpg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="lightbox.css">
     <style>
         :root {
             --bg-color: #050505;
@@ -1063,66 +1064,30 @@
         // 机密项目数据定义
         const privateProjectsData = [
             {
-                id: "project-aegir",
-                title: { en: "Project Aegir (Confidential)", zh: "Aegir 计划 (机密级)" },
-                category: { en: "Automotive CGI / TVC", zh: "汽车 CGI / 商业广告" },
-                image: "images/奥迪.jpg",
-                video: "images/audi_beijing/audi-boxtransfer.mp4",
+                id: "project-oppo",
+                title: { en: "OPPO Acoustic & Smart Ecosystem", zh: "OPPO 声学与智能生态" },
+                category: { en: "3C Product / Visual CGI & Scenarios", zh: "3C 数码 / 场景化 CGI 视觉" },
+                image: "images/oppo/final/0522 - 8K - 空间音效_KPOP现场_V21_result.webp",
                 meta: {
-                    client: { en: "Confidential German Luxury Auto Brand", zh: "某豪华德系汽车品牌" },
-                    role: { en: "Lead CGI & Lighting Artist", zh: "三维渲染主美 / 灯光师" },
-                    software: "Cinema 4D / Redshift / Houdini / After Effects",
-                    status: { en: "NDA Protected - Internal Review Only", zh: "受 NDA 协议保护 - 仅供业务审阅" }
+                    client: { en: "OPPO", zh: "OPPO" },
+                    role: { en: "Lead CGI Visual & Lighting Artist", zh: "AIGC" },
+                    software: "Photoshop"
                 },
                 description: {
-                    en: "A confidential TVC visualization project for an unreleased flagship Electric SUV. We engineered high-fidelity physics-based shaders for active aerodynamic carbon fiber parts, and simulated full volumetric fog environments to frame the car's launch silhouette. Due to strict non-disclosure terms, specific brand markings and body lines have been abstractly modified.",
-                    zh: "为某款未发布的旗舰级纯电 SUV 研发制作的机密发布会预热 TVC 视觉物料。我们为该车型的可主动变形碳纤维气动套件开发了高精度物理着色器，并使用三维体积雾模拟车身穿梭的轮廓。由于严格的保密协议，车标及敏感车身线条已进行抽象与替代处理。"
+                    en: "A comprehensive series of 8K AIGC key visual scenes crafted for OPPO's flagship smart acoustic products and ecosystem interconnectivity. The visualizations span diverse real-world lifestyle scenarios—including immersive spatial audio K-POP live performance, real-time smart ANC subway commuting, low-latency gaming audio, and seamless cross-device multi-terminal ecosystem switching in a library environment, conveying the acoustic depth and sophisticated product aesthetics.",
+                    zh: "为 OPPO 旗舰声学产品与智能互联生态打造的一套高精度 8K AIGC平面视觉。整套作品覆盖多元生活场景——包括沉浸式 K-POP 现场空间音效、地铁通勤实时智能降噪、超低延迟电竞游戏音效，以及图书馆多设备无缝切换互联等，精准传达声学科技质感与前沿智能生态体验。"
                 },
                 showcase: [
-                    { type: "video", src: "images/audi_beijing/audi-boxtransfer.mp4", hasControls: false }, // 用户要求不带控制条，自动无声循环
-                    { type: "image", src: "images/奥迪.jpg" }
-                ]
-            },
-            {
-                id: "project-horizon",
-                title: { en: "Project Horizon (Confidential)", zh: "Horizon 计划 (机密级)" },
-                category: { en: "3C Product / Motion Design", zh: "3C 数码 / 动态设计" },
-                image: "images/cemoy/CEMOY3.webp",
-                video: "images/cemoy/CEMOY_1.mp4",
-                meta: {
-                    client: { en: "Global Smartphone Manufacturer", zh: "头部智能手机品牌" },
-                    role: { en: "3D Motion Graphics Artist", zh: "三维动态设计师" },
-                    software: "Cinema 4D / Octane Render / After Effects",
-                    status: { en: "NDA Protected - Client Pitch Only", zh: "受 NDA 协议保护 - 仅限提案审阅" }
-                },
-                description: {
-                    en: "Creative dynamic sequence demonstrating the complex internal hinge structure and folding mechanism of a next-generation folding screen device. This project involved high-resolution CAD conversion, mechanical animation rigging, and micro-material detailing to achieve premium visual quality. Real brand assets have been replaced with neutral, high-end CGI models.",
-                    zh: "一款下一代折叠屏手机复杂铰链结构及折叠动态的创意展示片。项目包含高精度工业 CAD 数据转换、精密机械传动动画绑定，以及微观材质的精细刻画。为了符合保密要求，片中已用中性的概念化高端机身模型替代真实品牌机型。"
-                },
-                showcase: [
-                    { type: "video", src: "images/cemoy/CEMOY_1.mp4", hasControls: false }, // 自动循环无控制条
-                    { type: "image", src: "images/cemoy/CEMOY3.webp" }
-                ]
-            },
-            {
-                id: "project-aura",
-                title: { en: "Project Aura (Confidential)", zh: "Aura 计划 (机密级)" },
-                category: { en: "VFX / Fluid Dynamics", zh: "流体特效 / 创意视觉" },
-                image: "images/byd-sealev.png",
-                video: "images/beiq-xmy/BeiQ-final.webm",
-                meta: {
-                    client: { en: "Premium Skincare Group", zh: "高端美妆护肤集团" },
-                    role: { en: "VFX / Fluid Simulation Artist", zh: "特技 / 流体模拟视觉师" },
-                    software: "Houdini / Cinema 4D / Redshift / Nuke",
-                    status: { en: "NDA Protected - Portfolio Pitch Only", zh: "受 NDA 协议保护 - 仅限作品集展示" }
-                },
-                description: {
-                    en: "An abstract CGI representation of cellular rejuvenation and micro-fluid penetration designed for an upcoming high-end serum. The simulation utilized advanced Houdini FLIP fluid solver tools to depict how active ingredients penetrate deep skin barrier layers, ensuring physically plausible dynamics combined with premium aesthetic lighting. Brand labels and packaging are omitted.",
-                    zh: "一款即将上市的高端修护精华液细胞级渗透及微米流体吸收过程的抽象 CGI 特效。项目采用 Houdini FLIP 流体求解器进行模拟，表现活性成分穿透肌肤屏障的过程，兼顾了真实的物理运动学规律和高端影棚布光质感。产品外包装及字样已做省略处理。"
-                },
-                showcase: [
-                    { type: "video", src: "images/beiq-xmy/BeiQ-final.webm", hasControls: true }, // 用户要求带控制条
-                    { type: "image", src: "images/byd-sealev.png" }
+                    { type: "image", src: "images/oppo/final/0522 - 8K - 空间音效_KPOP现场_V21_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 -【8K】实时智能降噪_地铁通勤_V21_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 -【8K】场景一_地铁场景_V25_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 - 【8K】2-ANC降噪_咖啡厅_V03.png" },
+                    { type: "image", src: "images/oppo/final/0524 - 8K_场景三_咖啡厅学习_V26 - A_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 -【8K】3-低延迟&音效_打游戏_V21_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 - 8K-场景五_游戏互联_V22_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 - 8K-设备切换互联-图书馆_V21_result.webp" },
+                    { type: "image", src: "images/oppo/final/0523 - 8K-场景二_网红店打卡_V32_result.webp" },
+                    { type: "image", src: "images/oppo/final/0522 -【8K】场景四_街头听音乐_V27_result.webp" }
                 ]
             }
         ];
@@ -1289,7 +1254,7 @@
                             </svg>
                         </div>
                         <img src="${item.image}" alt="${item.title[lang]}">
-                        <video src="${item.video}" muted loop playsinline></video>
+                        ${item.video ? `<video src="${item.video}" muted loop playsinline></video>` : ''}
                         <div class="media-shield"></div>
                     </div>
                     <div class="project-info">
@@ -1397,8 +1362,7 @@
             const labels = {
                 client: lang === 'zh' ? '客户品牌' : 'CLIENT',
                 role: lang === 'zh' ? '团队角色' : 'ROLE',
-                software: lang === 'zh' ? '使用软件' : 'SOFTWARE',
-                status: lang === 'zh' ? '机密等级' : 'CLASSIFIED STATUS'
+                software: lang === 'zh' ? '使用软件' : 'SOFTWARE'
             };
 
             contentBody.innerHTML = `
@@ -1424,10 +1388,6 @@
                         <div>
                             <span class="drawer-meta-label">${labels.software}</span>
                             <span class="drawer-meta-value">${project.meta.software}</span>
-                        </div>
-                        <div>
-                            <span class="drawer-meta-label">${labels.status}</span>
-                            <span class="drawer-meta-value warning">${project.meta.status[lang]}</span>
                         </div>
                     </div>
                     <div class="drawer-description">
@@ -1644,6 +1604,10 @@
 
         function handleEscKey(e) {
             if (e.key === 'Escape') {
+                const lightbox = document.getElementById('zs-lightbox');
+                if (lightbox && lightbox.classList.contains('active')) {
+                    return; // 优先让 lightbox 响应并关闭大图，不关闭底层抽屉
+                }
                 closeDrawer();
                 if (window.isTermsValidationMode) {
                     handleTermsDisagree();
@@ -1745,5 +1709,6 @@
     </div>
 
     <script src="lang.js"></script>
+    <script src="lightbox.js"></script>
 </body>
 </html>

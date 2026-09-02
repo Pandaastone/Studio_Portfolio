@@ -1,5 +1,5 @@
 (function () {
-    const mediaSelector = '.content-container .layout-module img, .content-container .layout-module video:not([controls]), .content-container .compare-pair img, .content-container .detail-card img, .content-container .asset-card img';
+    const mediaSelector = '.content-container .layout-module img, .content-container .layout-module video:not([controls]), .content-container .compare-pair img, .content-container .detail-card img, .content-container .asset-card img, .drawer-media-section .media-module img, .drawer-media-section .media-module video:not([controls]), .drawer-hero img';
     const state = {
         items: [],
         index: 0,
@@ -165,7 +165,17 @@
     }
 
     document.addEventListener('click', event => {
-        const media = event.target.closest('img, video');
+        let media = event.target.closest('img, video');
+        if (!media && event.target.classList.contains('media-shield')) {
+            const container = event.target.closest('.media-module, .drawer-hero, .layout-module');
+            if (container) {
+                // 如果是带控制条的自定义视频，交给播放控制，不打开 lightbox
+                if (container.classList.contains('custom-player-wrapper') || container.getAttribute('data-controls-mode') === 'true') {
+                    return;
+                }
+                media = container.querySelector('img, video:not([controls])');
+            }
+        }
         if (!media) return;
 
         const items = collectItems();

@@ -1,10 +1,16 @@
 .content-container .layout-module img,
-.content-container .layout-module video:not([controls]) {
+.content-container .layout-module video:not([controls]),
+.drawer-media-section .media-module img,
+.drawer-media-section .media-module video:not([controls]),
+.drawer-hero img {
     cursor: zoom-in;
 }
 
 .content-container .layout-module img:hover,
-.content-container .layout-module video:not([controls]):hover {
+.content-container .layout-module video:not([controls]):hover,
+.drawer-media-section .media-module img:hover,
+.drawer-media-section .media-module video:not([controls]):hover,
+.drawer-hero img:hover {
     filter: brightness(1.08);
 }
 
@@ -16,7 +22,7 @@
 .zs-lightbox {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 10005;
     display: none;
     align-items: center;
     justify-content: center;
