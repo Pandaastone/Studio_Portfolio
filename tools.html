@@ -107,7 +107,7 @@
 
         /* 页面容器 */
         .tools-wrapper {
-            max-width: 1100px;
+            max-width: 1240px;
             width: 100%;
             display: flex;
             flex-direction: column;
@@ -158,11 +158,11 @@
             line-height: 1.7;
         }
 
-        /* 工具卡片网格 (双列布局) */
+        /* 工具卡片网格 (三列自适应布局) */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 28px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
             width: 100%;
         }
 
@@ -308,7 +308,13 @@
             transform: translateX(4px);
         }
 
-        @media (max-width: 860px) {
+        @media (max-width: 1120px) {
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
             .tools-grid {
                 grid-template-columns: 1fr;
             }
@@ -396,6 +402,35 @@
                     </div>
                 </div>
                 <a href="configurator-auto.html" class="tool-card-action">
+                    <span data-i18n="tool_launch">Launch Tool</span>
+                    <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                </a>
+            </article>
+
+            <!-- Tool 3: 360 Panorama Inspector -->
+            <article class="tool-card">
+                <div>
+                    <div class="tool-card-top">
+                        <div class="tool-icon-wrapper">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
+                        </div>
+                    </div>
+                    <div class="tool-card-body">
+                        <h2 data-i18n="tool_pano_title">360 Panorama Inspector</h2>
+                        <div class="tool-card-kicker" data-i18n="tool_pano_kicker">WebGL Equirectangular & A/B Wipe</div>
+                        <p class="tool-card-desc" data-i18n="tool_pano_desc">
+                            Pure browser-based 360 panorama viewer for automotive CGI interiors and architecture. Drag and drop local 2:1 equirectangular renders directly into viewports. Features hardware-accelerated curtain wipe, synchronized dual-stage, camera angle presets, and 360 snapshot export.
+                        </p>
+                    </div>
+                    <div class="tool-tags">
+                        <span class="tag-pill">360° WebGL Sphere</span>
+                        <span class="tag-pill">A/B Curtain Wipe</span>
+                        <span class="tag-pill">Dual Synchronized Stage</span>
+                        <span class="tag-pill">Drag & Drop Local Files</span>
+                        <span class="tag-pill">Camera Presets</span>
+                    </div>
+                </div>
+                <a href="pano-viewer.html" class="tool-card-action">
                     <span data-i18n="tool_launch">Launch Tool</span>
                     <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                 </a>

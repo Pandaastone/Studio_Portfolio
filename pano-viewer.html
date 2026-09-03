@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KT4Q0CHQKL"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-KT4Q0CHQKL');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>360 Panorama Studio & A/B Inspector | Zachary Shee Studio</title>
+    <meta name="description" content="Local browser-based 360 panorama viewer & A/B inspector for automotive CGI interiors and architecture. Pure local processing, raw color accuracy, and real-time A/B comparison.">
+    <link rel="icon" type="image/png" href="images/favicon.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Three.js Library for local WebGL 360 Sphere rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --stage-bg: #090a0d;
+            --panel-bg: rgba(18, 18, 22, 0.92);
+            --panel-border: rgba(255, 255, 255, 0.12);
+            --soft-border: rgba(255, 255, 255, 0.08);
+            --accent-cyan: #00e5cc;
+            --accent-pink: #ff66cc;
+            --accent-blue: #2f6fff;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --header-h: 72px;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        /* 顶部导航条 */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-h);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+            z-index: 1000;
+            background: rgba(5, 5, 5, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--soft-border);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .back-nav {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+            transition: color 0.25s;
+        }
+        .back-nav:hover { color: white; }
+
+        .nav-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--soft-border);
+        }
+
+        .brand-badge-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-tag {
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(0, 229, 204, 0.12);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 229, 204, 0.3);
+            letter-spacing: 1px;
+        }
+
+        /* 顶部中央：单图模式 vs 对比模式 */
+        .nav-center {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 1. 单图预览时的中央信息徽章与开启对比按钮 */
+        .single-view-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .current-pano-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--soft-border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+            color: #d8d8d8;
+            max-width: 320px;
+        }
+        .current-pano-pill svg {
+            width: 14px;
+            height: 14px;
+            stroke: var(--accent-cyan);
+            flex-shrink: 0;
+        }
+        .current-pano-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+        }
+
+        .btn-enter-compare {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--soft-border);
+            color: #ffffff;
+            font-size: 0.72rem;
+            letter-spacing: 0.8px;
+            font-weight: 600;
+            padding: 7px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s;
+        }
+        .btn-enter-compare:hover {
+            background: var(--accent-cyan);
+            color: #050505;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 4px 14px rgba(0, 229, 204, 0.35);
+        }
+
+        /* 2. 对比模式下的工具栏 (卷帘 / 并排 / 切换 + 退出对比) */
+        .compare-toolbar {
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+        .compare-toolbar.active {
+            display: flex;
+        }
+
+        .compare-modes-capsule {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 4px;
+            border-radius: 24px;
+            border: 1px solid var(--soft-border);
+        }
+
+        .comp-mode-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 0.8px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.22s;
+            white-space: nowrap;
+        }
+        .comp-mode-btn:hover { color: white; background: rgba(255, 255, 255, 0.08); }
+        .comp-mode-btn.active {
+            color: #050505;
+            background: var(--accent-cyan);
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0, 229, 204, 0.35);
+        }
+        .comp-mode-btn svg {
+            width: 13px;
+            height: 13px;
+            stroke: currentColor;
+            stroke-width: 2.2;
+            fill: none;
+        }
+
+        .btn-exit-compare {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #d0d0d0;
+            font-family: inherit;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.22s;
+        }
+        .btn-exit-compare:hover {
+            background: rgba(255, 100, 100, 0.18);
+            border-color: #ff6666;
+            color: #ff8888;
+        }
+
+        /* 顶部右侧快捷按钮与语言切换 */
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-action-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--soft-border);
+            color: #d0d0d0;
+            font-family: inherit;
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            font-weight: 500;
+            padding: 7px 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s;
+            text-decoration: none;
+        }
+        .nav-action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .nav-action-btn.active {
+            background: rgba(0, 229, 204, 0.16);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+        .nav-action-btn svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .lang-switch-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.72rem;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.04);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--soft-border);
+        }
+        .lang-switch-box span {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .lang-switch-box span:hover { color: #fff; }
+        .lang-switch-box span.active { color: #fff; font-weight: 700; }
+
+        /* 主舞台容器 */
+        .stage-container {
+            position: absolute;
+            top: var(--header-h);
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--stage-bg);
+            overflow: hidden;
+            touch-action: none;
+        }
+
+        /* 渲染 Canvas 视口 */
+        .viewport-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+        }
+        .viewport-layer.is-dragging {
+            cursor: grabbing !important;
+        }
+
+        /* 卷帘滑动分割线 (仅在对比模式-卷帘激活) */
+        .wipe-divider-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ffffff;
+            z-index: 10;
+            cursor: ew-resize;
+            box-shadow: 0 0 16px rgba(0,0,0,0.8), 0 0 10px var(--accent-cyan);
+            touch-action: none;
+            display: none;
+        }
+        .wipe-divider-line.active {
+            display: block;
+        }
+        .wipe-handle-pill {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #ffffff;
+            color: #050505;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.7);
+            border: 2px solid #000000;
+            pointer-events: auto;
+        }
+        .wipe-handle-pill svg {
+            width: 15px;
+            height: 15px;
+            stroke: currentColor;
+            stroke-width: 2.5;
+            fill: none;
+        }
+
+        /* 左右双视口分隔线 (仅在对比模式-并排激活) */
+        .dual-center-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(-50%);
+            z-index: 8;
+            pointer-events: none;
+            display: none;
+        }
+        .dual-center-divider.active {
+            display: block;
+        }
+
+        /* 仅在对比模式下显示的 A/B 版本徽章 */
+        .compare-badge-layer {
+            display: none;
+            pointer-events: none;
+            z-index: 20;
+        }
+        .compare-badge-layer.active {
+            display: block;
+        }
+
+        .version-badge {
+            position: absolute;
+            top: 20px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .badge-a {
+            left: 24px;
+            background: rgba(0, 229, 204, 0.88);
+            color: #050505;
+            border: 1px solid rgba(0, 229, 204, 0.5);
+        }
+        .badge-b {
+            right: 24px;
+            background: rgba(255, 102, 204, 0.88);
+            color: #050505;
+            border: 1px solid rgba(255, 102, 204, 0.5);
+        }
+        .version-badge.side-by-side-b {
+            right: auto;
+            left: calc(50% + 24px);
+        }
+
+        /* 切换对比模式专属：顶部悬浮切图胶囊 */
+        .toggle-mode-box {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(12, 12, 16, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            padding: 4px;
+            border-radius: 24px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            z-index: 20;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+        }
+        .toggle-mode-box.active {
+            display: flex;
+        }
+        .toggle-pill {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toggle-pill.active.a {
+            background: var(--accent-cyan);
+            color: #050505;
+            box-shadow: 0 2px 10px rgba(0, 229, 204, 0.35);
+        }
+        .toggle-pill.active.b {
+            background: var(--accent-pink);
+            color: #050505;
+            box-shadow: 0 2px 10px rgba(255, 102, 204, 0.35);
+        }
+
+        /* 初始居中空状态引导 (Empty State Guide) */
+        .empty-stage-guide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 15;
+            pointer-events: none;
+            transition: opacity 0.35s ease;
+        }
+        .empty-guide-box {
+            background: rgba(14, 14, 18, 0.90);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px dashed rgba(255, 255, 255, 0.22);
+            border-radius: 24px;
+            padding: 44px 52px;
+            text-align: center;
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+            pointer-events: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+        }
+        .empty-icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(0, 229, 204, 0.1);
+            border: 1px solid rgba(0, 229, 204, 0.3);
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .empty-icon-circle svg {
+            width: 32px;
+            height: 32px;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            fill: none;
+        }
+        .empty-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+        .empty-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .empty-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 6px;
+        }
+        .empty-main-btn {
+            background: var(--accent-cyan);
+            color: #050505;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            padding: 10px 24px;
+            border-radius: 24px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            box-shadow: 0 4px 16px rgba(0, 229, 204, 0.35);
+        }
+        .empty-main-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 229, 204, 0.5);
+        }
+        .empty-sub-tip {
+            font-size: 0.68rem;
+            color: #666666;
+            margin-top: 4px;
+        }
+        .empty-stage-guide.hidden {
+            opacity: 0;
+            pointer-events: none;
+            display: none !important;
+        }
+
+        /* 底部主控操作岛 (Cockpit Island) */
+        .bottom-cockpit-bar {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: rgba(12, 12, 16, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            padding: 8px 18px;
+            border-radius: 36px;
+            z-index: 25;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7);
+            max-width: 90vw;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .bottom-cockpit-bar::-webkit-scrollbar { display: none; }
+
+        /* 视角预设微型药丸组 */
+        .preset-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .preset-pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--soft-border);
+            color: #c0c0c0;
+            font-size: 0.68rem;
+            letter-spacing: 0.8px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .preset-pill:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .preset-pill.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: #ffffff;
+            font-weight: 700;
+        }
+
+        .bar-divider {
+            width: 1px;
+            height: 18px;
+            background: var(--soft-border);
+            flex-shrink: 0;
+        }
+
+        /* 视场角 FOV 调节 */
+        .fov-control-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 0.5px;
+        }
+        .fov-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--soft-border);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .fov-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .fov-value {
+            min-width: 44px;
+            text-align: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* 色彩曝光微调浮窗 */
+        .tone-popover {
+            position: absolute;
+            bottom: 84px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: rgba(14, 14, 18, 0.94);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--panel-border);
+            border-radius: 14px;
+            padding: 16px 20px;
+            z-index: 30;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            min-width: 280px;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .tone-popover.active {
+            display: flex;
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .tone-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .tone-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .tone-label-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            color: #d0d0d0;
+        }
+        .tone-slider {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.12);
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+        }
+        .tone-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            border: 2px solid #000;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+        .tone-reset-btn {
+            background: none;
+            border: 1px solid var(--soft-border);
+            color: var(--text-muted);
+            font-size: 0.62rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tone-reset-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 快捷键提示 (仅在对比模式显示) */
+        .hotkey-hint-tag {
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            display: none;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .hotkey-hint-tag.active {
+            display: flex;
+        }
+        .key-badge {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        /* 左下角素材资产卡片 */
+        .asset-manager-card {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: rgba(12, 12, 16, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            z-index: 20;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-width: 260px;
+            max-width: 320px;
+        }
+        .asset-card-title {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .slot-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 6px 8px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--soft-border);
+            border-radius: 6px;
+        }
+        .slot-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            overflow: hidden;
+        }
+        .slot-name {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .slot-meta {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+        }
+        .slot-upload-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--soft-border);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.64rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .slot-upload-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* 快速对调 A/B 按钮 */
+        .swap-btn {
+            background: none;
+            border: 1px solid var(--soft-border);
+            color: var(--text-muted);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.62rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .swap-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* 右下角指南针罗盘 */
+        .compass-widget {
+            position: absolute;
+            bottom: 24px;
+            right: 24px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(12, 12, 16, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--panel-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .compass-widget:hover {
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(18, 18, 24, 0.95);
+        }
+        .compass-dial {
+            width: 32px;
+            height: 32px;
+            position: relative;
+            transform-origin: center center;
+        }
+        .compass-needle {
+            position: absolute;
+            top: 4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-bottom: 12px solid var(--accent-cyan);
+        }
+        .compass-needle.south {
+            top: auto;
+            bottom: 4px;
+            border-bottom: none;
+            border-top: 12px solid #555555;
+        }
+
+        /* 拖拽全局覆盖层 (Dropzone Overlay) */
+        .drag-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 2000;
+            display: none;
+            padding: 40px;
+            pointer-events: none;
+        }
+        .drag-overlay.active {
+            display: flex;
+            pointer-events: auto;
+        }
+        .drop-grid {
+            display: grid;
+            width: 100%;
+            height: 100%;
+            gap: 24px;
+        }
+        .drop-grid.single-mode {
+            grid-template-columns: 1fr;
+        }
+        .drop-grid.compare-mode {
+            grid-template-columns: 1fr 1fr;
+        }
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            transition: all 0.25s ease;
+        }
+        .drop-zone.hover-target {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 229, 204, 0.08);
+            box-shadow: inset 0 0 40px rgba(0, 229, 204, 0.15);
+        }
+        .drop-zone.target-b.hover-target {
+            border-color: var(--accent-pink);
+            background: rgba(255, 102, 204, 0.08);
+            box-shadow: inset 0 0 40px rgba(255, 102, 204, 0.15);
+        }
+        .drop-icon-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+        .drop-icon-box svg {
+            width: 32px;
+            height: 32px;
+            stroke: currentColor;
+            stroke-width: 1.8;
+            fill: none;
+        }
+        .drop-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #ffffff;
+        }
+        .drop-desc {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            max-width: 320px;
+            line-height: 1.5;
+        }
+
+        /* 隐藏的本地文件输入 */
+        .hidden-input { display: none; }
+
+        /* Toast 提示 */
+        .toast-notify {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translate(-50%, 80px);
+            background: rgba(18, 18, 22, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--accent-cyan);
+            color: white;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 0.76rem;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0, 229, 204, 0.2);
+            z-index: 9999;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .toast-notify.show {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+
+        /* 加载中动画 */
+        .stage-loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background: rgba(10, 10, 14, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 16px 28px;
+            border-radius: 12px;
+            border: 1px solid var(--soft-border);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s;
+        }
+        .stage-loader.loading {
+            opacity: 1;
+        }
+        .spin-circle {
+            width: 24px;
+            height: 24px;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 响应式适配 */
+        @media (max-width: 900px) {
+            nav { padding: 0 16px; }
+            .brand-badge-title span { display: none; }
+            .asset-manager-card { display: none; }
+            .bottom-cockpit-bar { width: 92vw; padding: 6px 12px; gap: 10px; }
+            .hotkey-hint-tag { display: none; }
+            .drop-grid.compare-mode { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部导航栏 -->
+    <nav>
+        <div class="nav-left">
+            <a href="tools.html" class="back-nav">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span data-i18n="back_tools">TOOLS</span>
+            </a>
+            <div class="nav-divider"></div>
+            <div class="brand-badge-title">
+                360 PANORAMA <span data-i18n="pano_title_suffix">VIEWER</span>
+                <span class="badge-tag">WebGL</span>
+            </div>
+        </div>
+
+        <!-- 顶部中央：根据模式无缝切换 -->
+        <div class="nav-center">
+            <!-- 1. 单图预览状态栏 -->
+            <div class="single-view-bar" id="single-view-bar">
+                <div class="current-pano-pill" id="current-pano-pill" style="display: none;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line></svg>
+                    <span class="current-pano-name" id="current-pano-name">No file loaded</span>
+                </div>
+                <button class="btn-enter-compare" id="btn-enter-compare" onclick="enableCompareMode()" style="display: none;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                    <span data-i18n="btn_enable_compare">➕ Enable A/B Compare</span>
+                </button>
+            </div>
+
+            <!-- 2. 对比模式工具栏 -->
+            <div class="compare-toolbar" id="compare-toolbar">
+                <div class="compare-modes-capsule">
+                    <button class="comp-mode-btn active" data-comp="wipe" onclick="setCompareType('wipe')">
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="3" x2="12" y2="21"></line><path d="M8 9l-3 3 3 3"></path><path d="M16 9l3 3-3 3"></path></svg>
+                        <span data-i18n="mode_wipe">Curtain Wipe</span>
+                    </button>
+                    <button class="comp-mode-btn" data-comp="dual" onclick="setCompareType('dual')">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                        <span data-i18n="mode_dual">Side-by-Side</span>
+                    </button>
+                    <button class="comp-mode-btn" data-comp="toggle" onclick="setCompareType('toggle')">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 3a9 9 0 0 1 9 9 9 9 0 0 1-9 9V3z"></path></svg>
+                        <span data-i18n="mode_toggle">Toggle A/B</span>
+                    </button>
+                </div>
+                <button class="btn-exit-compare" onclick="exitCompareMode()" data-i18n="btn_exit_compare">
+                    Exit Compare ✕
+                </button>
+            </div>
+        </div>
+
+        <!-- 右侧动作与设置 -->
+        <div class="nav-right">
+            <button class="nav-action-btn" id="tour-toggle-btn" onclick="toggleAutoTour()">
+                <svg viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+                <span data-i18n="btn_auto_tour">Auto Tour</span>
+            </button>
+
+            <button class="nav-action-btn" onclick="captureSnapshot()">
+                <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span data-i18n="btn_snapshot">Snapshot</span>
+            </button>
+
+            <button class="nav-action-btn" onclick="toggleFullscreen()">
+                <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            </button>
+
+            <!-- 语言切换 -->
+            <div class="lang-switch-box">
+                <span onclick="switchLanguage('en')" id="lang-en" class="active">EN</span>
+                <span>/</span>
+                <span onclick="switchLanguage('zh')" id="lang-zh">中</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主视口渲染舞台 -->
+    <main class="stage-container" id="stage-container">
+        <!-- 3D WebGL Canvas 渲染层 -->
+        <div class="viewport-layer" id="viewport-layer"></div>
+
+        <!-- 帘幕对比滑动条 (仅在对比模式-卷帘开启) -->
+        <div class="wipe-divider-line" id="wipe-line">
+            <div class="wipe-handle-pill">
+                <svg viewBox="0 0 24 24"><path d="M18 15l3-3-3-3M6 9l-3 3 3 3"></path></svg>
+            </div>
+        </div>
+
+        <!-- 双视口居中实线 (仅在对比模式-并排开启) -->
+        <div class="dual-center-divider" id="dual-divider"></div>
+
+        <!-- 仅在对比模式下显示的 A/B 版本徽章 -->
+        <div class="compare-badge-layer" id="compare-badge-layer">
+            <div class="version-badge badge-a" id="badge-version-a">
+                <span>VERSION A</span>
+                <span id="badge-name-a" style="font-weight: 500; opacity: 0.85;">Image A</span>
+            </div>
+            <div class="version-badge badge-b" id="badge-version-b">
+                <span>VERSION B</span>
+                <span id="badge-name-b" style="font-weight: 500; opacity: 0.85;">Image B</span>
+            </div>
+        </div>
+
+        <!-- 快速切换模式胶囊 (仅在对比模式-切换开启) -->
+        <div class="toggle-mode-box" id="toggle-mode-box">
+            <button class="toggle-pill active a" onclick="setActiveVersion('A')">VERSION A</button>
+            <button class="toggle-pill b" onclick="setActiveVersion('B')">VERSION B</button>
+        </div>
+
+        <!-- 初始居中空状态引导 (未加载图片时显示) -->
+        <div class="empty-stage-guide" id="empty-guide">
+            <div class="empty-guide-box">
+                <div class="empty-icon-circle">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
+                </div>
+                <h3 class="empty-title" data-i18n="empty_single_title">Drag & Drop 360 Panorama to Preview</h3>
+                <p class="empty-subtitle" data-i18n="empty_single_desc">Supports 2:1 Equirectangular CGI renders (JPG, PNG, WebP) · 100% Client-Side Local</p>
+                <div class="empty-btn-group">
+                    <button class="empty-main-btn" onclick="document.getElementById('file-input-single').click()">
+                        <span data-i18n="btn_select_file">Select Local Panorama</span>
+                    </button>
+                </div>
+                <div class="empty-sub-tip" data-i18n="btn_select_two">
+                    Tip: Dragging two images at once will automatically launch A/B comparison.
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部主控操作岛 (Cockpit Island) -->
+        <div class="bottom-cockpit-bar">
+            <!-- 视角快速预设 -->
+            <div class="preset-group">
+                <button class="preset-pill active" onclick="setCameraView(180, 0, 75, this)" data-i18n="view_center">Center</button>
+                <button class="preset-pill" onclick="setCameraView(180, -10, 68, this)" data-i18n="view_dash">Dashboard</button>
+                <button class="preset-pill" onclick="setCameraView(145, -5, 72, this)" data-i18n="view_driver">Driver</button>
+                <button class="preset-pill" onclick="setCameraView(215, -5, 72, this)" data-i18n="view_passenger">Passenger</button>
+                <button class="preset-pill" onclick="setCameraView(0, -8, 75, this)" data-i18n="view_rear">Rear Cabin</button>
+                <button class="preset-pill" onclick="setCameraView(180, 65, 80, this)" data-i18n="view_roof">Sunroof</button>
+            </div>
+
+            <div class="bar-divider"></div>
+
+            <!-- 视场角 FOV 调节 -->
+            <div class="fov-control-box">
+                <span data-i18n="label_fov">FOV</span>
+                <button class="fov-btn" onclick="adjustFov(-5)" title="Zoom In (Narrow FOV)">-</button>
+                <span class="fov-value" id="fov-display">75°</span>
+                <button class="fov-btn" onclick="adjustFov(5)" title="Zoom Out (Wide FOV)">+</button>
+            </div>
+
+            <div class="bar-divider"></div>
+
+            <!-- 色彩与画质微调按钮 -->
+            <button class="preset-pill" id="tone-toggle-btn" onclick="toggleTonePopover(event)" title="Adjust Exposure, Contrast & Saturation">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 3px;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                <span data-i18n="btn_tone">Tone</span>
+            </button>
+
+            <!-- 空格键快速闪烁比对提示 (仅在对比模式下显示) -->
+            <div class="hotkey-hint-tag" id="hotkey-hint-tag">
+                <div class="bar-divider"></div>
+                <span class="key-badge">Space</span>
+                <span data-i18n="hint_space_peek">Hold to Peek B</span>
+            </div>
+        </div>
+
+        <!-- 色彩曝光微调浮动弹窗 -->
+        <div class="tone-popover" id="tone-popover">
+            <div class="tone-header">
+                <span data-i18n="tone_title">Color & Exposure</span>
+                <button class="tone-reset-btn" onclick="resetTone()" data-i18n="tone_reset">Reset</button>
+            </div>
+            <div class="tone-row">
+                <div class="tone-label-row">
+                    <span data-i18n="tone_exposure">Exposure / Brightness</span>
+                    <span id="tone-exp-val">1.00×</span>
+                </div>
+                <input type="range" class="tone-slider" id="tone-exp" min="0.6" max="1.6" step="0.02" value="1.0" oninput="onToneChange()">
+            </div>
+            <div class="tone-row">
+                <div class="tone-label-row">
+                    <span data-i18n="tone_contrast">Contrast</span>
+                    <span id="tone-con-val">1.00×</span>
+                </div>
+                <input type="range" class="tone-slider" id="tone-con" min="0.6" max="1.6" step="0.02" value="1.0" oninput="onToneChange()">
+            </div>
+            <div class="tone-row">
+                <div class="tone-label-row">
+                    <span data-i18n="tone_saturation">Saturation</span>
+                    <span id="tone-sat-val">1.00×</span>
+                </div>
+                <input type="range" class="tone-slider" id="tone-sat" min="0.5" max="1.8" step="0.02" value="1.0" oninput="onToneChange()">
+            </div>
+        </div>
+
+        <!-- 左下角资产卡片 (单图预览时显示当前图片；对比时显示双图管理) -->
+        <div class="asset-manager-card" id="asset-card" style="display: none;">
+            <div class="asset-card-title">
+                <span id="asset-card-heading" data-i18n="heading_current_image">Active Panorama</span>
+                <button class="swap-btn" id="btn-swap-ab" onclick="swapVersions()" style="display: none;">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4M7 4L3 8M7 4L11 8M17 8V20M17 20L21 16M17 20L13 16"/></svg>
+                    A ⇄ B
+                </button>
+            </div>
+
+            <!-- Version A 行 -->
+            <div class="slot-row" id="row-version-a">
+                <div class="slot-info">
+                    <span class="slot-name" id="card-name-a">image.png</span>
+                    <span class="slot-meta" id="card-meta-a">4096 × 2048</span>
+                </div>
+                <button class="slot-upload-btn" onclick="triggerUpload('A')" data-i18n="btn_replace">Replace</button>
+            </div>
+
+            <!-- Version B 行 (仅在对比模式下显示) -->
+            <div class="slot-row" id="row-version-b" style="display: none;">
+                <div class="slot-info">
+                    <span class="slot-name" id="card-name-b">Compare Image B</span>
+                    <span class="slot-meta" id="card-meta-b">Waiting for image...</span>
+                </div>
+                <button class="slot-upload-btn" onclick="triggerUpload('B')" id="btn-upload-b" data-i18n="btn_load">Load</button>
+            </div>
+
+            <div style="font-size: 0.6rem; color: #666; margin-top: 2px;" id="asset-tip" data-i18n="asset_drag_tip">
+                Tip: Drag & drop any 2:1 equirectangular image directly onto the screen.
+            </div>
+        </div>
+
+        <!-- 罗盘方向指针 -->
+        <div class="compass-widget" onclick="resetHeading()" title="Reset Heading to North (0°)">
+            <div class="compass-dial" id="compass-dial">
+                <div class="compass-needle"></div>
+                <div class="compass-needle south"></div>
+            </div>
+        </div>
+
+        <!-- 场景加载动画 -->
+        <div class="stage-loader" id="stage-loader">
+            <div class="spin-circle"></div>
+            <span style="font-size: 0.72rem; letter-spacing: 1px;" data-i18n="loading_pano">Parsing 360 Panorama...</span>
+        </div>
+    </main>
+
+    <!-- 拖拽覆盖层 (Drag & Drop Overlay) -->
+    <div class="drag-overlay" id="drag-overlay">
+        <div class="drop-grid single-mode" id="drop-grid">
+            <!-- 单图模式全屏感应区 -->
+            <div class="drop-zone hover-target" id="drop-zone-single">
+                <div class="drop-icon-box">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+                <div class="drop-title" data-i18n="drop_single_title">Drop to Load Panorama</div>
+                <p class="drop-desc" data-i18n="drop_single_desc">Drop your 2:1 equirectangular panorama to preview in 360°.</p>
+            </div>
+
+            <!-- 对比模式下的双槽感应区 (动态按需显示) -->
+            <div class="drop-zone target-a" id="drop-zone-a" style="display: none;">
+                <div class="drop-icon-box">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+                <div class="drop-title" data-i18n="drop_title_a">Set as Version A</div>
+                <p class="drop-desc" data-i18n="drop_desc_a">Primary Base Render</p>
+            </div>
+            <div class="drop-zone target-b" id="drop-zone-b" style="display: none;">
+                <div class="drop-icon-box">
+                    <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                </div>
+                <div class="drop-title" data-i18n="drop_title_b">Set as Version B</div>
+                <p class="drop-desc" data-i18n="drop_desc_b">Comparison Revision Render</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 隐藏的本地文件输入 -->
+    <input type="file" id="file-input-single" class="hidden-input" accept="image/*" multiple>
+    <input type="file" id="file-input-a" class="hidden-input" accept="image/*">
+    <input type="file" id="file-input-b" class="hidden-input" accept="image/*">
+
+    <!-- Toast 提示 -->
+    <div class="toast-notify" id="toast-notify">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="toast-text">Toast Message</span>
+    </div>
+
+    <!-- 交互逻辑脚本 -->
+    <script>
+        const i18nDict = {
+            'en': {
+                'back_tools': 'TOOLS',
+                'pano_title_suffix': 'VIEWER',
+                'btn_enable_compare': '➕ Enable A/B Compare',
+                'btn_exit_compare': 'Exit Compare ✕',
+                'mode_wipe': 'Curtain Wipe',
+                'mode_dual': 'Side-by-Side',
+                'mode_toggle': 'Toggle A/B',
+                'btn_auto_tour': 'Auto Tour',
+                'btn_auto_tour_stop': 'Stop Tour',
+                'btn_snapshot': 'Snapshot',
+                'view_center': 'Center',
+                'view_dash': 'Dashboard',
+                'view_driver': 'Driver',
+                'view_passenger': 'Passenger',
+                'view_rear': 'Rear Cabin',
+                'view_roof': 'Sunroof',
+                'label_fov': 'FOV',
+                'hint_space_peek': 'Hold [Space] to Peek B',
+                'heading_current_image': 'Active Panorama',
+                'heading_compare_slots': 'A/B Comparison',
+                'btn_replace': 'Replace',
+                'btn_load': 'Load',
+                'asset_drag_tip': 'Tip: Drag & drop any 2:1 equirectangular image directly onto the screen.',
+                'loading_pano': 'Parsing 360 Panorama...',
+                'empty_single_title': 'Drag & Drop 360 Panorama to Preview',
+                'empty_single_desc': 'Supports 2:1 Equirectangular CGI renders (JPG, PNG, WebP) · 100% Client-Side Local',
+                'btn_select_file': 'Select Local Panorama',
+                'btn_select_two': 'Tip: Dragging two images at once will automatically launch A/B comparison.',
+                'drop_single_title': 'Drop to Load Panorama',
+                'drop_single_desc': 'Pure browser-based WebGL local preview.',
+                'drop_title_a': 'Set as Version A',
+                'drop_desc_a': 'Primary Base Render',
+                'drop_title_b': 'Set as Version B',
+                'drop_desc_b': 'Comparison Revision Render',
+                'toast_swapped': 'Swapped Version A and Version B',
+                'toast_loaded': 'Panorama loaded successfully',
+                'toast_loaded_b': 'Compare Version B loaded',
+                'toast_snapshot': '360 Snapshot saved to Downloads',
+                'btn_tone': 'Tone',
+                'tone_title': 'Color & Exposure',
+                'tone_reset': 'Reset',
+                'tone_exposure': 'Exposure / Brightness',
+                'tone_contrast': 'Contrast',
+                'tone_saturation': 'Saturation',
+                'need_version_b': 'Please load Compare Image B to compare.'
+            },
+            'zh': {
+                'back_tools': '工具集',
+                'pano_title_suffix': '全景预览器',
+                'btn_enable_compare': '➕ 开启 A/B 对照',
+                'btn_exit_compare': '退出对照 ✕',
+                'mode_wipe': '滑动卷帘',
+                'mode_dual': '左右并排',
+                'mode_toggle': '快速切换',
+                'btn_auto_tour': '自动巡游',
+                'btn_auto_tour_stop': '停止巡游',
+                'btn_snapshot': '截取快照',
+                'view_center': '居中环视',
+                'view_dash': '仪表中控',
+                'view_driver': '主驾视线',
+                'view_passenger': '副驾视线',
+                'view_rear': '后排座舱',
+                'view_roof': '全景天幕',
+                'label_fov': '视场角',
+                'hint_space_peek': '按住 [空格] 闪烁切B',
+                'heading_current_image': '当前全景图',
+                'heading_compare_slots': 'A/B 对照管理',
+                'btn_replace': '更换',
+                'btn_load': '载入',
+                'asset_drag_tip': '提示：可直接拖入任意 2:1 全景渲染图。',
+                'loading_pano': '正在解析 360° 等距柱状全景图...',
+                'empty_single_title': '拖入 360° 全景图即可预览',
+                'empty_single_desc': '支持 2:1 等距柱状全景渲染图（JPG / PNG / WebP 等）· 纯本地极速解析不上传',
+                'btn_select_file': '选择本地全景图',
+                'btn_select_two': '提示：同时拖入两张图将自动开启 A/B 对照模式。',
+                'drop_single_title': '释放以载入全景图',
+                'drop_single_desc': '纯浏览器本地 WebGL 极速解析。',
+                'drop_title_a': '放入版本 A (基准底图)',
+                'drop_desc_a': '作为对比的原始基准版本',
+                'drop_title_b': '放入版本 B (对照修改图)',
+                'drop_desc_b': '作为调整材质或布光后的对照版本',
+                'toast_swapped': '已对调版本 A 与版本 B',
+                'toast_loaded': '全景图载入成功',
+                'toast_loaded_b': '对照版本 B 已载入',
+                'toast_snapshot': '360° 当前视角快照已下载',
+                'btn_tone': '色彩',
+                'tone_title': '色彩与画质微调',
+                'tone_reset': '重置',
+                'tone_exposure': '曝光 / 亮度',
+                'tone_contrast': '对比度',
+                'tone_saturation': '饱和度',
+                'need_version_b': '请先载入对照图 B 开始对比。'
+            }
+        };
+
+        let currentLang = localStorage.getItem('preferredLang') || 'en';
+
+        function switchLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('preferredLang', lang);
+            document.getElementById('lang-en').className = (lang === 'en' ? 'active' : '');
+            document.getElementById('lang-zh').className = (lang === 'zh' ? 'active' : '');
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18nDict[lang] && i18nDict[lang][key]) {
+                    el.innerHTML = i18nDict[lang][key];
+                }
+            });
+            updateUIState();
+        }
+
+        function showToast(textKey, fallbackText) {
+            const toast = document.getElementById('toast-notify');
+            const toastText = document.getElementById('toast-text');
+            const msg = (i18nDict[currentLang] && i18nDict[currentLang][textKey]) ? i18nDict[currentLang][textKey] : (fallbackText || textKey);
+            toastText.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2600);
+        }
+
+        /* =========================================================================
+           Three.js 核心全景图引擎与状态机
+           ========================================================================= */
+        const state = {
+            // 核心状态：是否开启 A/B 对比模式
+            isCompareMode: false,
+            
+            // 对比子模式：'wipe' (卷帘) | 'dual' (并排) | 'toggle' (切换)
+            compareType: 'wipe',
+            
+            // 单图预览或切换模式下当前激活显示的版本：'A' | 'B'
+            activeVersion: 'A',
+
+            // 卷帘分割线比例
+            splitRatio: 0.5,
+            isWipeDragging: false,
+            
+            // 相机状态 (默认以 180° 正视前排仪表中控)
+            lon: 180,
+            lat: 0,
+            targetLon: 180,
+            targetLat: 0,
+            fov: 75,
+            targetFov: 75,
+            
+            // 交互漫游
+            isUserInteracting: false,
+            onPointerDownPointerX: 0,
+            onPointerDownPointerY: 0,
+            onPointerDownLon: 0,
+            onPointerDownLat: 0,
+            
+            // 自动巡游
+            isAutoTour: false,
+            autoTourSpeed: 0.12,
+
+            // 色彩画质微调
+            tone: {
+                exposure: 1.0,
+                contrast: 1.0,
+                saturation: 1.0
+            },
+            
+            // 图像资产
+            imageA: {
+                name: '',
+                meta: '',
+                texture: null
+            },
+            imageB: {
+                name: '',
+                meta: '',
+                texture: null
+            }
+        };
+
+        const container = document.getElementById('stage-container');
+        const viewportLayer = document.getElementById('viewport-layer');
+        const wipeLine = document.getElementById('wipe-line');
+        const dualDivider = document.getElementById('dual-divider');
+        const compassDial = document.getElementById('compass-dial');
+        const fovDisplay = document.getElementById('fov-display');
+
+        let renderer, sceneA, sceneB, camera, sphereA, sphereB;
+
+        function initEngine() {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            // 1. 初始化 WebGL 渲染器 (1:1 线性色彩直通，彻底杜绝 Gamma 叠加发灰)
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setSize(width, height);
+            renderer.outputEncoding = THREE.LinearEncoding;
+            viewportLayer.appendChild(renderer.domElement);
+
+            // 2. 初始化相机
+            camera = new THREE.PerspectiveCamera(state.fov, width / height, 1, 1100);
+            camera.target = new THREE.Vector3(0, 0, 0);
+
+            // 3. 初始化场景 A 与场景 B
+            sceneA = new THREE.Scene();
+            sceneB = new THREE.Scene();
+
+            const geometry = new THREE.SphereGeometry(500, 64, 40);
+            geometry.scale(-1, 1, 1);
+
+            // 初始未载入图片时赋予中性深空底色
+            const materialA = new THREE.MeshBasicMaterial({ color: 0x111216 });
+            sphereA = new THREE.Mesh(geometry, materialA);
+            sceneA.add(sphereA);
+
+            const materialB = new THREE.MeshBasicMaterial({ color: 0x111216 });
+            sphereB = new THREE.Mesh(geometry, materialB);
+            sceneB.add(sphereB);
+
+            // 4. 绑定交互事件
+            bindEvents();
+
+            // 5. 启动渲染循环
+            animate();
+        }
+
+        function setLoading(isLoading) {
+            const loaderEl = document.getElementById('stage-loader');
+            if (isLoading) loaderEl.classList.add('loading');
+            else loaderEl.classList.remove('loading');
+        }
+
+        /* =========================================================================
+           单图预览 vs A/B 对比 模式切换逻辑
+           ========================================================================= */
+
+        // 开启 A/B 对比模式
+        function enableCompareMode() {
+            if (!state.imageA.texture) return;
+            state.isCompareMode = true;
+
+            // 若尚未载入 Version B，提示载入
+            if (!state.imageB.texture) {
+                // 如果用户需要载入 B，自动触发文件选择或提示
+                showToast('need_version_b', 'Please select Compare Image B to compare.');
+                document.getElementById('file-input-b').click();
+            }
+
+            updateUIState();
+            showToast('toast_compare_on', 'A/B Comparison Enabled');
+        }
+
+        // 退出 A/B 对比模式，回到纯净单图全景预览
+        function exitCompareMode() {
+            state.isCompareMode = false;
+            updateUIState();
+            showToast('toast_compare_off', 'Returned to Single Panorama View');
+        }
+
+        // 切换对比子模式 (卷帘 / 并排 / 切换)
+        function setCompareType(type) {
+            state.compareType = type;
+            document.querySelectorAll('.comp-mode-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-comp') === type);
+            });
+            updateUIState();
+        }
+
+        // 切换模式下选择显示的当前版本 (A 或 B)
+        function setActiveVersion(ver, updateState = true) {
+            if (updateState) state.activeVersion = ver;
+            const pills = document.querySelectorAll('.toggle-pill');
+            if (pills.length >= 2) {
+                pills[0].className = `toggle-pill ${ver === 'A' ? 'active a' : ''}`;
+                pills[1].className = `toggle-pill ${ver === 'B' ? 'active b' : ''}`;
+            }
+        }
+
+        // 更新整个页面的 UI 元素可见性
+        function updateUIState() {
+            const singleBar = document.getElementById('single-view-bar');
+            const compToolbar = document.getElementById('compare-toolbar');
+            const currentPill = document.getElementById('current-pano-pill');
+            const currentName = document.getElementById('current-pano-name');
+            const btnEnterComp = document.getElementById('btn-enter-compare');
+
+            const wipeEl = document.getElementById('wipe-line');
+            const dualEl = document.getElementById('dual-divider');
+            const badgeLayer = document.getElementById('compare-badge-layer');
+            const badgeB = document.getElementById('badge-version-b');
+            const toggleBox = document.getElementById('toggle-mode-box');
+            const hotkeyHint = document.getElementById('hotkey-hint-tag');
+
+            const assetCard = document.getElementById('asset-card');
+            const headingText = document.getElementById('asset-card-heading');
+            const swapBtn = document.getElementById('btn-swap-ab');
+            const rowB = document.getElementById('row-version-b');
+
+            const hasImage = !!state.imageA.texture;
+
+            if (!state.isCompareMode) {
+                // ==================== 1. 单图纯净预览模式 ====================
+                singleBar.style.display = 'flex';
+                compToolbar.classList.remove('active');
+
+                if (hasImage) {
+                    currentPill.style.display = 'inline-flex';
+                    currentName.textContent = state.imageA.name;
+                    btnEnterComp.style.display = 'inline-flex';
+                    assetCard.style.display = 'flex';
+                    headingText.textContent = (currentLang === 'zh' ? '当前全景图' : 'Active Panorama');
+                } else {
+                    currentPill.style.display = 'none';
+                    btnEnterComp.style.display = 'none';
+                    assetCard.style.display = 'none';
+                }
+
+                // 隐藏所有 A/B 对比专属元素
+                wipeEl.classList.remove('active');
+                dualEl.classList.remove('active');
+                badgeLayer.classList.remove('active');
+                toggleBox.classList.remove('active');
+                hotkeyHint.classList.remove('active');
+                swapBtn.style.display = 'none';
+                rowB.style.display = 'none';
+
+            } else {
+                // ==================== 2. A/B 对比模式 ====================
+                singleBar.style.display = 'none';
+                compToolbar.classList.add('active');
+                assetCard.style.display = 'flex';
+                headingText.textContent = (currentLang === 'zh' ? 'A/B 对照管理' : 'A/B Comparison');
+                swapBtn.style.display = 'flex';
+                rowB.style.display = 'flex';
+
+                if (state.compareType === 'wipe') {
+                    wipeEl.classList.add('active');
+                    dualEl.classList.remove('active');
+                    badgeLayer.classList.add('active');
+                    badgeB.classList.remove('side-by-side-b');
+                    toggleBox.classList.remove('active');
+                    hotkeyHint.classList.add('active');
+                    updateWipeLinePosition();
+                } else if (state.compareType === 'dual') {
+                    wipeEl.classList.remove('active');
+                    dualEl.classList.add('active');
+                    badgeLayer.classList.add('active');
+                    badgeB.classList.add('side-by-side-b');
+                    toggleBox.classList.remove('active');
+                    hotkeyHint.classList.remove('active');
+                } else if (state.compareType === 'toggle') {
+                    wipeEl.classList.remove('active');
+                    dualEl.classList.remove('active');
+                    badgeLayer.classList.remove('active');
+                    toggleBox.classList.add('active');
+                    hotkeyHint.classList.add('active');
+                }
+            }
+
+            // 更新卡片与徽章文字
+            if (state.imageA.name) {
+                document.getElementById('card-name-a').textContent = state.imageA.name;
+                document.getElementById('card-meta-a').textContent = state.imageA.meta;
+                document.getElementById('badge-name-a').textContent = state.imageA.name;
+            }
+            if (state.imageB.name) {
+                document.getElementById('card-name-b').textContent = state.imageB.name;
+                document.getElementById('card-meta-b').textContent = state.imageB.meta;
+                document.getElementById('badge-name-b').textContent = state.imageB.name;
+                document.getElementById('btn-upload-b').textContent = (currentLang === 'zh' ? '更换' : 'Replace');
+            } else {
+                document.getElementById('card-name-b').textContent = (currentLang === 'zh' ? '对照图 B (未加载)' : 'Compare Image B');
+                document.getElementById('card-meta-b').textContent = (currentLang === 'zh' ? '点击载入对比图' : 'Click to load image');
+                document.getElementById('badge-name-b').textContent = (currentLang === 'zh' ? '未载入' : 'Empty');
+                document.getElementById('btn-upload-b').textContent = (currentLang === 'zh' ? '载入' : 'Load');
+            }
+        }
+
+        // 对调 A 与 B 版本
+        function swapVersions() {
+            const tempTex = sphereA.material.map;
+            sphereA.material.map = sphereB.material.map;
+            sphereB.material.map = tempTex;
+            sphereA.material.needsUpdate = true;
+            sphereB.material.needsUpdate = true;
+
+            const tempInfo = { ...state.imageA };
+            state.imageA = { ...state.imageB };
+            state.imageB = tempInfo;
+
+            updateUIState();
+            showToast('toast_swapped', 'Swapped Version A and Version B');
+        }
+
+        function triggerUpload(slot) {
+            if (slot === 'A') document.getElementById('file-input-a').click();
+            else document.getElementById('file-input-b').click();
+        }
+
+        /* =========================================================================
+           本地文件读取流水线 (纯前端 ObjectURL 解析)
+           ========================================================================= */
+        function loadLocalFile(file, targetSlot = 'A') {
+            if (!file.type.startsWith('image/')) return;
+            setLoading(true);
+
+            const objectUrl = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                const texture = new THREE.Texture(img);
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+                texture.generateMipmaps = false;
+                texture.encoding = THREE.LinearEncoding;
+                texture.needsUpdate = true;
+
+                if (targetSlot === 'A') {
+                    sphereA.material.color.setHex(0xffffff);
+                    sphereA.material.map = texture;
+                    sphereA.material.needsUpdate = true;
+                    state.imageA.name = file.name;
+                    state.imageA.meta = `${img.naturalWidth} × ${img.naturalHeight} · ${file.type.split('/')[1].toUpperCase()}`;
+                    state.imageA.texture = texture;
+
+                    // 若 B 图未载入，同时镜像至 B 图材质以便快速开启卷帘或比对
+                    if (!state.imageB.texture) {
+                        sphereB.material.color.setHex(0xffffff);
+                        sphereB.material.map = texture;
+                        sphereB.material.needsUpdate = true;
+                    }
+
+                    showToast('toast_loaded', `Loaded: ${file.name}`);
+                } else {
+                    sphereB.material.color.setHex(0xffffff);
+                    sphereB.material.map = texture;
+                    sphereB.material.needsUpdate = true;
+                    state.imageB.name = file.name;
+                    state.imageB.meta = `${img.naturalWidth} × ${img.naturalHeight} · ${file.type.split('/')[1].toUpperCase()}`;
+                    state.imageB.texture = texture;
+
+                    showToast('toast_loaded_b', `Loaded Version B: ${file.name}`);
+                }
+
+                // 隐藏空状态提示
+                document.getElementById('empty-guide').classList.add('hidden');
+
+                updateUIState();
+                setLoading(false);
+            };
+            img.onerror = () => {
+                setLoading(false);
+            };
+            img.src = objectUrl;
+        }
+
+        /* =========================================================================
+           交互事件监听 (漫游、缩放、拖拽、快捷键)
+           ========================================================================= */
+        function bindEvents() {
+            window.addEventListener('resize', onWindowResize);
+
+            // 鼠标漫游
+            viewportLayer.addEventListener('pointerdown', onPointerDown);
+            window.addEventListener('pointermove', onPointerMove);
+            window.addEventListener('pointerup', onPointerUp);
+            viewportLayer.addEventListener('wheel', onDocumentWheel, { passive: false });
+
+            // 卷帘分割线拖拽
+            wipeLine.addEventListener('pointerdown', onWipeDown);
+
+            // 全局文件拖拽感应
+            window.addEventListener('dragenter', onDragEnter);
+            window.addEventListener('dragover', onDragOver);
+            window.addEventListener('dragleave', onDragLeave);
+            window.addEventListener('drop', onDrop);
+
+            // 快捷键 (空格闪烁切图)
+            window.addEventListener('keydown', onKeyDown);
+            window.addEventListener('keyup', onKeyUp);
+
+            // 本地文件 input 监听
+            document.getElementById('file-input-single').addEventListener('change', e => {
+                const files = e.target.files;
+                if (!files || !files.length) return;
+                if (files.length === 1) {
+                    loadLocalFile(files[0], 'A');
+                } else if (files.length >= 2) {
+                    loadLocalFile(files[0], 'A');
+                    loadLocalFile(files[1], 'B');
+                    state.isCompareMode = true;
+                    updateUIState();
+                }
+            });
+
+            document.getElementById('file-input-a').addEventListener('change', e => {
+                if (e.target.files && e.target.files.length) loadLocalFile(e.target.files[0], 'A');
+            });
+            document.getElementById('file-input-b').addEventListener('change', e => {
+                if (e.target.files && e.target.files.length) {
+                    loadLocalFile(e.target.files[0], 'B');
+                    state.isCompareMode = true;
+                    updateUIState();
+                }
+            });
+        }
+
+        function onWindowResize() {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+            updateWipeLinePosition();
+        }
+
+        function onPointerDown(e) {
+            if (state.isWipeDragging) return;
+            state.isUserInteracting = true;
+            viewportLayer.classList.add('is-dragging');
+
+            state.onPointerDownPointerX = e.clientX;
+            state.onPointerDownPointerY = e.clientY;
+            state.onPointerDownLon = state.targetLon;
+            state.onPointerDownLat = state.targetLat;
+        }
+
+        function onPointerMove(e) {
+            if (state.isWipeDragging) {
+                const rect = container.getBoundingClientRect();
+                const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+                state.splitRatio = x / rect.width;
+                updateWipeLinePosition();
+                return;
+            }
+
+            if (!state.isUserInteracting) return;
+            const factor = 0.15 * (state.fov / 75);
+            state.targetLon = (state.onPointerDownPointerX - e.clientX) * factor + state.onPointerDownLon;
+            state.targetLat = (e.clientY - state.onPointerDownPointerY) * factor + state.onPointerDownLat;
+        }
+
+        function onPointerUp() {
+            state.isUserInteracting = false;
+            state.isWipeDragging = false;
+            viewportLayer.classList.remove('is-dragging');
+        }
+
+        function onDocumentWheel(e) {
+            e.preventDefault();
+            adjustFov(e.deltaY * 0.05);
+        }
+
+        function onWipeDown(e) {
+            e.stopPropagation();
+            state.isWipeDragging = true;
+        }
+
+        function updateWipeLinePosition() {
+            const width = container.clientWidth;
+            const px = state.splitRatio * width;
+            wipeLine.style.left = `${px}px`;
+        }
+
+        function adjustFov(delta) {
+            state.targetFov = Math.max(30, Math.min(115, state.targetFov + delta));
+            fovDisplay.textContent = `${Math.round(state.targetFov)}°`;
+        }
+
+        function setCameraView(lon, lat, fov, btn) {
+            state.targetLon = lon;
+            state.targetLat = lat;
+            if (fov) {
+                state.targetFov = fov;
+                fovDisplay.textContent = `${Math.round(fov)}°`;
+            }
+            document.querySelectorAll('.preset-pill').forEach(b => b.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+            }
+        }
+
+        function resetHeading() {
+            setCameraView(180, 0, 75);
+        }
+
+        function toggleAutoTour() {
+            state.isAutoTour = !state.isAutoTour;
+            const btn = document.getElementById('tour-toggle-btn');
+            const span = btn.querySelector('span');
+            btn.classList.toggle('active', state.isAutoTour);
+            const key = state.isAutoTour ? 'btn_auto_tour_stop' : 'btn_auto_tour';
+            span.textContent = i18nDict[currentLang][key];
+        }
+
+        // 空格键闪烁切图
+        let spacePressed = false;
+        function onKeyDown(e) {
+            if (e.code === 'Space' && !spacePressed && !e.target.matches('input, textarea')) {
+                e.preventDefault();
+                spacePressed = true;
+                if (state.isCompareMode) {
+                    if (state.compareType === 'toggle') {
+                        setActiveVersion('B', false);
+                    } else if (state.compareType === 'wipe') {
+                        state.splitRatio = 0.01;
+                        updateWipeLinePosition();
+                    }
+                }
+            }
+        }
+
+        function onKeyUp(e) {
+            if (e.code === 'Space') {
+                spacePressed = false;
+                if (state.isCompareMode) {
+                    if (state.compareType === 'toggle') {
+                        setActiveVersion('A', false);
+                    } else if (state.compareType === 'wipe') {
+                        state.splitRatio = 0.5;
+                        updateWipeLinePosition();
+                    }
+                }
+            }
+        }
+
+        /* =========================================================================
+           拖拽感应层交互 (单图模式 vs 对比模式)
+           ========================================================================= */
+        const dragOverlay = document.getElementById('drag-overlay');
+        const dropGrid = document.getElementById('drop-grid');
+        const dropZoneSingle = document.getElementById('drop-zone-single');
+        const dropZoneA = document.getElementById('drop-zone-a');
+        const dropZoneB = document.getElementById('drop-zone-b');
+
+        function onDragEnter(e) {
+            e.preventDefault();
+            dragOverlay.classList.add('active');
+
+            if (!state.isCompareMode) {
+                dropGrid.className = 'drop-grid single-mode';
+                dropZoneSingle.style.display = 'flex';
+                dropZoneA.style.display = 'none';
+                dropZoneB.style.display = 'none';
+            } else {
+                dropGrid.className = 'drop-grid compare-mode';
+                dropZoneSingle.style.display = 'none';
+                dropZoneA.style.display = 'flex';
+                dropZoneB.style.display = 'flex';
+            }
+        }
+
+        function onDragOver(e) {
+            e.preventDefault();
+            if (state.isCompareMode) {
+                const rectA = dropZoneA.getBoundingClientRect();
+                if (e.clientX < rectA.right) {
+                    dropZoneA.classList.add('hover-target');
+                    dropZoneB.classList.remove('hover-target');
+                } else {
+                    dropZoneB.classList.add('hover-target');
+                    dropZoneA.classList.remove('hover-target');
+                }
+            }
+        }
+
+        function onDragLeave(e) {
+            if (e.clientX <= 0 || e.clientY <= 0 || e.clientX >= window.innerWidth || e.clientY >= window.innerHeight) {
+                dragOverlay.classList.remove('active');
+            }
+        }
+
+        function onDrop(e) {
+            e.preventDefault();
+            dragOverlay.classList.remove('active');
+            dropZoneA.classList.remove('hover-target');
+            dropZoneB.classList.remove('hover-target');
+
+            const files = e.dataTransfer.files;
+            if (!files || !files.length) return;
+
+            if (!state.isCompareMode) {
+                // 单图模式下
+                if (files.length === 1) {
+                    loadLocalFile(files[0], 'A');
+                } else if (files.length >= 2) {
+                    // 同时拖入两张图，系统自动开启 A/B 对比！
+                    loadLocalFile(files[0], 'A');
+                    loadLocalFile(files[1], 'B');
+                    state.isCompareMode = true;
+                    updateUIState();
+                }
+            } else {
+                // 对比模式下按左右释放位置分配
+                const rectA = dropZoneA.getBoundingClientRect();
+                const targetSlot = (e.clientX < rectA.right) ? 'A' : 'B';
+                loadLocalFile(files[0], targetSlot);
+
+                if (files.length >= 2) {
+                    const otherSlot = (targetSlot === 'A') ? 'B' : 'A';
+                    loadLocalFile(files[1], otherSlot);
+                }
+            }
+        }
+
+        /* =========================================================================
+           色彩画质微调与快照导出
+           ========================================================================= */
+        function toggleTonePopover(e) {
+            if (e) e.stopPropagation();
+            const pop = document.getElementById('tone-popover');
+            const btn = document.getElementById('tone-toggle-btn');
+            const isActive = pop.classList.toggle('active');
+            btn.classList.toggle('active', isActive);
+        }
+
+        window.addEventListener('pointerdown', e => {
+            const pop = document.getElementById('tone-popover');
+            const btn = document.getElementById('tone-toggle-btn');
+            if (pop && pop.classList.contains('active') && !pop.contains(e.target) && !btn.contains(e.target)) {
+                pop.classList.remove('active');
+                btn.classList.remove('active');
+            }
+        });
+
+        function onToneChange() {
+            const exp = parseFloat(document.getElementById('tone-exp').value);
+            const con = parseFloat(document.getElementById('tone-con').value);
+            const sat = parseFloat(document.getElementById('tone-sat').value);
+
+            state.tone.exposure = exp;
+            state.tone.contrast = con;
+            state.tone.saturation = sat;
+
+            document.getElementById('tone-exp-val').textContent = `${exp.toFixed(2)}×`;
+            document.getElementById('tone-con-val').textContent = `${con.toFixed(2)}×`;
+            document.getElementById('tone-sat-val').textContent = `${sat.toFixed(2)}×`;
+
+            applyToneFilter();
+        }
+
+        function applyToneFilter() {
+            const canvas = viewportLayer.querySelector('canvas');
+            if (canvas) {
+                canvas.style.filter = `brightness(${state.tone.exposure}) contrast(${state.tone.contrast}) saturate(${state.tone.saturation})`;
+            }
+        }
+
+        function resetTone() {
+            document.getElementById('tone-exp').value = 1.0;
+            document.getElementById('tone-con').value = 1.0;
+            document.getElementById('tone-sat').value = 1.0;
+            onToneChange();
+        }
+
+        function captureSnapshot() {
+            render();
+            const webglCanvas = renderer.domElement;
+            const isToneActive = (state.tone.exposure !== 1 || state.tone.contrast !== 1 || state.tone.saturation !== 1);
+
+            let dataUrl;
+            if (isToneActive) {
+                const offscreen = document.createElement('canvas');
+                offscreen.width = webglCanvas.width;
+                offscreen.height = webglCanvas.height;
+                const ctx = offscreen.getContext('2d');
+                ctx.filter = `brightness(${state.tone.exposure}) contrast(${state.tone.contrast}) saturate(${state.tone.saturation})`;
+                ctx.drawImage(webglCanvas, 0, 0);
+                dataUrl = offscreen.toDataURL('image/jpeg', 0.95);
+            } else {
+                dataUrl = webglCanvas.toDataURL('image/jpeg', 0.95);
+            }
+
+            const link = document.createElement('a');
+            link.download = `360_Pano_View_${Date.now()}.jpg`;
+            link.href = dataUrl;
+            link.click();
+            showToast('toast_snapshot', '360 Snapshot saved to Downloads');
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        /* =========================================================================
+           主渲染引擎 (WebGL Scissor Test 硬件级硬件加速无缝裁切)
+           ========================================================================= */
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (state.isAutoTour && !state.isUserInteracting) {
+                state.targetLon += state.autoTourSpeed;
+            }
+
+            state.lon += (state.targetLon - state.lon) * 0.1;
+            state.lat += (state.targetLat - state.lat) * 0.1;
+            state.fov += (state.targetFov - state.fov) * 0.15;
+
+            state.lat = Math.max(-85, Math.min(85, state.lat));
+            const phi = THREE.MathUtils.degToRad(90 - state.lat);
+            const theta = THREE.MathUtils.degToRad(state.lon);
+
+            camera.target.x = 500 * Math.sin(phi) * Math.cos(theta);
+            camera.target.y = 500 * Math.cos(phi);
+            camera.target.z = 500 * Math.sin(phi) * Math.sin(theta);
+            camera.lookAt(camera.target);
+
+            camera.fov = state.fov;
+            camera.updateProjectionMatrix();
+
+            // 指南针旋转校准 (正前方 180° 为正北)
+            const compassDeg = (180 - state.lon) % 360;
+            compassDial.style.transform = `rotate(${compassDeg}deg)`;
+
+            render();
+        }
+
+        function render() {
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            if (!state.isCompareMode) {
+                // 1. 默认单图全景模式：直接无缝渲染当前主全景图
+                renderer.setScissorTest(false);
+                renderer.setViewport(0, 0, width, height);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.render(sceneA, camera);
+
+            } else {
+                // 2. A/B 对比模式
+                if (state.compareType === 'wipe') {
+                    // 滑动卷帘硬件裁切
+                    const splitX = Math.floor(state.splitRatio * width);
+                    renderer.setScissorTest(true);
+
+                    // 渲染 Version A (左侧)
+                    renderer.setScissor(0, 0, splitX, height);
+                    renderer.setViewport(0, 0, width, height);
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+                    renderer.render(sceneA, camera);
+
+                    // 渲染 Version B (右侧)
+                    renderer.setScissor(splitX, 0, width - splitX, height);
+                    renderer.setViewport(0, 0, width, height);
+                    renderer.render(sceneB, camera);
+
+                    renderer.setScissorTest(false);
+
+                } else if (state.compareType === 'dual') {
+                    // 左右并排双视口完全同步
+                    const halfW = Math.floor(width / 2);
+                    renderer.setScissorTest(true);
+
+                    // 左视口：Version A
+                    renderer.setScissor(0, 0, halfW, height);
+                    renderer.setViewport(0, 0, halfW, height);
+                    camera.aspect = halfW / height;
+                    camera.updateProjectionMatrix();
+                    renderer.render(sceneA, camera);
+
+                    // 右视口：Version B
+                    renderer.setScissor(halfW, 0, width - halfW, height);
+                    renderer.setViewport(halfW, 0, width - halfW, height);
+                    renderer.render(sceneB, camera);
+
+                    renderer.setScissorTest(false);
+
+                } else if (state.compareType === 'toggle') {
+                    // 单画框切换比对
+                    renderer.setScissorTest(false);
+                    renderer.setViewport(0, 0, width, height);
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+
+                    if (state.activeVersion === 'A') {
+                        renderer.render(sceneA, camera);
+                    } else {
+                        renderer.render(sceneB, camera);
+                    }
+                }
+            }
+        }
+
+        // 页面启动
+        window.addEventListener('DOMContentLoaded', () => {
+            switchLanguage(currentLang);
+            initEngine();
+            updateUIState();
+        });
+    </script>
+</body>
+</html>
